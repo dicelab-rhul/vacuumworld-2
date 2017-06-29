@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.appearances;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
-import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt.DirtColor;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 
 public class DirtAppearance extends PhysicalBodyAppearance implements
@@ -10,19 +10,19 @@ public class DirtAppearance extends PhysicalBodyAppearance implements
 
 	private static final long serialVersionUID = 3721595240698765337L;
 
-	private DirtColor color;
+	private BodyColor color;
 	private Position position;
 
-	public DirtAppearance(String id, DirtColor color) {
-		super(id, Dirt.class);
+	public DirtAppearance(BodyColor color) {
+		super(Dirt.class);
 		this.setColor(color);
 	}
 
-	public DirtColor getColor() {
+	public BodyColor getColor() {
 		return color;
 	}
 
-	public void setColor(DirtColor color) {
+	public void setColor(BodyColor color) {
 		this.color = color;
 	}
 

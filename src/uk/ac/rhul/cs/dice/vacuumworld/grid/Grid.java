@@ -1,21 +1,23 @@
 package uk.ac.rhul.cs.dice.vacuumworld.grid;
 
+import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
+import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldPhysics;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
-import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
-import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt.DirtColor;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.EntityContainer;
+import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.Tile;
+import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.VacuumWorldTile;
+import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.WallTile;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomEnum;
@@ -23,10 +25,15 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomEnum;
 public class Grid {
 
 	private Integer dimension;
-	private Map<Position, EntityContainer> grid = new HashMap<>();
+	private Map<Position, VacuumWorldTile> grid = new HashMap<>();
 
 	public Grid(Integer dimension) {
 		this.setDimension(dimension);
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				grid.put(new Position(i, j), new VacuumWorldTile());
+			}
+		}
 	}
 
 	/**
@@ -40,12 +47,30 @@ public class Grid {
 	 *            to move to
 	 * @return the {@link Position} of the {@link Agent} before it was moved
 	 */
-	public Position moveAgent(VacuumWorldAgent agent, Position position) {
-		Position old = agent.getAppearance().getPosition();
+	public Position moveAgent(VacuumWorldAgentAppearance agent,
+			Position position) {
+		Position old = agent.getPosition();
 		grid.get(old).setAgent(null);
-		grid.get(position).setAgent(agent.getAppearance());
-		agent.getAppearance().setPosition(position);
+		grid.get(position).setAgent(agent);
+		agent.setPosition(position);
 		return old;
+	}
+
+	public Tile getTile(Position position) {
+		Tile t = this.grid.get(position);
+		return (t != null) ? t : new WallTile();
+	}
+
+	public void cleanDirt(Position position) {
+		this.grid.get(position).setDirt(null);
+	}
+
+	public VacuumWorldAgentAppearance getAgent(Position position) {
+		return grid.get(position).getAgent();
+	}
+
+	public DirtAppearance getDirt(Position position) {
+		return grid.get(position).getDirt();
 	}
 
 	public Position getAgentPosition(VacuumWorldAgentAppearance appearance) {
@@ -54,6 +79,35 @@ public class Grid {
 
 	public Position getDirtPosition(DirtAppearance dirt) {
 		return dirt.getPosition();
+	}
+
+	public boolean outOfBounds(Position position) {
+		return position.getX() < 0 || position.getY() < 0
+				|| position.getX() >= dimension || position.getY() >= dimension;
+	}
+
+	/**
+	 * Checks if there is an {@link Agent} at the given {@link Position}.
+	 * 
+	 * @param position
+	 *            to check
+	 * @return true if there is {@link Agent} at the {@link Position}, false
+	 *         otherwise
+	 */
+	public boolean containsAgent(Position position) {
+		return grid.get(position).containsAgent();
+	}
+
+	/**
+	 * Checks if there is {@link Dirt} at the given {@link Position}.
+	 * 
+	 * @param position
+	 *            to check
+	 * @return true if there is {@link Dirt} at the {@link Position}, false
+	 *         otherwise
+	 */
+	public boolean containsDirt(Position position) {
+		return grid.get(position).containsDirt();
 	}
 
 	/**
@@ -71,6 +125,20 @@ public class Grid {
 	}
 
 	/**
+	 * Checks if the given {@link Dirt} is at the given {@link Position}.
+	 * 
+	 * @param dirt
+	 *            to check
+	 * @param position
+	 *            to check
+	 * @return true if the {@link Dirt} is at the {@link Position}, false
+	 *         otherwise
+	 */
+	public boolean containsDirt(DirtAppearance dirt, Position position) {
+		return dirt.getPosition().equals(position);
+	}
+
+	/**
 	 * Checks if the given {@link Agent} is at the given {@link Position}.
 	 * 
 	 * @param agent
@@ -80,8 +148,9 @@ public class Grid {
 	 * @return true if the {@link Agent} is at the {@link Position}, false
 	 *         otherwise
 	 */
-	public boolean containsAgent(VacuumWorldAgent agent, Position position) {
-		return agent.getAppearance().getPosition().equals(position);
+	public boolean containsAgent(VacuumWorldAgentAppearance agent,
+			Position position) {
+		return agent.getPosition().equals(position);
 	}
 
 	/**
@@ -95,19 +164,13 @@ public class Grid {
 	 * @return true if the {@link Dirt} was successfully placed, false otherwise
 	 */
 	public boolean placeDirt(Dirt dirt, Position position) {
-		EntityContainer container = grid.get(position);
-		if (container != null) {
-			if (!container.containsDirt()) {
-				dirt.getAppearance().setPosition(position);
-				container.setDirt(dirt.getAppearance());
-				return true;
-			}
-			return false;
-		} else {
+		VacuumWorldTile container = grid.get(position);
+		if (!container.containsDirt()) {
 			dirt.getAppearance().setPosition(position);
-			grid.put(position, new EntityContainer(dirt.getAppearance()));
+			container.setDirt(dirt.getAppearance());
 			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -125,21 +188,14 @@ public class Grid {
 	 */
 	public boolean placeAgent(VacuumWorldAgent agent, Position position,
 			Orientation orientation) {
-		EntityContainer container = grid.get(position);
-		if (container != null) {
-			if (!container.containsAgent()) {
-				agent.getAppearance().setPosition(position);
-				agent.getAppearance().setOrientation(orientation);
-				container.setAgent(agent.getAppearance());
-				return true;
-			}
-			return false;
-		} else {
+		VacuumWorldTile container = grid.get(position);
+		if (!container.containsAgent()) {
 			agent.getAppearance().setPosition(position);
 			agent.getAppearance().setOrientation(orientation);
-			grid.put(position, new EntityContainer(agent.getAppearance()));
+			container.setAgent(agent.getAppearance());
 			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -152,7 +208,7 @@ public class Grid {
 	 *            to place
 	 */
 	public void fillRandom(Collection<AbstractAgent> agents,
-			Collection<Dirt> dirts) {
+			Collection<PassiveBody> dirts) {
 		Random random = new Random();
 		agents.forEach((a) -> {
 			placeAgent(
@@ -160,43 +216,38 @@ public class Grid {
 					new Position(random.nextInt(dimension), random
 							.nextInt(dimension)), RandomEnum
 							.getRandom(Orientation.class));
+			((VacuumWorldAgent) a).getAppearance().setColor(
+					RandomEnum.getRandom(BodyColor.class));
 		});
 		dirts.forEach((d) -> {
 			placeDirt(
-					d,
+					(Dirt) d,
 					new Position(random.nextInt(dimension), random
 							.nextInt(dimension)));
 		});
-
 	}
 
 	/**
-	 * Fills this {@link Grid} with the given {@link Agent}s and {@link Dirt}s
-	 * with their mapped {@link Position}s.
+	 * Fills this {@link Grid} with the given {@link Agent}s and {@link Dirt}s.
+	 * The {@link Position}, {@link Orientation} and {@link Color} should have
+	 * be defined in their {@link VacuumWorldAgentAppearance}.
 	 * 
 	 * @param agents
 	 *            to place
 	 * @param dirts
 	 *            to place
 	 */
-	public void fillGrid(
-			Map<VacuumWorldAgent, Pair<Position, Orientation>> agents,
-			Map<Dirt, Position> dirts) {
-		agents.forEach((a, p) -> {
-			placeAgent(a, p.getFirst(), p.getSecond());
+	public void fillGrid(Collection<AbstractAgent> agents,
+			Collection<PassiveBody> dirts) {
+		agents.forEach((a) -> {
+			VacuumWorldAgentAppearance ap = (VacuumWorldAgentAppearance) a
+					.getAppearance();
+			grid.get(ap.getPosition()).setAgent(ap);
 		});
-		dirts.forEach((d, p) -> {
-			placeDirt(d, p);
+		dirts.forEach((d) -> {
+			DirtAppearance ap = (DirtAppearance) d.getAppearance();
+			grid.get(ap.getPosition()).setDirt(ap);
 		});
-	}
-
-	public Collection<Dirt> randomDirts(int dimension) {
-		int numdirts = (int) (dimension / 5);
-		Collection<Dirt> dirts = new HashSet<>();
-		for (int i = 0; i < numdirts; i++) {
-			dirts.add(new Dirt(RandomEnum.getRandom(DirtColor.class)));
-		}
-		return dirts;
 	}
 
 	public Integer getDimension() {
@@ -221,7 +272,8 @@ public class Grid {
 							int start = ((pos.getY() * this.dimension + pos
 									.getX()) * 3) + pos.getY() * 2;
 							int end = start + 3;
-							builder.replace(start, end, "[" + grid.get(pos)
+							builder.replace(start, end, "["
+									+ grid.get(pos).toString().substring(0, 1)
 									+ "]");
 						});
 		System.out.println(builder.toString());

@@ -1,13 +1,13 @@
 package uk.ac.rhul.cs.dice.vacuumworld.bodies;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 
 public class Dirt extends PassiveBody {
 
-	public Dirt(DirtColor color) {
-		super(new DirtAppearance(IDFactory.getInstance().getNewID(), color));
+	public Dirt(BodyColor color) {
+		super(new DirtAppearance(color));
 	}
 
 	public void getColor() {
@@ -17,14 +17,5 @@ public class Dirt extends PassiveBody {
 	@Override
 	public DirtAppearance getAppearance() {
 		return (DirtAppearance) super.getAppearance();
-	}
-
-	public enum DirtColor {
-		WHITE, GREEN, ORANGE;
-
-		@Override
-		public String toString() {
-			return super.toString().substring(0, 1);
-		}
 	}
 }

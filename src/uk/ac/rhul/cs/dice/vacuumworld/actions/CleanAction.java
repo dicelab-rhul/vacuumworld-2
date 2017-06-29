@@ -5,15 +5,14 @@ import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.S
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
 
-
-public class MoveAction extends PhysicalAction implements VacuumWorldAction {
+public class CleanAction extends PhysicalAction implements VacuumWorldAction {
 	@SensiblePerception
 	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldPerception.class;
 
-	private static final long serialVersionUID = -541182028589848248L;
+	private static final long serialVersionUID = 2069946942493951106L;
+
 	@Override
 	public VacuumWorldAgentAppearance getActor() {
 		return (VacuumWorldAgentAppearance) super.getActor();
 	}
-
 }

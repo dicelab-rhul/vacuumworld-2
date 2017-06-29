@@ -8,7 +8,7 @@
 },
 
 @environments : {
-	universe : uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldEnvironment,
+	universe : uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse,
 },
 
 @appearances : {
@@ -16,7 +16,7 @@
 },
 
 @physics : {
-	physics :uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldPhysics,
+	physics : uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldPhysics,
 },
 
 @states : {
@@ -28,11 +28,11 @@
 },
 
 @agentbodies : {
-	agent :  uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent,
+	agent : uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent,
 },
 
 @agentsensors : {
-	seeingsensor : uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldSeeingSensor,
+	seeingsensor : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor,
 	listeningsensor : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor,
 },
 
@@ -65,3 +65,6 @@
 	},
 ]
 }
+}
+
+

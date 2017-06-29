@@ -1,48 +1,62 @@
-package uk.ac.rhul.cs.dice.vacuumworld.misc;
+package uk.ac.rhul.cs.dice.vacuumworld.grid.tiles;
 
-import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 
-public class EntityContainer {
+public class VacuumWorldTile implements Tile {
 
 	private VacuumWorldAgentAppearance agent;
 	private DirtAppearance dirt;
 
-	public EntityContainer(VacuumWorldAgentAppearance agent, DirtAppearance dirt) {
+	public VacuumWorldTile() {
+	}
+
+	public VacuumWorldTile(VacuumWorldAgentAppearance agent, DirtAppearance dirt) {
 		this.setAgent(agent);
 		this.setDirt(dirt);
 	}
 
-	public EntityContainer(VacuumWorldAgentAppearance agent) {
+	public VacuumWorldTile(VacuumWorldAgentAppearance agent) {
 		this.setAgent(agent);
 	}
 
-	public EntityContainer(DirtAppearance dirt) {
+	public VacuumWorldTile(DirtAppearance dirt) {
 		this.setDirt(dirt);
 	}
 
+	@Override
 	public boolean containsAgent() {
 		return agent != null;
 	}
 
+	@Override
 	public boolean containsDirt() {
 		return dirt != null;
 	}
 
+	@Override
 	public VacuumWorldAgentAppearance getAgent() {
 		return agent;
 	}
 
+	@Override
 	public void setAgent(VacuumWorldAgentAppearance agent) {
 		this.agent = agent;
 	}
 
+	@Override
 	public DirtAppearance getDirt() {
 		return dirt;
 	}
 
+	@Override
 	public void setDirt(DirtAppearance dirt) {
 		this.dirt = dirt;
+	}
+
+	@Override
+	public boolean isWall() {
+		return false;
 	}
 
 	@Override
@@ -62,7 +76,7 @@ public class EntityContainer {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EntityContainer other = (EntityContainer) obj;
+		VacuumWorldTile other = (VacuumWorldTile) obj;
 		if (agent == null) {
 			if (other.agent != null)
 				return false;
@@ -78,7 +92,8 @@ public class EntityContainer {
 
 	@Override
 	public String toString() {
-		return (dirt == null) ? agent.getId() : (agent == null) ? dirt
-				.getColor().toString() : "B";
+		return (dirt != null) ? ((agent == null) ? dirt.getColor().toString()
+				: "*") : ((agent != null) ? agent.getId() : " ");
 	}
+
 }
