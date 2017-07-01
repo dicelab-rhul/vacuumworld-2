@@ -3,28 +3,22 @@ package uk.ac.rhul.cs.dice.vacuumworld.actions;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.TurnDirection;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
 
-public class TurnAction extends PhysicalAction implements VacuumWorldAction {
-
+public class PlaceDirtAction extends PhysicalAction implements
+		VacuumWorldAction {
 	@SensiblePerception
 	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldPerception.class;
 
-	private static final long serialVersionUID = 4721670044302093268L;
-	private TurnDirection direction;
+	private static final long serialVersionUID = 2069946942493951106L;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param direction
-	 *            : to turn, a random {@link TurnDirection} will be chosen if
-	 *            null
-	 */
-	public TurnAction(TurnDirection direction) {
-		this.direction = (direction != null) ? direction : RandomUtility
-				.getRandomEnum(TurnDirection.class);
+	private BodyColor dirtColor;
+
+	public PlaceDirtAction(BodyColor dirtColor) {
+		this.dirtColor = (dirtColor != null) ? dirtColor : RandomUtility
+				.getRandom(BodyColor.getDirtColors());
 	}
 
 	@Override
@@ -32,7 +26,7 @@ public class TurnAction extends PhysicalAction implements VacuumWorldAction {
 		return (VacuumWorldAgentAppearance) super.getActor();
 	}
 
-	public TurnDirection getDirection() {
-		return direction;
+	public BodyColor getDirtColor() {
+		return dirtColor;
 	}
 }

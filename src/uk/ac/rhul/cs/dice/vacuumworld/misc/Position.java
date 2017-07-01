@@ -1,11 +1,13 @@
 package uk.ac.rhul.cs.dice.vacuumworld.misc;
 
-public class Position {
+import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyInterface;
+
+public class Position implements ReadOnlyInterface<PositionReadOnly> {
 	private Integer x, y;
 
 	public Position(Integer x, Integer y) {
-		this.setX(x);
-		this.setY(y);
+		this.x = x;
+		this.y = y;
 	}
 
 	public Integer getX() {
@@ -58,5 +60,10 @@ public class Position {
 	@Override
 	public String toString() {
 		return "(" + x + "," + y + ")";
+	}
+
+	@Override
+	public Class<PositionReadOnly> getReadOnlyClass() {
+		return PositionReadOnly.class;
 	}
 }

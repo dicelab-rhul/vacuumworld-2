@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.MVC;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
@@ -24,30 +25,37 @@ public class VacuumWorldController extends AbstractViewController {
 			VacuumWorldUniverse universe) {
 		super(universe);
 		this.view = view;
-		this.view.setOnStart(new OnStart());
+		this.view.setOnStart(new UniverseOnStart());
 		universe.addObserver(view);
 	}
 
 	public void start(Integer dimension,
-			Map<Position, Pair<BodyColor, Orientation>> entitymap) {
+			Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
 		Collection<VacuumWorldAgent> agents = new ArrayList<>();
 		Collection<Dirt> dirts = new ArrayList<>();
-		entitymap.forEach((position, pair) -> {
+		entitymap.forEach((position, list) -> list.forEach((pair) -> {
 			if (pair.getSecond() == null) {
 				// do dirt
 				Dirt d = new Dirt(pair.getFirst());
 				d.getAppearance().setPosition(position);
 				dirts.add(d);
-			} else if (pair.getFirst() == null) {
+			} else if (pair.getFirst() == BodyColor.USER) {
 				// do user
+				VacuumWorldAgent a = VacuumWorld
+						.createVacuumWorldAgent(VacuumWorld.USERMIND);
+				a.getAppearance().setColor(pair.getFirst());
+				a.getAppearance().setOrientation(pair.getSecond());
+				a.getAppearance().setPosition(position);
+				agents.add(a);
 			} else {
-				VacuumWorldAgent a = VacuumWorld.createVacuumWorldAgent();
+				VacuumWorldAgent a = VacuumWorld
+						.createVacuumWorldAgent(VacuumWorld.DEFAULTMIND);
 				a.getAppearance().setColor(pair.getFirst());
 				a.getAppearance().setOrientation(pair.getSecond());
 				a.getAppearance().setPosition(position);
 				agents.add(a);
 			}
-		});
+		}));
 		this.getUniverse().initialiseGrid(dimension, agents, dirts);
 		view.doContent(this.getUniverse());
 		Thread t = new Thread(this.getUniverse());
@@ -59,9 +67,9 @@ public class VacuumWorldController extends AbstractViewController {
 		System.out.println("update");
 	}
 
-	public class OnStart {
+	public class UniverseOnStart {
 		public void start(Integer dimension,
-				Map<Position, Pair<BodyColor, Orientation>> entitymap) {
+				Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
 			VacuumWorldController.this.start(dimension, entitymap);
 		}
 	}

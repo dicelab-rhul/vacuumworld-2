@@ -20,7 +20,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.WallTile;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomEnum;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
+import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
 public class Grid {
 
@@ -59,6 +60,20 @@ public class Grid {
 	public Tile getTile(Position position) {
 		Tile t = this.grid.get(position);
 		return (t != null) ? t : new WallTile();
+	}
+
+	public Tile getReadOnlyTile(Position position) {
+		Tile t = this.grid.get(position);
+		if (t != null) {
+			try {
+				return ReadOnlyWrap.readOnlyCopy((VacuumWorldTile) t);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			return new WallTile();
+		}
 	}
 
 	public void cleanDirt(Position position) {
@@ -214,10 +229,10 @@ public class Grid {
 			placeAgent(
 					(VacuumWorldAgent) a,
 					new Position(random.nextInt(dimension), random
-							.nextInt(dimension)), RandomEnum
-							.getRandom(Orientation.class));
+							.nextInt(dimension)), RandomUtility
+							.getRandomEnum(Orientation.class));
 			((VacuumWorldAgent) a).getAppearance().setColor(
-					RandomEnum.getRandom(BodyColor.class));
+					RandomUtility.getRandomEnum(BodyColor.class));
 		});
 		dirts.forEach((d) -> {
 			placeDirt(

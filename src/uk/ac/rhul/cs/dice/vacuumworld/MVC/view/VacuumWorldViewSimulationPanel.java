@@ -14,12 +14,12 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 
-public class VacuumWorldViewContent extends GridPanel {
+public class VacuumWorldViewSimulationPanel extends GridPanel {
 
 	private static final long serialVersionUID = -5008822076025428472L;
 	private VacuumWorldAmbient model;
 
-	public VacuumWorldViewContent(VacuumWorldUniverse model) {
+	public VacuumWorldViewSimulationPanel(VacuumWorldUniverse model) {
 		super(model.getState().getDimension());
 		this.model = model.getState();
 		this.setBackground(Color.WHITE);

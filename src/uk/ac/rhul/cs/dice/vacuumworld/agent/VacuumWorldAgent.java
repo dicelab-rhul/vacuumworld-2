@@ -14,7 +14,6 @@ public class VacuumWorldAgent extends AbstractAgent {
 			AbstractAgentMind mind) {
 		super(null, sensors, actuators, mind);
 		this.setAppearance(new VacuumWorldAgentAppearance(this));
-		System.out.println(this.getDefaultSensor());
 	}
 
 	@Override

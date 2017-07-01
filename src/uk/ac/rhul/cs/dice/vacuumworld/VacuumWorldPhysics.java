@@ -9,9 +9,12 @@ import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.CleanAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.PlaceDirtAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldSeeingSensor;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
@@ -20,8 +23,8 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 
 	public VacuumWorldPhysics() {
 		super();
+		this.setFramelength(50);
 	}
-
 	@Override
 	protected void cycle() {
 		System.out.println("******* CYCLE *******");
@@ -40,6 +43,40 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 		percepts.add(new VacuumWorldPerception(ambient
 				.getAgentPerception(action)));
 		return percepts;
+	}
+
+	// *************************************************************** //
+	// ********************* PLACE ACTION METHODS ********************* //
+	// *************************************************************** //
+
+	public Collection<AbstractPerception<?>> getAgentPerceptions(
+			PlaceDirtAction action, Ambient context) {
+		return getPerceptions(action, (VacuumWorldAmbient) context);
+	}
+
+	public Collection<AbstractPerception<?>> getOtherPerceptions(
+			PlaceDirtAction action, Ambient context) {
+		return null;
+	}
+
+	public boolean isPossible(PlaceDirtAction action, Ambient context) {
+		if (action.getActor().getColor() == BodyColor.getUserColor()) {
+			VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
+			return !ambient.containsDirt(action.getActor().getPosition());
+		}
+		return false;
+	}
+
+	public boolean perform(PlaceDirtAction action, Ambient context)
+			throws Exception {
+		VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
+		ambient.placeDirt(action.getActor().getPosition(),
+				new Dirt(action.getDirtColor()));
+		return true;
+	}
+
+	public boolean verify(PlaceDirtAction action, Ambient context) {
+		return true;
 	}
 
 	// *************************************************************** //

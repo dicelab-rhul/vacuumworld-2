@@ -2,8 +2,10 @@ package uk.ac.rhul.cs.dice.vacuumworld.grid.tiles;
 
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyInterface;
 
-public class VacuumWorldTile implements Tile {
+public class VacuumWorldTile implements Tile,
+		ReadOnlyInterface<VacuumWorldTileReadOnly> {
 
 	private VacuumWorldAgentAppearance agent;
 	private DirtAppearance dirt;
@@ -12,16 +14,16 @@ public class VacuumWorldTile implements Tile {
 	}
 
 	public VacuumWorldTile(VacuumWorldAgentAppearance agent, DirtAppearance dirt) {
-		this.setAgent(agent);
-		this.setDirt(dirt);
+		this.dirt = dirt;
+		this.agent = agent;
 	}
 
 	public VacuumWorldTile(VacuumWorldAgentAppearance agent) {
-		this.setAgent(agent);
+		this.agent = agent;
 	}
 
 	public VacuumWorldTile(DirtAppearance dirt) {
-		this.setDirt(dirt);
+		this.dirt = dirt;
 	}
 
 	@Override
@@ -92,8 +94,12 @@ public class VacuumWorldTile implements Tile {
 
 	@Override
 	public String toString() {
-		return (dirt != null) ? ((agent == null) ? dirt.getColor().toString()
-				: "*") : ((agent != null) ? agent.getId() : " ");
+		return (dirt != null) ? ((agent == null) ? dirt.toString() : "*")
+				: ((agent != null) ? agent.toString() : " ");
 	}
 
+	@Override
+	public Class<VacuumWorldTileReadOnly> getReadOnlyClass() {
+		return VacuumWorldTileReadOnly.class;
+	}
 }

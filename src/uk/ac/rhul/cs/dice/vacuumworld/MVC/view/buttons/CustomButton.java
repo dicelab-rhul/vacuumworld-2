@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -11,10 +11,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
-public abstract class CustomButton extends JComponent implements MouseListener {
+public abstract class CustomButton extends JComponent implements MouseListener,
+		Clickable {
 
 	private static final long serialVersionUID = -4788283083451918681L;
 
+	protected OnClick onclick;
 	protected BufferedImage image;
 	protected BufferedImage hover;
 	protected BufferedImage pressed;
@@ -22,8 +24,9 @@ public abstract class CustomButton extends JComponent implements MouseListener {
 	protected Boolean isHovering = false;
 	protected Boolean isPressed = false;
 
-	public CustomButton(BufferedImage image) {
+	public CustomButton(BufferedImage image, OnClick onclick) {
 		super();
+		this.onclick = onclick;
 		this.image = image;
 		this.hover = image;
 		this.pressed = image;
@@ -32,8 +35,9 @@ public abstract class CustomButton extends JComponent implements MouseListener {
 	}
 
 	public CustomButton(BufferedImage image, BufferedImage hover,
-			BufferedImage pressed) {
+			BufferedImage pressed, OnClick onclick) {
 		super();
+		this.onclick = onclick;
 		this.image = image;
 		this.hover = hover;
 		this.pressed = pressed;
@@ -51,22 +55,26 @@ public abstract class CustomButton extends JComponent implements MouseListener {
 				: hover) : image);
 	}
 
-	private void drawImage(Graphics2D g2, BufferedImage image) {
-		g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), 0, 0,
-				image.getWidth(), image.getHeight(), null);
+	protected void drawImage(Graphics2D g2, BufferedImage image) {
+		g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		this.onclick.onClick(this, e);
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		this.isHovering = true;
-		this.repaint();
+		repaint();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		this.isHovering = false;
 		this.isPressed = false;
-		this.repaint();
+		repaint();
 	}
 
 	private boolean pressOnce = true;

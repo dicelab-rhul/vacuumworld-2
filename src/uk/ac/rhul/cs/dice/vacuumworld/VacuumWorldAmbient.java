@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.vacuumworld;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +14,6 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
@@ -114,6 +112,11 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 		this.grid.cleanDirt(position);
 	}
 
+	public void placeDirt(Position position, Dirt dirt) {
+		this.addPassiveBody(dirt);
+		this.grid.placeDirt(dirt, position);
+	}
+
 	public Position moveAgent(VacuumWorldAgentAppearance agent,
 			Position position) {
 		return grid.moveAgent(agent, position);
@@ -148,7 +151,6 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 		public Set<Appearance> get(AbstractEnvironmentalAction action,
 				Object... args) {
 			Set<Appearance> result = new HashSet<>();
-			System.out.println(Arrays.toString(args));
 			result.remove(null);
 			return result;
 		}
@@ -159,8 +161,6 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 		@Override
 		public VacuumWorldPerceptionContent get(
 				AbstractEnvironmentalAction action, Object... args) {
-
-			// Map<ActiveBody, Pair<Integer, Integer>>
 			Grid grid = (Grid) args[0];
 			Position position = ((VacuumWorldAgentAppearance) action.getActor())
 					.getPosition();
@@ -181,10 +181,10 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 			for (int i : ii) {
 				for (int j : jj) {
 					Position p = new Position(x + i, y + j);
-					result.put(p, grid.getTile(p));
+					result.put(p, grid.getReadOnlyTile(p));
 				}
 			}
-			return new VacuumWorldPerceptionContent(result);
+			return new VacuumWorldPerceptionContent(result, position);
 		}
 	}
 

@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -18,7 +19,7 @@ import javax.swing.JPanel;
 
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.OnStart;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseOnStart;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
@@ -27,44 +28,52 @@ public class VacuumWorldView extends JFrame implements Observer {
 
 	static Map<BodyColor, Map<Orientation, BufferedImage>> AGENTIMAGES;
 	static Map<BodyColor, BufferedImage> DIRTIMAGES;
-	static String extension = ".png";
-	static String path = "res/imgs/";
+	public final static String EXTENSION = ".png";
+	public final static String PATH = "res/imgs/";
+	public final static String CONTROLPATH = "res/imgs/control/";
 
 	static {
 		AGENTIMAGES = new HashMap<>();
 		for (BodyColor c : BodyColor.values()) {
-			String color = path + c.toString().toLowerCase() + "_";
+			String color = PATH + c.toString().toLowerCase() + "_";
 			Map<Orientation, BufferedImage> map = new HashMap<>();
 			AGENTIMAGES.put(c, map);
 			for (Orientation o : Orientation.values()) {
 				map.put(o, loadImage(color + o.toString().toLowerCase()
-						+ extension));
+						+ EXTENSION));
 			}
 		}
 		DIRTIMAGES = new HashMap<>();
-		DIRTIMAGES.put(BodyColor.GREEN, loadImage(path
+		DIRTIMAGES.put(BodyColor.GREEN, loadImage(PATH
 				+ BodyColor.GREEN.toString().toLowerCase() + "_dirt"
-				+ extension));
-		DIRTIMAGES.put(BodyColor.ORANGE, loadImage(path
+				+ EXTENSION));
+		DIRTIMAGES.put(BodyColor.ORANGE, loadImage(PATH
 				+ BodyColor.ORANGE.toString().toLowerCase() + "_dirt"
-				+ extension));
+				+ EXTENSION));
 	}
 
+	static final int DEFAULTGRIDDIMENSION = 8;
+
 	static final int DEFAULTWIDTH = 500, DEFAULTHEIGHT = 500;
+	static final int SIDEPANELWIDTH = 250;
+	static final int MAINWIDTH = DEFAULTWIDTH + SIDEPANELWIDTH;
+
 	static final Dimension DEFAULTDIMENSION = new Dimension(DEFAULTWIDTH,
 			DEFAULTHEIGHT);
-	static final int SELECTORHEIGHT = 150;
-	static final Dimension SELECTORDIMENSION = new Dimension(DEFAULTWIDTH,
-			DEFAULTHEIGHT + SELECTORHEIGHT);
+	static final Dimension MAINDIMENSION = new Dimension(MAINWIDTH,
+			DEFAULTHEIGHT);
+	static final Dimension SIDEPANELDIMENSION = new Dimension(SIDEPANELWIDTH,
+			DEFAULTHEIGHT);
+
 	static final Color DEFAULTCOLOUR = Color.WHITE;
 	static final long serialVersionUID = 1L;
 
 	protected JPanel contentpanel;
-	protected VacuumWorldContentSelection contentselector;
-	protected VacuumWorldViewContent content;
+	protected VacuumWorldMainPanel mainpanel;
+	protected VacuumWorldViewSimulationPanel content;
 	protected VacuumWorldViewStartMenu startmenu;
 	protected Integer griddimension;
-	protected OnStart start;
+	protected UniverseOnStart start;
 
 	public VacuumWorldView() {
 		init(null, DEFAULTWIDTH, DEFAULTHEIGHT, DEFAULTCOLOUR);
@@ -85,28 +94,22 @@ public class VacuumWorldView extends JFrame implements Observer {
 		this.pack();
 	}
 
-	public void start(int griddim) {
-		this.getContentPane().remove(startmenu);
-		this.repaint();
-		this.griddimension = griddim;
-		doAgentSelection();
-	}
-
 	private void doStartMenu() {
-		startmenu = new VacuumWorldViewStartMenu(loadImage(path + "start_menu"
-				+ extension), new OnStartGridSize());
+		startmenu = new VacuumWorldViewStartMenu(loadImage(PATH + "start_menu"
+				+ EXTENSION), new VacuumWorldStartMenuStart());
 		startmenu.setPreferredSize(DEFAULTDIMENSION);
 		this.getContentPane().add(startmenu);
 	}
 
-	public void start(Map<Position, Pair<BodyColor, Orientation>> entitymap) {
-		this.getContentPane().remove(contentselector);
+	public void start(
+			Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
+		this.getContentPane().remove(mainpanel);
 		this.repaint();
 		start.start(griddimension, entitymap);
 	}
 
 	public void doContent(VacuumWorldUniverse model) {
-		content = new VacuumWorldViewContent(model);
+		content = new VacuumWorldViewSimulationPanel(model);
 		content.setOpaque(false);
 		this.getContentPane().setPreferredSize(DEFAULTDIMENSION);
 		this.getContentPane().add(content, BorderLayout.CENTER);
@@ -114,12 +117,12 @@ public class VacuumWorldView extends JFrame implements Observer {
 	}
 
 	private void doAgentSelection() {
-		contentselector = new VacuumWorldContentSelection(griddimension,
-				new OnStartSelection());
-		contentselector.setOpaque(true);
-		contentselector.initialise();
-		this.getContentPane().setPreferredSize(SELECTORDIMENSION);
-		this.getContentPane().add(contentselector, BorderLayout.CENTER);
+		mainpanel = new VacuumWorldMainPanel(new OnStartSelection());
+		mainpanel.setOpaque(true);
+		mainpanel.initialise();
+		this.addKeyListener(mainpanel);
+		this.getContentPane().setPreferredSize(MAINDIMENSION);
+		this.getContentPane().add(mainpanel, BorderLayout.CENTER);
 		this.pack();
 	}
 
@@ -129,15 +132,23 @@ public class VacuumWorldView extends JFrame implements Observer {
 	}
 
 	public class OnStartSelection {
-		public void start(Map<Position, Pair<BodyColor, Orientation>> entitymap) {
+		public void start(
+				Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
 			VacuumWorldView.this.start(entitymap);
 		}
 	}
 
-	public class OnStartGridSize {
-		public void start(int gridsize) {
-			VacuumWorldView.this.start(gridsize);
+	public class VacuumWorldStartMenuStart implements OnStart<Object> {
+		@Override
+		public void start(Object... args) {
+			VacuumWorldView.this.start();
 		}
+	}
+
+	private void start() {
+		this.getContentPane().remove(startmenu);
+		this.repaint();
+		doAgentSelection();
 	}
 
 	public static BufferedImage loadImage(String file) {
@@ -155,7 +166,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 		return null;
 	}
 
-	public void setOnStart(OnStart start) {
+	public void setOnStart(UniverseOnStart start) {
 		this.start = start;
 	}
 }
