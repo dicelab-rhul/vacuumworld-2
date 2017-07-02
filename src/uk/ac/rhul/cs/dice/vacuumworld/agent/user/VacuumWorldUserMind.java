@@ -8,12 +8,13 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.PlaceDirtAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
-import uk.ac.rhul.cs.dice.vacuumworld.agent.AbstractVacuumWorldAgentMind;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgentMind;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.TurnDirection;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerceptionContent;
 
-public class VacuumWorldUserMind extends AbstractVacuumWorldAgentMind {
+@UserMind
+public class VacuumWorldUserMind extends VacuumWorldAgentMind {
 
 	private static int MESSINESS = 4;
 	private static double MOBILITY = 0.8;

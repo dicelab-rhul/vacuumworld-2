@@ -24,7 +24,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerceptionContent;
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
-public abstract class AbstractVacuumWorldAgentMind extends AbstractAgentMind {
+public abstract class VacuumWorldAgentMind extends AbstractAgentMind {
 
 	@Override
 	public final Perception<?> perceive(Object... parameters) {
@@ -245,16 +245,16 @@ public abstract class AbstractVacuumWorldAgentMind extends AbstractAgentMind {
 
 	/**
 	 * The execute method. This method receives the {@link Action} that was
-	 * decided upon in the {@link AbstractVacuumWorldAgentMind#decide()
+	 * decided upon in the {@link VacuumWorldAgentMind#decide()
 	 * decide()} method. The execute method may be used to record which
 	 * {@link Action}s have been attempted. To execute the {@link Action} in the
 	 * next cycle, return the {@link Action}. A successfully executed
 	 * {@link Action} will give a {@link Perception} which will be received by
-	 * the {@link AbstractVacuumWorldAgentMind#perceive(Collection)
+	 * the {@link VacuumWorldAgentMind#perceive(Collection)
 	 * perceive(Collection)} method in the next cycle.
 	 * 
 	 * @param action
-	 *            : from {@link AbstractVacuumWorldAgentMind#decide() decide()}
+	 *            : from {@link VacuumWorldAgentMind#decide() decide()}
 	 * @return the {@link Action} to be executed in the next cycle.
 	 */
 	public abstract VacuumWorldAction execute(VacuumWorldAction action);

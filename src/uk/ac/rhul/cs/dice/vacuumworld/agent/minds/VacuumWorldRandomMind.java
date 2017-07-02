@@ -8,12 +8,12 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
-import uk.ac.rhul.cs.dice.vacuumworld.agent.AbstractVacuumWorldAgentMind;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgentMind;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerceptionContent;
 
-public class VacuumWorldRandomMind extends AbstractVacuumWorldAgentMind {
+public class VacuumWorldRandomMind extends VacuumWorldAgentMind {
 
 	private VacuumWorldPerceptionContent percept;
 	private Random random = new Random();

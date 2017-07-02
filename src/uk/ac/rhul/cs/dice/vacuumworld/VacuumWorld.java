@@ -27,6 +27,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.VacuumWorldUserMind;
 
 public class VacuumWorld {
 
+	public final static Double VERSION = 1.5;
+
 	private final static Collection<Class<? extends AbstractEnvironmentalAction>> POSSIBLEACTIONS = new ArrayList<>();
 	private final static Collection<Class<?>> SENSORS = new ArrayList<>();
 	private final static Collection<Class<?>> ACTUATORS = new ArrayList<>();

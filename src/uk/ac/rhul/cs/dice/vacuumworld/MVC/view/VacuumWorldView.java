@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
+import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseOnStart;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
@@ -87,6 +88,8 @@ public class VacuumWorldView extends JFrame implements Observer {
 		if (contentPane != null) {
 			this.setContentPane(contentPane);
 		}
+		this.setTitle(VacuumWorld.class.getSimpleName() + " V"
+				+ VacuumWorld.VERSION);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setPreferredSize(new Dimension(width, height));
 		this.getContentPane().setBackground(background);

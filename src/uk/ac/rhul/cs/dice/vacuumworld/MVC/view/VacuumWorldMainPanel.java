@@ -45,6 +45,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	protected OnStartSelection start;
 	protected JPanel content;
 	protected RotateButton rotate;
+	protected VacuumWorldViewSettingsPanel settings;
 	protected DragPanel drag;
 	protected GridPanel grid;
 	protected SidePanel side;
@@ -126,9 +127,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		for (int i = 0; i < 13; i++) {
 			addFilledPanel(sbp);
 		}
-
 		side.add(sbp, BorderLayout.CENTER);
-
 		content.add(side, BorderLayout.EAST);
 		content.add(grid, BorderLayout.CENTER);
 		this.add(content, JLayeredPane.DEFAULT_LAYER);
@@ -138,6 +137,9 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		// drag content
 		drag = new DragPanel();
 		this.add(drag, JLayeredPane.DRAG_LAYER);
+		// settings panel
+		settings = new VacuumWorldViewSettingsPanel();
+		this.add(settings, JLayeredPane.POPUP_LAYER);
 	}
 
 	private void addFilledPanel(JPanel panel) {
@@ -263,6 +265,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
 			System.out.println("SETTINGS");
+			int gw = VacuumWorldMainPanel.this.getWidth() / 20;
+			settings.setBounds(gw, gw, VacuumWorldMainPanel.this.getWidth()
+					- (gw * 2), VacuumWorldMainPanel.this.getHeight()
+					- (gw * 2));
+			settings.setOpaque(true);
+			VacuumWorldMainPanel.this.repaint();
 		}
 	}
 
@@ -361,6 +369,9 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			settings.setBounds(0, 0, 0, 0);
+		}
 		if (e.getKeyCode() == KeyEvent.VK_LEFT
 				|| e.getKeyCode() == KeyEvent.VK_A) {
 			rotate.rotateLeft();
