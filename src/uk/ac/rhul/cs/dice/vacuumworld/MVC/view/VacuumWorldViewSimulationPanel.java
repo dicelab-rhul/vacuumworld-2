@@ -25,7 +25,7 @@ public class VacuumWorldViewSimulationPanel extends GridPanel {
 	}
 
 	public void start() {
-		gridDimension = model.getDimension();
+		this.setGridDimension(model.getDimension());
 	}
 
 	@Override

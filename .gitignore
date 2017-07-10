@@ -5,3 +5,4 @@ bin/**
 .directory
 *.jar
 *.class
+*.psd

@@ -7,7 +7,6 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractSelfishAvatarMind;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.SelfFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultSimpleUniverse;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
@@ -18,6 +17,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 
 	private volatile boolean paused = false;
+	private volatile boolean stop = false;
 
 	public VacuumWorldUniverse(
 			VacuumWorldAmbient ambient,
@@ -42,6 +42,11 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 	public void initialiseGrid(int dimension, int simulationrate,
 			Collection<VacuumWorldAgent> agents, Collection<Dirt> dirts,
 			Collection<VacuumWorldAvatar> avatars) {
+		if (this.getAmbient().getGrid() != null) {
+			System.out.println("clearing");
+			this.getAmbient().clear();
+			this.getSubscriber().clearSensorSubscriptions();
+		}
 		agents.forEach((a) -> this.addAgent(a));
 		dirts.forEach((d) -> this.addPassiveBody(d));
 		avatars.forEach((a) -> this.addAvatar(a));
@@ -58,10 +63,10 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 			this.physics.setFramelength(simulationrate);
 		}
 		this.getAmbient().initialiseGrid(dimension);
-		System.out.println(this.subscriber.getSensors());
-		System.out.println(this.subscriber.getSubscribedSensors());
-		System.out.println(this.subscriber.getActionPerceptions());
-		System.out.println(this.subscriber.getPerceptionSensors());
+		// System.out.println(this.subscriber.getSensors());
+		// System.out.println(this.subscriber.getSubscribedSensors());
+		// System.out.println(this.subscriber.getActionPerceptions());
+		// System.out.println(this.subscriber.getPerceptionSensors());
 	}
 
 	@Override
@@ -72,6 +77,7 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 	@Override
 	public void simulate() {
 		System.out.println("STARTING VACUUM WORLD");
+		this.stop = false;
 		physics.simulate();
 	}
 
@@ -85,5 +91,13 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+
+	public void stop() {
+		this.stop = true;
+	}
+
+	public boolean shouldStop() {
+		return this.stop;
 	}
 }

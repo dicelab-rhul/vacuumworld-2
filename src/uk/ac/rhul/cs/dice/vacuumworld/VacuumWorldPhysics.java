@@ -23,16 +23,18 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 
 	public VacuumWorldPhysics() {
 		super();
-		// this.setFramelength(50);
 	}
 
 	@Override
-	protected void cycle() {
-		while (getEnvironment().isPaused())
-			;
-		System.out.println("******* CYCLE *******");
-		super.cycle();
-		this.getEnvironment().updateView();
+	public void simulate() {
+		while (!getEnvironment().shouldStop()) {
+			while (getEnvironment().isPaused())
+				;
+			System.out.println("******* CYCLE *******");
+			cycle();
+			this.getEnvironment().updateView();
+			sleep();
+		}
 	}
 
 	public boolean perceivable(VacuumWorldSeeingSensor sensor,

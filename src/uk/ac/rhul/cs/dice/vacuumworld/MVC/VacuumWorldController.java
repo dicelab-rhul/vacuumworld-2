@@ -41,6 +41,7 @@ public class VacuumWorldController extends AbstractViewController {
 	}
 	private VacuumWorldView view;
 	private Collection<VacuumWorldAvatarLink> avatarlinks;
+	private Thread universeThread;
 
 	public VacuumWorldController(VacuumWorldView view,
 			VacuumWorldUniverse universe) {
@@ -48,6 +49,7 @@ public class VacuumWorldController extends AbstractViewController {
 		this.view = view;
 		this.view.setUniverseStart(new UniverseStart());
 		this.view.setUniversePause(new UniversePause());
+		this.view.setUniverseRestart(new UniverseRestart());
 		this.view.setModel(universe.getAmbient());
 		this.avatarlinks = new HashSet<>();
 		universe.addObserver(view);
@@ -62,6 +64,16 @@ public class VacuumWorldController extends AbstractViewController {
 	}
 
 	public void start(StartParameters params) {
+		if (universeThread != null) {
+			// wait for the thread to finish
+			try {
+				System.out.println("Waiting for join");
+				universeThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
 		Collection<VacuumWorldAgent> agents = new ArrayList<>();
 		Collection<Dirt> dirts = new ArrayList<>();
 		Collection<VacuumWorldAvatar> avatars = new ArrayList<>();
@@ -81,8 +93,8 @@ public class VacuumWorldController extends AbstractViewController {
 		});
 		this.getUniverse().initialiseGrid(params.dimension,
 				params.simulationRate, agents, dirts, avatars);
-		new Thread(this.getUniverse()).start();
-		// System.out.println(this.view.getFocusOwner());
+		universeThread = new Thread(this.getUniverse());
+		universeThread.start();
 	}
 
 	private VacuumWorldAgent setUpAgent(Class<?> mind, Position p,
@@ -142,6 +154,9 @@ public class VacuumWorldController extends AbstractViewController {
 	}
 
 	public class UniverseRestart {
+		public void restart() {
+			getUniverse().stop();
+		}
 	}
 
 	@Override

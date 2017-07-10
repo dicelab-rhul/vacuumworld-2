@@ -22,6 +22,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldAmbient;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.StartParameters;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniversePause;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseRestart;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseStart;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.Clickable;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
@@ -93,6 +94,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 	protected VacuumWorldViewStartMenu startmenu;
 	protected UniverseStart start;
 	protected UniversePause pause;
+	protected UniverseRestart restart;
 
 	public VacuumWorldView() {
 		init(null, DEFAULTWIDTH, DEFAULTHEIGHT, DEFAULTCOLOUR);
@@ -187,7 +189,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 		this.pause = pause;
 	}
 
-	public void setUniverseRestart() {
-
+	public void setUniverseRestart(UniverseRestart restart) {
+		this.restart = restart;
 	}
 }

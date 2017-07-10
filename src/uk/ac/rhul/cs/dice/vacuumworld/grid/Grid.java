@@ -32,11 +32,15 @@ public class Grid {
 
 	public Grid(Integer dimension) {
 		this.setDimension(dimension);
-		for (int i = 0; i < dimension; i++) {
-			for (int j = 0; j < dimension; j++) {
-				grid.put(new Position(i, j), new VacuumWorldTile());
-			}
-		}
+	}
+
+	public void clear() {
+		grid.clear();
+		dimension = null;
+	}
+
+	public boolean isClear() {
+		return grid.isEmpty();
 	}
 
 	/**
@@ -279,6 +283,11 @@ public class Grid {
 
 	public void setDimension(Integer dimension) {
 		this.dimension = dimension;
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				grid.put(new Position(i, j), new VacuumWorldTile());
+			}
+		}
 	}
 
 	public void printGrid() {

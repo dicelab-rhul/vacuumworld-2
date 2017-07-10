@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.vacuumworld;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,11 +12,9 @@ import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
-import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
-import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatar;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
@@ -86,12 +83,28 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	public void initialiseGrid(int dimension) {
 		if (this.grid == null) {
 			grid = new Grid(dimension);
-			grid.fillGrid(this.agents.values(), this.passiveBodies.values(),
-					this.avatars.values());
 			super.addEnvironmentVariable(GRIDKEY, this.grid);
 		} else {
-			multiInitError();
+			if (grid.isClear()) {
+				System.out.println("INIT GRID: " + dimension);
+				grid.setDimension(dimension);
+				grid.fillGrid(this.agents.values(),
+						this.passiveBodies.values(), this.avatars.values());
+			} else {
+				multiInitError();
+			}
 		}
+	}
+
+	/**
+	 * Clears the {@link Ambient} of everything.
+	 */
+	public void clear() {
+		this.avatars.clear();
+		this.agents.clear();
+		this.activeBodies.clear();
+		this.passiveBodies.clear();
+		this.grid.clear();
 	}
 
 	private void multiInitError() {
@@ -163,8 +176,8 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	public class PerceptionFilter implements Filter {
 
 		@Override
-		public VacuumWorldGridContent get(
-				AbstractEnvironmentalAction action, Object... args) {
+		public VacuumWorldGridContent get(AbstractEnvironmentalAction action,
+				Object... args) {
 			Grid grid = (Grid) args[0];
 			Position position = ((VacuumWorldAgentAppearance) action.getActor())
 					.getPosition();

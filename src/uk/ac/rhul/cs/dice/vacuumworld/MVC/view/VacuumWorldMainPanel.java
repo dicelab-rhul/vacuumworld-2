@@ -62,7 +62,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 	private Map<Position, DirtAppearance> dirts;
 	private Map<Position, VacuumWorldAgentAppearance> agents;
-	private boolean placedAvatar;
 
 	public VacuumWorldMainPanel(VacuumWorldView view) {
 		this.view = view;
@@ -357,7 +356,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	}
 
 	public class RestartOnClick implements OnClick {
-
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
 			agents.clear();
@@ -365,7 +363,22 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 			rotate.clear();
 			rotate.setVisible(false);
 			repaint();
+			if (simulating) {
+				simulating = false;
+				// stop the universe
+				view.restart.restart();
+				// clear the view
+				showSelectionButtons();
+				switchToSelectionPanel();
+			}
 		}
+	}
+
+	private void switchToSelectionPanel() {
+		this.content.remove(simulationgrid);
+		this.content.add(selectiongrid, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
 	}
 
 	private void switchToSimulationPanel() {
@@ -374,6 +387,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		this.content.add(simulationgrid, BorderLayout.CENTER);
 		this.revalidate();
 		this.repaint();
+	}
+
+	private void showSelectionButtons() {
+		agentbuttons.forEach((b) -> b.setVisible(true));
+		userbuttons.forEach((b) -> b.setVisible(true));
+		dirtbuttons.forEach((b) -> b.setVisible(true));
 	}
 
 	public void hideSelectionButtons() {
@@ -387,6 +406,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		public void onClick(Clickable arg, MouseEvent e) {
 			if (!simulating) {
 				simulating = true;
+				System.out.println("SEL: " + selectiongrid.gridDimension);
 				view.start(new StartParameters(selectiongrid.gridDimension,
 						settings.getSimulationRate(), agents, dirts,
 						getMindMap()));
