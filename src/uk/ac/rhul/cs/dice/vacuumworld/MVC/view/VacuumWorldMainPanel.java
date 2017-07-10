@@ -54,12 +54,15 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	protected VacuumWorldViewSettingsPanel settings;
 	protected VacuumWorldSelectionGridPanel selectiongrid;
 	protected VacuumWorldViewSimulationPanel simulationgrid;
+	protected JPanel selectionButtonPanel;
+
 	private List<SelectorButton> agentbuttons;
 	private List<SelectorButton> dirtbuttons;
 	private List<SelectorButton> userbuttons;
 
 	private Map<Position, DirtAppearance> dirts;
 	private Map<Position, VacuumWorldAgentAppearance> agents;
+	private boolean placedAvatar;
 
 	public VacuumWorldMainPanel(VacuumWorldView view) {
 		this.view = view;
@@ -117,26 +120,29 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 								.loadImage(VacuumWorldView.CONTROLPATH
 										+ "settings_button"
 										+ VacuumWorldView.EXTENSION),
-						new SettingsOnClick()));
-		JPanel sbp = new JPanel();
+						new SettingsOnClick(), VacuumWorldView
+								.loadImage(VacuumWorldView.CONTROLPATH
+										+ "off_button"
+										+ VacuumWorldView.EXTENSION),
+						new OffOnClick()));
+		selectionButtonPanel = new JPanel();
 
 		int gs = 4;
-		sbp.setLayout(new GridLayout(0, gs));
-		sbp.setOpaque(false);
+		selectionButtonPanel.setLayout(new GridLayout(0, gs));
+		selectionButtonPanel.setOpaque(false);
 		for (int i = 0; i < gs; i++) {
-			addFilledPanel(sbp);
+			addFilledPanel(selectionButtonPanel);
 		}
-		agentbuttons.forEach((b) -> sbp.add(b));
-		addFilledPanel(sbp);
-		userbuttons.forEach((b) -> sbp.add(b));
-		addFilledPanel(sbp);
-		addFilledPanel(sbp);
-		addFilledPanel(sbp);
-		dirtbuttons.forEach((b) -> sbp.add(b));
+		agentbuttons.forEach((b) -> selectionButtonPanel.add(b));
+		addFilledPanel(selectionButtonPanel);
+		userbuttons.forEach((b) -> selectionButtonPanel.add(b));
+		addFilledPanel(selectionButtonPanel);
+		addFilledPanel(selectionButtonPanel);
+		dirtbuttons.forEach((b) -> selectionButtonPanel.add(b));
 		for (int i = 0; i < 13; i++) {
-			addFilledPanel(sbp);
+			addFilledPanel(selectionButtonPanel);
 		}
-		side.add(sbp, BorderLayout.CENTER);
+		side.add(selectionButtonPanel, BorderLayout.CENTER);
 		content.add(side, BorderLayout.EAST);
 		content.add(selectiongrid, BorderLayout.CENTER);
 		this.add(content, JLayeredPane.DEFAULT_LAYER);
@@ -165,6 +171,14 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		panel.add(p);
 	}
 
+	// provide the avatar button so it may be removed
+	private void removeAvatarButton(SelectorButton button) {
+		selectionButtonPanel.remove(button);
+		JPanel panel = new JPanel();
+		panel.setOpaque(false);
+		selectionButtonPanel.add(panel, 9);
+	}
+
 	public void dragMove(SelectorButton button, MouseEvent e) {
 		drag.updateImage(button.getImage());
 		drag.setLocation(selectiongrid.snapSelectionBox(SwingUtilities
@@ -175,6 +189,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		Position p = selectiongrid.getGridPosition(getGridPoint(e));
 		if (p != null) {
 			if (agentbuttons.contains(button) || userbuttons.contains(button)) {
+				if (VacuumWorldController.SINGLEAVATAR) {
+					if (button.color == BodyColor.AVATAR) {
+						// remove the button
+						removeAvatarButton(button);
+					}
+				}
 				VacuumWorldAgentAppearance app = new VacuumWorldAgentAppearance(
 						null, null, null, null);
 				app.setColor(button.color);
@@ -329,6 +349,13 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		}
 	}
 
+	public class OffOnClick implements OnClick {
+		@Override
+		public void onClick(Clickable arg, MouseEvent e) {
+			System.exit(0);
+		}
+	}
+
 	public class RestartOnClick implements OnClick {
 
 		@Override
@@ -386,7 +413,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	}
 
 	public class PauseOnClick implements OnClick {
-
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
 			if (simulating) {

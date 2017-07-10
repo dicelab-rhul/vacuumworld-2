@@ -414,12 +414,13 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 
 	@Override
 	public final Action execute(Action action) {
-		if (VacuumWorldCommunicationAction.class.isAssignableFrom(action
+		VacuumWorldAction vwa = execute((VacuumWorldAction) action);
+		if (VacuumWorldCommunicationAction.class.isAssignableFrom(vwa
 				.getClass())) {
-			VacuumWorldCommunicationAction vwca = (VacuumWorldCommunicationAction) action;
+			VacuumWorldCommunicationAction vwca = (VacuumWorldCommunicationAction) vwa;
 			return new CommunicationAction<String>(vwca.getPayload(),
 					vwca.getRecipientsIds());
 		}
-		return action;
+		return vwa;
 	}
 }

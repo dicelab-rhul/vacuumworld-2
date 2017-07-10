@@ -15,13 +15,14 @@ public class VacuumWorldControlButtonPanel extends JPanel {
 
 	private static final long serialVersionUID = -1217821076040443501L;
 
-	static final Integer SMALLBUTTONSIZE = VacuumWorldView.SIDEPANELWIDTH / 4;
+	static final Integer SMALLBUTTONSIZE = VacuumWorldView.SIDEPANELWIDTH / 5;
 	static final Dimension SMALLBUTTONDIMENSION = new Dimension(
 			SMALLBUTTONSIZE, SMALLBUTTONSIZE);
 
 	public VacuumWorldControlButtonPanel(BufferedImage play, OnClick playclick,
 			BufferedImage restart, OnClick restartclick, BufferedImage pause,
-			OnClick pauseclick, BufferedImage settings, OnClick settingsclick) {
+			OnClick pauseclick, BufferedImage settings, OnClick settingsclick,
+			BufferedImage off, OnClick offclick) {
 		this.setLayout(new GridLayout(1, 4));
 		this.setPreferredSize(new Dimension(SMALLBUTTONSIZE * 3,
 				SMALLBUTTONSIZE));
@@ -30,6 +31,7 @@ public class VacuumWorldControlButtonPanel extends JPanel {
 		this.add(new ControlButton(restart, restartclick));
 		this.add(new ControlButton(pause, pauseclick));
 		this.add(new ControlButton(settings, settingsclick));
+		this.add(new ControlButton(off, offclick));
 	}
 
 	private class ControlButton extends CustomButton {

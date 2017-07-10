@@ -22,7 +22,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 	private static double MOBILITY = 0.8;
 	private boolean actionfailed = false;
 	private int actioncounter = 0;
-	private Class<?> lastaction;
+	private Class<?> lastaction = VacuumWorldSensingAction.class;
 	private VacuumWorldGridContent currentpercept;
 	private boolean justTurned = false;
 	private Random random = new Random();
@@ -32,6 +32,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 			VacuumWorldGridPerception gridperception,
 			Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
 		if (gridperception != null) {
+			
 			actionfailed = false;
 			currentpercept = gridperception.getPerception();
 		} else {
@@ -43,6 +44,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 
 	@Override
 	public VacuumWorldAction decide() {
+		System.out.println(lastaction);
 		if (!actionfailed) {
 			if (MoveAction.class.isAssignableFrom(lastaction)) {
 				actioncounter++;
@@ -110,6 +112,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 
 	@Override
 	public VacuumWorldAction execute(VacuumWorldAction action) {
+		System.out.println(action);
 		lastaction = action.getClass();
 		currentpercept = null;
 		return action;

@@ -145,23 +145,24 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 			}
 		}
 
-		return new VacuumWorldCommunicationAction("Hello from: " + this.getId());
-
 		// there is no smart action, do something random
-//		if (Math.random() > 0.2) {
-//			return new MoveAction();
-//		} else {
-//			if (filledLeft && filledRight) {
-//				return new MoveAction();
-//			}
-//			if (filledLeft) {
-//				return new TurnAction(TurnDirection.RIGHT);
-//			}
-//			if (filledRight) {
-//				return new TurnAction(TurnDirection.RIGHT);
-//			}
-//			return new TurnAction(null);
-//		}
+		if (Math.random() > 0.3) {
+			return new MoveAction();
+		} else if (Math.random() > 0.4) {
+			if (filledLeft && filledRight) {
+				return new MoveAction();
+			}
+			if (filledLeft) {
+				return new TurnAction(TurnDirection.RIGHT);
+			}
+			if (filledRight) {
+				return new TurnAction(TurnDirection.RIGHT);
+			}
+			return new TurnAction(null);
+		} else {
+			return new VacuumWorldCommunicationAction("Hello, my id is: "
+					+ this.getId());
+		}
 	}
 
 	@Override

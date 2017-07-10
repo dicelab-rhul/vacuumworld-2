@@ -28,6 +28,7 @@ public class VacuumWorldController extends AbstractViewController {
 	public static final Integer DEFAULTSIMULATIONRATE = 100;
 	public static final Integer MAXGRIDSIZE = 100;
 	public static final Integer MINGRIDSIZE = 2;
+	public static final Boolean SINGLEAVATAR = true;
 
 	public static Collection<Class<?>> POSSIBLEMINDS;
 	static {
