@@ -1,12 +1,12 @@
 package uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons;
 
-
-public class StartButton extends DefaultButton {
+public class AvatarButton extends DefaultButton {
 
 	private static final long serialVersionUID = -4967158810170453134L;
-	public static final String BUTTONFILENAME = "start_button";
+	public static final String BUTTONFILENAME = "avatar_button";
 
-	public StartButton(OnClick onclick) {
+	public AvatarButton(OnClick onclick) {
 		super(BUTTONFILENAME, onclick);
+
 	}
 }

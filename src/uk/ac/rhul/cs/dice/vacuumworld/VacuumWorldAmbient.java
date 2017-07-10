@@ -10,11 +10,14 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatar;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
@@ -22,7 +25,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.grid.Grid;
 import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.Tile;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerceptionContent;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 
 public class VacuumWorldAmbient extends AbstractAmbient {
 
@@ -32,9 +35,10 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	private PerceptionFilter perceptionfilter;
 	private Grid grid;
 
-	public VacuumWorldAmbient(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
-		super(agents, activeBodies, passiveBodies);
+	public VacuumWorldAmbient(Set<AbstractAutonomousAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
+			Set<AbstractAvatarAgent<?>> avatars) {
+		super(agents, activeBodies, passiveBodies, avatars);
 		super.addFilter(PERCEPTIONKEY,
 				(perceptionfilter = new PerceptionFilter()));
 	}
@@ -79,11 +83,11 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	 *             if multiple attempts are made to initialise the grid (i.e. if
 	 *             this method is called more than once)
 	 */
-	public void initialiseGrid(int dimension,
-			Collection<VacuumWorldAgent> agents, Collection<Dirt> dirts) {
+	public void initialiseGrid(int dimension) {
 		if (this.grid == null) {
 			grid = new Grid(dimension);
-			grid.fillGrid(this.agents.values(), this.passiveBodies.values());
+			grid.fillGrid(this.agents.values(), this.passiveBodies.values(),
+					this.avatars.values());
 			super.addEnvironmentVariable(GRIDKEY, this.grid);
 		} else {
 			multiInitError();
@@ -159,7 +163,7 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	public class PerceptionFilter implements Filter {
 
 		@Override
-		public VacuumWorldPerceptionContent get(
+		public VacuumWorldGridContent get(
 				AbstractEnvironmentalAction action, Object... args) {
 			Grid grid = (Grid) args[0];
 			Position position = ((VacuumWorldAgentAppearance) action.getActor())
@@ -184,11 +188,11 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 					result.put(p, grid.getReadOnlyTile(p));
 				}
 			}
-			return new VacuumWorldPerceptionContent(result, position);
+			return new VacuumWorldGridContent(result, position);
 		}
 	}
 
-	public VacuumWorldPerceptionContent getAgentPerception(
+	public VacuumWorldGridContent getAgentPerception(
 			AbstractEnvironmentalAction action) {
 		return perceptionfilter.get(action, this.grid);
 	}

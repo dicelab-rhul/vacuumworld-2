@@ -18,17 +18,17 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 public class GridPanel extends JPanel {
 
 	private static final long serialVersionUID = 7892181452844860444L;
-	protected int griddimension;
+	protected Integer gridDimension;
 
-	public GridPanel(int griddimension) {
-		this.griddimension = griddimension;
+	public GridPanel(Integer gridDimension) {
+		this.gridDimension = gridDimension;
 		this.setBackground(Color.WHITE);
 		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 
 	public Dimension getTileDimension() {
-		return new Dimension(this.getWidth() / griddimension, this.getHeight()
-				/ griddimension);
+		return new Dimension(this.getWidth() / gridDimension, this.getHeight()
+				/ gridDimension);
 	}
 
 	public Point snapSelectionBox(Point position) {
@@ -36,23 +36,27 @@ public class GridPanel extends JPanel {
 				|| position.getX() >= this.getWidth()) {
 			return new Point(-Integer.MAX_VALUE, -Integer.MAX_VALUE);
 		}
-		int sdx = this.getWidth() / griddimension;
-		int sdy = this.getHeight() / griddimension;
-		return new Point(position.x - position.x % sdx, position.y - position.y
-				% sdy);
+		double sdx = (double) this.getWidth() / gridDimension;
+		double sdy = (double) this.getHeight() / gridDimension;
+
+		Point p = new Point((int) (position.x - position.x % sdx),
+				(int) (position.y - position.y % sdy));
+		return p;
 	}
 
 	public Position getGridPosition(Point position) {
-		int sdx = this.getWidth() / griddimension;
-		int sdy = this.getHeight() / griddimension;
-		Position p = new Position((position.x - position.x % sdx) / sdx,
-				(position.y - position.y % sdy) / sdy);
+		double sdx = (double) this.getWidth() / gridDimension;
+		double sdy = (double) this.getHeight() / gridDimension;
+		double x = position.x - position.x % sdx;
+		double y = position.y - position.y % sdy;
+		Position p = new Position((int) (x / sdx), (int) (y / sdy));
+
 		return (positionInBounds(p)) ? p : null;
 	}
 
 	public boolean positionInBounds(Position position) {
-		return !(position.getX() < 0 || position.getX() >= griddimension
-				|| position.getY() < 0 || position.getY() >= griddimension);
+		return !(position.getX() < 0 || position.getX() >= gridDimension
+				|| position.getY() < 0 || position.getY() >= gridDimension);
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class GridPanel extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		drawGrid(g2, griddimension);
+		drawGrid(g2, gridDimension);
 	}
 
 	protected void drawDirt(Graphics g, Position position, BodyColor color) {
@@ -76,21 +80,30 @@ public class GridPanel extends JPanel {
 	}
 
 	protected void drawBody(Graphics g, BufferedImage img, Position position) {
-		int incw = this.getWidth() / griddimension;
-		int inch = this.getHeight() / griddimension;
-		g.drawImage(img, position.getX() * incw, position.getY() * inch,
-				(position.getX() + 1) * incw, (position.getY() + 1) * inch, 0,
-				0, img.getWidth() - 2, img.getHeight() - 2, null);
+		double incw = (double) this.getWidth() / gridDimension;
+		double inch = (double) this.getHeight() / gridDimension;
+		g.drawImage(img, (int) (position.getX() * incw),
+				(int) (position.getY() * inch),
+				(int) ((position.getX() + 1) * incw),
+				(int) ((position.getY() + 1) * inch), 0, 0, img.getWidth() - 2,
+				img.getHeight() - 2, null);
 	}
 
 	protected void drawGrid(Graphics g, int dim) {
 		g.setColor(Color.BLACK);
-		int incw = this.getWidth() / dim;
-		int inch = this.getHeight() / dim;
+		double incw = (double) this.getWidth() / dim;
+		double inch = (double) this.getHeight() / dim;
 		for (int i = 0; i < dim; i++) {
-			g.drawLine(i * incw, 0, i * incw, this.getHeight());
-			g.drawLine(0, i * inch, this.getWidth(), i * inch);
+			g.drawLine((int) (i * incw), 0, (int) (i * incw), this.getHeight());
+			g.drawLine(0, (int) (i * inch), this.getWidth(), (int) (i * inch));
 		}
 	}
 
+	public Integer getGriddimension() {
+		return gridDimension;
+	}
+
+	public void setGridDimension(Integer gridDimension) {
+		this.gridDimension = gridDimension;
+	}
 }

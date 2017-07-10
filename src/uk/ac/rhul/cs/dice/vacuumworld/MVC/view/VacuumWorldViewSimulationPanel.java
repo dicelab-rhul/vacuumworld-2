@@ -4,25 +4,28 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 
+import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldAmbient;
-import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 
 public class VacuumWorldViewSimulationPanel extends GridPanel {
 
 	private static final long serialVersionUID = -5008822076025428472L;
 	private VacuumWorldAmbient model;
 
-	public VacuumWorldViewSimulationPanel(VacuumWorldUniverse model) {
-		super(model.getState().getDimension());
-		this.model = model.getState();
+	public VacuumWorldViewSimulationPanel(VacuumWorldAmbient model) {
+		super(null);
+		this.model = model;
 		this.setBackground(Color.WHITE);
+	}
+
+	public void start() {
+		gridDimension = model.getDimension();
 	}
 
 	@Override
@@ -31,37 +34,29 @@ public class VacuumWorldViewSimulationPanel extends GridPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		drawDirt(g2, griddimension);
-		drawAgents(g2, griddimension);
-	}
-
-	private void drawDirt(Graphics g, int dim) {
 		for (PassiveBody b : model.getPassiveBodies()) {
-			DirtAppearance appearance = (DirtAppearance) b.getAppearance();
-			Position position = appearance.getPosition();
-			BufferedImage img = VacuumWorldView.DIRTIMAGES.get(appearance
-					.getColor());
-			int incw = this.getWidth() / dim;
-			int inch = this.getHeight() / dim;
-			g.drawImage(img, position.getX() * incw, position.getY() * inch,
-					((position.getX() + 1) * incw), (position.getY() + 1)
-							* inch, 0, 0, img.getWidth() - 2,
-					img.getHeight() - 2, null);
+			drawDirt(g2, b);
+		}
+		for (AbstractAutonomousAgent a : model.getAgents()) {
+			drawAgent(g2, a);
+		}
+		for (AbstractAvatarAgent<?> a : model.getAvatars()) {
+			drawAgent(g2, a);
 		}
 	}
 
-	private void drawAgents(Graphics g, int dim) {
-		for (AbstractAgent a : model.getAgents()) {
-			VacuumWorldAgentAppearance appearance = (VacuumWorldAgentAppearance) a
-					.getAppearance();
-			Position position = appearance.getPosition();
-			BufferedImage img = VacuumWorldView.AGENTIMAGES.get(
-					appearance.getColor()).get(appearance.getOrientation());
-			int incw = this.getWidth() / dim;
-			int inch = this.getHeight() / dim;
-			g.drawImage(img, position.getX() * incw, position.getY() * inch,
-					(position.getX() + 1) * incw, (position.getY() + 1) * inch,
-					0, 0, img.getWidth() - 2, img.getHeight() - 2, null);
-		}
+	private void drawDirt(Graphics g, PassiveBody body) {
+		DirtAppearance appearance = (DirtAppearance) body.getAppearance();
+		drawBody(g, VacuumWorldView.DIRTIMAGES.get(appearance.getColor()),
+				appearance.getPosition());
+	}
+
+	private void drawAgent(Graphics g, ActiveBody body) {
+		VacuumWorldAgentAppearance appearance = (VacuumWorldAgentAppearance) body
+				.getAppearance();
+		drawBody(
+				g,
+				VacuumWorldView.AGENTIMAGES.get(appearance.getColor()).get(
+						appearance.getOrientation()), appearance.getPosition());
 	}
 }

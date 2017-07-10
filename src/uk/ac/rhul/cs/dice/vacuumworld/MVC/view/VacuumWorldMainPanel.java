@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,7 +25,8 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView.OnStartSelection;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.StartParameters;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.Clickable;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.CustomButton;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
@@ -36,30 +36,33 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 	static final Integer ROTATIONEXTRA = 100;
 	private static final long serialVersionUID = -1288708599965111057L;
 
-	protected OnStartSelection start;
+	private VacuumWorldView view;
+	protected boolean simulating = false;
 	protected JPanel content;
-	protected RotateButton rotate;
-	protected VacuumWorldViewSettingsPanel settings;
-	protected DragPanel drag;
-	protected GridPanel grid;
 	protected SidePanel side;
+
+	protected RotateButton rotate;
+	protected DragPanel drag;
+	protected PausePanel pausepanel;
+	protected VacuumWorldViewSettingsPanel settings;
+	protected VacuumWorldSelectionGridPanel selectiongrid;
+	protected VacuumWorldViewSimulationPanel simulationgrid;
 	private List<SelectorButton> agentbuttons;
 	private List<SelectorButton> dirtbuttons;
 	private List<SelectorButton> userbuttons;
-	private Integer griddimension;
 
 	private Map<Position, DirtAppearance> dirts;
 	private Map<Position, VacuumWorldAgentAppearance> agents;
 
-	public VacuumWorldMainPanel(OnStartSelection start) {
-		this.start = start;
-		this.griddimension = VacuumWorldView.DEFAULTGRIDDIMENSION;
+	public VacuumWorldMainPanel(VacuumWorldView view) {
+		this.view = view;
 		this.setBackground(Color.WHITE);
 		this.addComponentListener(new ResizeListener());
 		this.dirts = new HashMap<>();
@@ -70,7 +73,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		VacuumWorldView.AGENTIMAGES.forEach((c, m) -> {
 			BufferedImage i = m.get(Orientation.NORTH);
 			SelectorButton b = new SelectorButton(i, c, null);
-			if (c != BodyColor.USER) {
+			if (c != BodyColor.USER && c != BodyColor.AVATAR) {
 				agentbuttons.add(b);
 			} else {
 				userbuttons.add(b);
@@ -80,9 +83,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 			SelectorButton b = new SelectorButton(i, c, null);
 			dirtbuttons.add(b);
 		});
+		this.enableInputMethods(true);
 	}
 
 	public void initialise() {
+		this.addKeyListener(this);
+		this.setFocusable(true);
 		// default content
 		content = new JPanel();
 		content.setLayout(new BorderLayout());
@@ -90,8 +96,10 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 				VacuumWorldView.MAINDIMENSION.height);
 		content.setOpaque(false);
 		// grid panel
-		grid = new SelectionGridPanel(VacuumWorldView.DEFAULTDIMENSION,
-				griddimension);
+		selectiongrid = new VacuumWorldSelectionGridPanel(
+				VacuumWorldView.DEFAULTDIMENSION,
+				VacuumWorldController.DEFAULTGRIDDIMENSION);
+		simulationgrid = new VacuumWorldViewSimulationPanel(view.model);
 		// side panel
 		side = new SidePanel(VacuumWorldView.SIDEPANELDIMENSION,
 				new VacuumWorldControlButtonPanel(VacuumWorldView
@@ -111,9 +119,10 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 										+ VacuumWorldView.EXTENSION),
 						new SettingsOnClick()));
 		JPanel sbp = new JPanel();
+
 		int gs = 4;
 		sbp.setLayout(new GridLayout(0, gs));
-		sbp.setBackground(Color.WHITE);
+		sbp.setOpaque(false);
 		for (int i = 0; i < gs; i++) {
 			addFilledPanel(sbp);
 		}
@@ -129,7 +138,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		}
 		side.add(sbp, BorderLayout.CENTER);
 		content.add(side, BorderLayout.EAST);
-		content.add(grid, BorderLayout.CENTER);
+		content.add(selectiongrid, BorderLayout.CENTER);
 		this.add(content, JLayeredPane.DEFAULT_LAYER);
 		// rotate button
 		this.rotate = new RotateButton(new RemoveOnClick());
@@ -138,43 +147,62 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		drag = new DragPanel();
 		this.add(drag, JLayeredPane.DRAG_LAYER);
 		// settings panel
-		settings = new VacuumWorldViewSettingsPanel();
+		settings = new VacuumWorldViewSettingsPanel(new SaveOnClick(),
+				new DoneOnClick());
 		this.add(settings, JLayeredPane.POPUP_LAYER);
+		// pause panel
+		pausepanel = new PausePanel();
+		pausepanel.setVisible(false);
+		this.add(pausepanel, JLayeredPane.POPUP_LAYER);
+
+		this.setFocusable(true);
+		this.requestFocusInWindow();
 	}
 
 	private void addFilledPanel(JPanel panel) {
 		JPanel p = new JPanel();
-		// p.setOpaque(false);
+		p.setOpaque(false);
 		panel.add(p);
 	}
 
 	public void dragMove(SelectorButton button, MouseEvent e) {
 		drag.updateImage(button.getImage());
-		drag.setLocation(grid.snapSelectionBox(SwingUtilities.convertPoint(
-				e.getComponent(), e.getPoint(), grid)));
+		drag.setLocation(selectiongrid.snapSelectionBox(SwingUtilities
+				.convertPoint(e.getComponent(), e.getPoint(), selectiongrid)));
 	}
 
 	public void place(SelectorButton button, MouseEvent e) {
-		Position p = grid.getGridPosition(getGridPoint(e));
-		if (agentbuttons.contains(button) || userbuttons.contains(button)) {
-			VacuumWorldAgentAppearance app = new VacuumWorldAgentAppearance(
-					null, null, null, null);
-			app.setColor(button.color);
-			app.setOrientation(Orientation.NORTH);
-			agents.put(p, app);
-			rotate.setLocation(getRotatePoint(e));
-			rotate.setCurrent(app);
-		} else if (dirtbuttons.contains(button)) {
-			dirts.put(p, new DirtAppearance(button.color));
-			rotate.hide();
-			rotate.setCurrent(null);
+		Position p = selectiongrid.getGridPosition(getGridPoint(e));
+		if (p != null) {
+			if (agentbuttons.contains(button) || userbuttons.contains(button)) {
+				VacuumWorldAgentAppearance app = new VacuumWorldAgentAppearance(
+						null, null, null, null);
+				app.setColor(button.color);
+				app.setOrientation(Orientation.NORTH);
+				agents.put(p, app);
+				rotate.setLocation(getRotatePoint(e));
+				rotate.setVisible(true);
+				rotate.setCurrent(app);
+			} else if (dirtbuttons.contains(button)) {
+				dirts.put(p, new DirtAppearance(button.color));
+				rotate.setVisible(false);
+				rotate.clear();
+			}
 		}
+	}
+
+	public void clear() {
+		rotate.clear();
+		rotate.setVisible(false);
+		dirts.clear();
+		agents.clear();
+		VacuumWorldMainPanel.this.repaint();
 	}
 
 	public void remove(Position position) {
 		if (position != null) {
-			rotate.setCurrent(null);
-			rotate.hide();
+			rotate.clear();
+			rotate.setVisible(false);
 			dirts.remove(position);
 			agents.remove(position);
 			VacuumWorldMainPanel.this.repaint();
@@ -182,13 +210,13 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	}
 
 	private Point getGridPoint(MouseEvent e) {
-		return grid.snapSelectionBox(SwingUtilities.convertPoint(
-				e.getComponent(), e.getPoint(), grid));
+		return SwingUtilities.convertPoint(e.getComponent(), e.getPoint(),
+				selectiongrid);
 	}
 
 	private Point getRotatePoint(MouseEvent e) {
-		Point p = grid.snapSelectionBox(SwingUtilities.convertPoint(
-				e.getComponent(), e.getPoint(), grid));
+		Point p = selectiongrid.snapSelectionBox(SwingUtilities.convertPoint(
+				e.getComponent(), e.getPoint(), selectiongrid));
 		p.x -= ROTATIONEXTRA / 2;
 		p.y -= ROTATIONEXTRA / 2;
 		return p;
@@ -201,27 +229,21 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		dirts.forEach((position, app) -> {
-			grid.drawDirt(g2, position, app.getColor());
+			selectiongrid.drawDirt(g2, position, app.getColor());
 		});
 		agents.forEach((position, app) -> {
-			grid.drawAgent(g2, position, app.getColor(), app.getOrientation());
+			selectiongrid.drawAgent(g2, position, app.getColor(),
+					app.getOrientation());
 		});
 	}
 
-	private class RemoveOnClick implements OnClick {
-
-		@Override
-		public void onClick(Clickable arg, MouseEvent e) {
-			VacuumWorldMainPanel.this.remove(grid
-					.getGridPosition(getGridPoint(e)));
-		}
-	}
-
-	public class SelectionGridPanel extends GridPanel implements MouseListener {
+	public class VacuumWorldSelectionGridPanel extends GridPanel implements
+			MouseListener {
 
 		private static final long serialVersionUID = 7999533531378880749L;
 
-		public SelectionGridPanel(Dimension dimension, int griddimension) {
+		public VacuumWorldSelectionGridPanel(Dimension dimension,
+				int griddimension) {
 			super(griddimension);
 			this.addMouseListener(this);
 			this.setPreferredSize(dimension);
@@ -236,6 +258,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 				if (agents.containsKey(p)) {
 					rotate.setCurrent(agents.get(p));
 					rotate.setLocation(getRotatePoint(e));
+					rotate.setVisible(true);
 				}
 			} else {
 				VacuumWorldMainPanel.this.remove(this.getGridPosition(e
@@ -260,16 +283,48 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		}
 	}
 
+	public class SaveOnClick implements OnClick {
+		@Override
+		public void onClick(Clickable arg, MouseEvent e) {
+			System.out.println("SAVE");
+		}
+	}
+
+	public class DoneOnClick implements OnClick {
+		@Override
+		public void onClick(Clickable arg, MouseEvent e) {
+			selectiongrid.setGridDimension(settings.getGridDimension());
+			resizeComponents();
+			settings.setVisible(false);
+			VacuumWorldMainPanel.this.setFocusable(true);
+			VacuumWorldMainPanel.this.requestFocusInWindow();
+			revalidate();
+			repaint();
+		}
+	}
+
+	private class RemoveOnClick implements OnClick {
+
+		@Override
+		public void onClick(Clickable arg, MouseEvent e) {
+			VacuumWorldMainPanel.this.remove(selectiongrid
+					.getGridPosition(getGridPoint(e)));
+		}
+	}
+
 	public class SettingsOnClick implements OnClick {
 
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
-			System.out.println("SETTINGS");
 			int gw = VacuumWorldMainPanel.this.getWidth() / 20;
 			settings.setBounds(gw, gw, VacuumWorldMainPanel.this.getWidth()
 					- (gw * 2), VacuumWorldMainPanel.this.getHeight()
 					- (gw * 2));
 			settings.setOpaque(true);
+			settings.setVisible(true);
+			rotate.setVisible(false);
+			rotate.clear();
+			drag.setVisible(false);
 			VacuumWorldMainPanel.this.repaint();
 		}
 	}
@@ -280,9 +335,53 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		public void onClick(Clickable arg, MouseEvent e) {
 			agents.clear();
 			dirts.clear();
-			rotate.setCurrent(null);
-			rotate.hide();
+			rotate.clear();
+			rotate.setVisible(false);
 			repaint();
+		}
+	}
+
+	private void switchToSimulationPanel() {
+		simulationgrid.start();
+		this.content.remove(selectiongrid);
+		this.content.add(simulationgrid, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
+	}
+
+	public void hideSelectionButtons() {
+		agentbuttons.forEach((b) -> b.setVisible(false));
+		userbuttons.forEach((b) -> b.setVisible(false));
+		dirtbuttons.forEach((b) -> b.setVisible(false));
+	}
+
+	public class PlayOnClick implements OnClick {
+		@Override
+		public void onClick(Clickable arg, MouseEvent e) {
+			if (!simulating) {
+				simulating = true;
+				view.start(new StartParameters(selectiongrid.gridDimension,
+						settings.getSimulationRate(), agents, dirts,
+						getMindMap()));
+				hideSelectionButtons();
+				clear();
+				switchToSimulationPanel();
+				removeKeyListener(VacuumWorldMainPanel.this);
+				requestFocusInWindow(); // to get user input
+			} else {
+				if (view.pause.isPaused()) {
+					view.pause.unpause();
+					pausepanel.setVisible(false);
+				}
+			}
+		}
+
+		private Map<BodyColor, Class<?>> getMindMap() {
+			Map<BodyColor, Class<?>> result = new HashMap<>();
+			result.put(BodyColor.GREEN, settings.getGreenclass());
+			result.put(BodyColor.ORANGE, settings.getOrangeclass());
+			result.put(BodyColor.WHITE, settings.getWhiteclass());
+			return result;
 		}
 	}
 
@@ -290,15 +389,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
-			System.out.println("PAUSE");
-		}
-	}
-
-	public class PlayOnClick implements OnClick {
-
-		@Override
-		public void onClick(Clickable arg, MouseEvent e) {
-			System.out.println("PLAY");
+			if (simulating) {
+				pausepanel.setBounds(0, 0, getWidth() - side.getWidth(),
+						getHeight());
+				pausepanel.setVisible(true);
+				view.pause.pause();
+			}
 		}
 	}
 
@@ -310,29 +406,56 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 		public SelectorButton(BufferedImage image, BodyColor color,
 				OnClick onclick) {
-			super(image, CustomButton.getOverlayedImage(image, Color.BLACK,
-					0.2f), CustomButton.getOverlayedImage(image, Color.BLACK,
+			super(image, ImageUtilities.getOverlayedImage(image, Color.BLACK,
+					0.2f), ImageUtilities.getOverlayedImage(image, Color.BLACK,
 					0.1f), onclick);
 			this.addMouseMotionListener(this);
 			this.color = color;
 		}
 
 		@Override
+		public void mousePressed(MouseEvent e) {
+			super.mousePressed(e);
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// do nothing
+		}
+
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			super.mouseReleased(e);
 			place(this, e);
-			drag.hide();
-
+			drag.setVisible(false);
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			this.isPressed = true;
+			if (!drag.isVisible()) {
+				System.out.println("DRAG");
+				drag.setVisible(true);
+			}
 			dragMove(this, e);
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
+		}
+	}
+
+	private void resizeComponents() {
+		if (drag != null) {
+			drag.setSize(
+					selectiongrid.getWidth() / selectiongrid.gridDimension,
+					selectiongrid.getHeight() / selectiongrid.gridDimension);
+		}
+		if (rotate != null) {
+			rotate.setSize(selectiongrid.getWidth()
+					/ selectiongrid.gridDimension + ROTATIONEXTRA,
+					selectiongrid.getHeight() / selectiongrid.gridDimension
+							+ ROTATIONEXTRA);
 		}
 	}
 
@@ -351,14 +474,10 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 				content.setBounds(0, 0, e.getComponent().getWidth(), e
 						.getComponent().getHeight());
 			}
-			if (drag != null) {
-				drag.setSize(grid.getWidth() / griddimension, grid.getHeight()
-						/ griddimension);
-			}
-			if (rotate != null) {
-				rotate.setSize(grid.getWidth() / griddimension + ROTATIONEXTRA,
-						grid.getHeight() / griddimension + ROTATIONEXTRA);
-			}
+			drag.setVisible(false);
+			rotate.setVisible(false);
+			rotate.clear();
+			resizeComponents();
 		}
 
 		@Override
@@ -369,8 +488,9 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		System.out.println("KEYPRESSED: " + this.getClass().getSimpleName());
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			settings.setBounds(0, 0, 0, 0);
+			settings.setVisible(false);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_LEFT
 				|| e.getKeyCode() == KeyEvent.VK_A) {

@@ -14,21 +14,59 @@ import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.Tile;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 
-public class VacuumWorldPerceptionContent {
+public class VacuumWorldGridContent {
 
 	private Map<Position, Tile> view;
 	private Position selfposition;
 
-	public VacuumWorldPerceptionContent(Map<Position, Tile> view,
+	public VacuumWorldGridContent(Map<Position, Tile> view,
 			Position selfposition) {
 		this.selfposition = selfposition;
 		this.view = view;
 	}
 
 	/**
+	 * Gets the {@link Agent} at the given {@link Position} is it exists.
+	 * 
+	 * @param position
+	 *            : of the {@link Agent}
+	 * @return the {@link VacuumWorldAgentAppearance} of the {@link Agent} at
+	 *         the given {@link Position}, null if there is no {@link Agent} at
+	 *         the given {@link Position}.
+	 */
+	public VacuumWorldAgentAppearance getAgent(Position position) {
+		Tile t = view.get(position);
+		if (t != null) {
+			if (t.containsAgent()) {
+				return t.getAgent();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the {@link Dirt} at the given {@link Position} is it exists.
+	 * 
+	 * @param position
+	 *            : of the {@link Dirt}
+	 * @return the {@link DirtAppearance} of the {@link Dirt} at the given
+	 *         {@link Position}, null if there is no {@link Dirt} at the given
+	 *         {@link Position}.
+	 */
+	public DirtAppearance getDirt(Position position) {
+		Tile t = view.get(position);
+		if (t != null) {
+			if (t.containsDirt()) {
+				return t.getDirt();
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Gets the {@link Appearance} of the {@link Agent} who has received the
-	 * {@link VacuumWorldPerception}. The receiving {@link Agent} is always in
-	 * the centre of the 3x2 or 2x3 view.
+	 * {@link VacuumWorldGridPerception}. The receiving {@link Agent} is always
+	 * in the centre of the 3x2 or 2x3 view.
 	 * 
 	 * @return self {@link Appearance}
 	 */

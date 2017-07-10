@@ -16,10 +16,6 @@ public class DragPanel extends JPanel {
 		this.setOpaque(false);
 	}
 
-	public void hide() {
-		this.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
-	}
-
 	public void updateImage(BufferedImage image) {
 		this.image = image;
 	}

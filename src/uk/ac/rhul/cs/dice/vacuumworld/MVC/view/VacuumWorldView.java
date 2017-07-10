@@ -4,11 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,13 +18,19 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
-import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseOnStart;
+import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldAmbient;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.StartParameters;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniversePause;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseStart;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.Clickable;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
+import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldView extends JFrame implements Observer {
 
@@ -32,10 +39,11 @@ public class VacuumWorldView extends JFrame implements Observer {
 	public final static String EXTENSION = ".png";
 	public final static String PATH = "res/imgs/";
 	public final static String CONTROLPATH = "res/imgs/control/";
+	private final static Color AVATARCOLOR = new Color(50, 100, 220);
 
 	static {
 		AGENTIMAGES = new HashMap<>();
-		for (BodyColor c : BodyColor.values()) {
+		for (BodyColor c : BodyColor.getRealImageValues()) {
 			String color = PATH + c.toString().toLowerCase() + "_";
 			Map<Orientation, BufferedImage> map = new HashMap<>();
 			AGENTIMAGES.put(c, map);
@@ -44,6 +52,18 @@ public class VacuumWorldView extends JFrame implements Observer {
 						+ EXTENSION));
 			}
 		}
+
+		// do avatar image
+		Map<Orientation, BufferedImage> usermap = AGENTIMAGES
+				.get(BodyColor.USER);
+		Map<Orientation, BufferedImage> map = new HashMap<>();
+		AGENTIMAGES.put(BodyColor.AVATAR, map);
+		usermap.forEach((o, b) -> {
+			BufferedImage u = ImageUtilities.getOverlayedImage(b, AVATARCOLOR,
+					0.5f);
+			map.put(o, u);
+		});
+
 		DIRTIMAGES = new HashMap<>();
 		DIRTIMAGES.put(BodyColor.GREEN, loadImage(PATH
 				+ BodyColor.GREEN.toString().toLowerCase() + "_dirt"
@@ -52,8 +72,6 @@ public class VacuumWorldView extends JFrame implements Observer {
 				+ BodyColor.ORANGE.toString().toLowerCase() + "_dirt"
 				+ EXTENSION));
 	}
-
-	static final int DEFAULTGRIDDIMENSION = 8;
 
 	static final int DEFAULTWIDTH = 500, DEFAULTHEIGHT = 500;
 	static final int SIDEPANELWIDTH = 250;
@@ -69,12 +87,12 @@ public class VacuumWorldView extends JFrame implements Observer {
 	static final Color DEFAULTCOLOUR = Color.WHITE;
 	static final long serialVersionUID = 1L;
 
+	protected VacuumWorldAmbient model;
 	protected JPanel contentpanel;
 	protected VacuumWorldMainPanel mainpanel;
-	protected VacuumWorldViewSimulationPanel content;
 	protected VacuumWorldViewStartMenu startmenu;
-	protected Integer griddimension;
-	protected UniverseOnStart start;
+	protected UniverseStart start;
+	protected UniversePause pause;
 
 	public VacuumWorldView() {
 		init(null, DEFAULTWIDTH, DEFAULTHEIGHT, DEFAULTCOLOUR);
@@ -99,34 +117,29 @@ public class VacuumWorldView extends JFrame implements Observer {
 
 	private void doStartMenu() {
 		startmenu = new VacuumWorldViewStartMenu(loadImage(PATH + "start_menu"
-				+ EXTENSION), new VacuumWorldStartMenuStart());
+				+ EXTENSION), new StartMenuOnClick());
 		startmenu.setPreferredSize(DEFAULTDIMENSION);
 		this.getContentPane().add(startmenu);
 	}
 
-	public void start(
-			Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
-		this.getContentPane().remove(mainpanel);
-		this.repaint();
-		start.start(griddimension, entitymap);
+	public void start(StartParameters params) {
+		start.start(params);
 	}
 
-	public void doContent(VacuumWorldUniverse model) {
-		content = new VacuumWorldViewSimulationPanel(model);
-		content.setOpaque(false);
-		this.getContentPane().setPreferredSize(DEFAULTDIMENSION);
-		this.getContentPane().add(content, BorderLayout.CENTER);
-		this.pack();
-	}
-
-	private void doAgentSelection() {
-		mainpanel = new VacuumWorldMainPanel(new OnStartSelection());
+	private void loadMainPanel() {
+		mainpanel = new VacuumWorldMainPanel(this);
 		mainpanel.setOpaque(true);
 		mainpanel.initialise();
-		this.addKeyListener(mainpanel);
 		this.getContentPane().setPreferredSize(MAINDIMENSION);
 		this.getContentPane().add(mainpanel, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
 		this.pack();
+		mainpanel.requestFocusInWindow();
+	}
+
+	public synchronized void addKeyListenerToMainPanel(KeyListener l) {
+		mainpanel.addKeyListener(l);
 	}
 
 	@Override
@@ -134,16 +147,9 @@ public class VacuumWorldView extends JFrame implements Observer {
 		this.repaint();
 	}
 
-	public class OnStartSelection {
-		public void start(
-				Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
-			VacuumWorldView.this.start(entitymap);
-		}
-	}
-
-	public class VacuumWorldStartMenuStart implements OnStart<Object> {
+	public class StartMenuOnClick implements OnClick {
 		@Override
-		public void start(Object... args) {
+		public void onClick(Clickable arg, MouseEvent e) {
 			VacuumWorldView.this.start();
 		}
 	}
@@ -151,7 +157,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 	private void start() {
 		this.getContentPane().remove(startmenu);
 		this.repaint();
-		doAgentSelection();
+		loadMainPanel();
 	}
 
 	public static BufferedImage loadImage(String file) {
@@ -169,7 +175,19 @@ public class VacuumWorldView extends JFrame implements Observer {
 		return null;
 	}
 
-	public void setOnStart(UniverseOnStart start) {
+	public void setModel(VacuumWorldAmbient model) {
+		this.model = model;
+	}
+
+	public void setUniverseStart(UniverseStart start) {
 		this.start = start;
+	}
+
+	public void setUniversePause(UniversePause pause) {
+		this.pause = pause;
+	}
+
+	public void setUniverseRestart() {
+
 	}
 }

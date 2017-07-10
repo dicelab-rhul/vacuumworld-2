@@ -5,12 +5,12 @@ import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.S
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.TurnDirection;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 
 public class TurnAction extends PhysicalAction implements VacuumWorldAction {
 
 	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldPerception.class;
+	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
 	private static final long serialVersionUID = 4721670044302093268L;
 	private TurnDirection direction;
@@ -34,5 +34,10 @@ public class TurnAction extends PhysicalAction implements VacuumWorldAction {
 
 	public TurnDirection getDirection() {
 		return direction;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + ":" + this.getDirection();
 	}
 }

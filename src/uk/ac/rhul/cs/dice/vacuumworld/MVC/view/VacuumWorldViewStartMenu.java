@@ -8,30 +8,27 @@ import java.awt.GridBagLayout;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView.VacuumWorldStartMenuStart;
+import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView.StartMenuOnClick;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.StartButton;
 
 public class VacuumWorldViewStartMenu extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 5094145897652688375L;
-	private static Integer STARTBUTTONWIDTH = 220, STARTBUTTONHEIGHT = 60;
+	private static Integer STARTBUTTONWIDTH = 165, STARTBUTTONHEIGHT = 45;
 
 	private BufferedImage startmenu;
 	private StartButton start;
-	private VacuumWorldStartMenuStart onStart;
 
 	public VacuumWorldViewStartMenu(BufferedImage startmenu,
-			VacuumWorldStartMenuStart onStart) {
+			StartMenuOnClick onClickStart) {
 		super();
-		this.onStart = onStart;
 		this.startmenu = startmenu;
 		this.setLayout(new GridBagLayout());
-		start = new StartMenuStartButton();
+		start = new StartButton(onClickStart);
 		start.setPreferredSize(new Dimension(STARTBUTTONWIDTH,
 				STARTBUTTONHEIGHT));
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -61,15 +58,5 @@ public class VacuumWorldViewStartMenu extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-	}
-
-	public class StartMenuStartButton extends StartButton {
-
-		private static final long serialVersionUID = -4967158810170453134L;
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			onStart.start();
-		}
 	}
 }

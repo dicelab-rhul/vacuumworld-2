@@ -7,14 +7,15 @@ import java.awt.image.BufferedImage;
 
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class RotateButton extends CustomButton {
 
 	private static final long serialVersionUID = 8896726750341550347L;
-	private static BufferedImage IMG = CustomButton.getOverlayedImage(
+	private static BufferedImage IMG = ImageUtilities.getOverlayedImage(
 			VacuumWorldView.loadImage(VacuumWorldView.PATH + "rotate_button"
 					+ VacuumWorldView.EXTENSION), Color.BLACK, 1f);
-	private static BufferedImage HOVER = CustomButton.getOverlayedImage(IMG,
+	private static BufferedImage HOVER = ImageUtilities.getOverlayedImage(IMG,
 			Color.WHITE, 0.3f);
 
 	private VacuumWorldAgentAppearance current;
@@ -38,9 +39,8 @@ public class RotateButton extends CustomButton {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("R: " + e.getClickCount());
 		if (e.getClickCount() == 1) {
-			this.hide();
+			this.setVisible(false);
 			this.current = null;
 		} else {
 			super.mouseClicked(e);
@@ -71,7 +71,8 @@ public class RotateButton extends CustomButton {
 		this.current = current;
 	}
 
-	public void hide() {
-		this.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
+	public void clear() {
+		this.current = null;
 	}
+
 }

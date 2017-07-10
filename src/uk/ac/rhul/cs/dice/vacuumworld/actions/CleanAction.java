@@ -3,11 +3,11 @@ package uk.ac.rhul.cs.dice.vacuumworld.actions;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 
 public class CleanAction extends PhysicalAction implements VacuumWorldAction {
 	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldPerception.class;
+	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
 	private static final long serialVersionUID = 2069946942493951106L;
 

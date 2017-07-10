@@ -8,7 +8,9 @@ import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldPhysics;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
@@ -222,7 +224,7 @@ public class Grid {
 	 * @param dirts
 	 *            to place
 	 */
-	public void fillRandom(Collection<AbstractAgent> agents,
+	public void fillRandom(Collection<AbstractAutonomousAgent> agents,
 			Collection<PassiveBody> dirts) {
 		Random random = new Random();
 		agents.forEach((a) -> {
@@ -252,9 +254,15 @@ public class Grid {
 	 * @param dirts
 	 *            to place
 	 */
-	public void fillGrid(Collection<AbstractAgent> agents,
-			Collection<PassiveBody> dirts) {
+	public void fillGrid(Collection<AbstractAutonomousAgent> agents,
+			Collection<PassiveBody> dirts,
+			Collection<AbstractAvatarAgent<?>> avatars) {
 		agents.forEach((a) -> {
+			VacuumWorldAgentAppearance ap = (VacuumWorldAgentAppearance) a
+					.getAppearance();
+			grid.get(ap.getPosition()).setAgent(ap);
+		});
+		avatars.forEach((a) -> {
 			VacuumWorldAgentAppearance ap = (VacuumWorldAgentAppearance) a
 					.getAppearance();
 			grid.get(ap.getPosition()).setAgent(ap);

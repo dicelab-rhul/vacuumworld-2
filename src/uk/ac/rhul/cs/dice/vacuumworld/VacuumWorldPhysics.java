@@ -17,16 +17,19 @@ import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 
 public class VacuumWorldPhysics extends AbstractPhysics {
 
 	public VacuumWorldPhysics() {
 		super();
-		this.setFramelength(50);
+		// this.setFramelength(50);
 	}
+
 	@Override
 	protected void cycle() {
+		while (getEnvironment().isPaused())
+			;
 		System.out.println("******* CYCLE *******");
 		super.cycle();
 		this.getEnvironment().updateView();
@@ -40,7 +43,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 	public Collection<AbstractPerception<?>> getPerceptions(
 			AbstractEnvironmentalAction action, VacuumWorldAmbient ambient) {
 		Collection<AbstractPerception<?>> percepts = new ArrayList<>();
-		percepts.add(new VacuumWorldPerception(ambient
+		percepts.add(new VacuumWorldGridPerception(ambient
 				.getAgentPerception(action)));
 		return percepts;
 	}
@@ -60,7 +63,8 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 	}
 
 	public boolean isPossible(PlaceDirtAction action, Ambient context) {
-		if (action.getActor().getColor() == BodyColor.getUserColor()) {
+		if (action.getActor().getColor() == BodyColor.getUserColor()
+				|| action.getActor().getColor() == BodyColor.getAvatarColor()) {
 			VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
 			return !ambient.containsDirt(action.getActor().getPosition());
 		}

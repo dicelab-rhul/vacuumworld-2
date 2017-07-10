@@ -1,65 +1,110 @@
 package uk.ac.rhul.cs.dice.vacuumworld.MVC;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Observable;
 
 import uk.ac.rhul.cs.dice.starworlds.MVC.AbstractViewController;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatar;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatarLink;
+import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.AgentMindFinder;
 
 public class VacuumWorldController extends AbstractViewController {
 
+	public static final Integer DEFAULTGRIDDIMENSION = 20;
+	public static final Integer DEFAULTSIMULATIONRATE = 100;
+	public static final Integer MAXGRIDSIZE = 100;
+	public static final Integer MINGRIDSIZE = 2;
+
+	public static Collection<Class<?>> POSSIBLEMINDS;
+	static {
+		try {
+			POSSIBLEMINDS = Collections.unmodifiableCollection(AgentMindFinder
+					.getNonUserAgentMinds());
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+	}
 	private VacuumWorldView view;
+	private Collection<VacuumWorldAvatarLink> avatarlinks;
 
 	public VacuumWorldController(VacuumWorldView view,
 			VacuumWorldUniverse universe) {
 		super(universe);
 		this.view = view;
-		this.view.setOnStart(new UniverseOnStart());
+		this.view.setUniverseStart(new UniverseStart());
+		this.view.setUniversePause(new UniversePause());
+		this.view.setModel(universe.getAmbient());
+		this.avatarlinks = new HashSet<>();
 		universe.addObserver(view);
 	}
 
-	public void start(Integer dimension,
-			Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
+	public void pause() {
+		this.getUniverse().setPaused(true);
+	}
+
+	public void unpause() {
+		this.getUniverse().setPaused(false);
+	}
+
+	public void start(StartParameters params) {
 		Collection<VacuumWorldAgent> agents = new ArrayList<>();
 		Collection<Dirt> dirts = new ArrayList<>();
-		entitymap.forEach((position, list) -> list.forEach((pair) -> {
-			if (pair.getSecond() == null) {
-				// do dirt
-				Dirt d = new Dirt(pair.getFirst());
-				d.getAppearance().setPosition(position);
-				dirts.add(d);
-			} else if (pair.getFirst() == BodyColor.USER) {
-				// do user
-				VacuumWorldAgent a = VacuumWorld
-						.createVacuumWorldAgent(VacuumWorld.USERMIND);
-				a.getAppearance().setColor(pair.getFirst());
-				a.getAppearance().setOrientation(pair.getSecond());
-				a.getAppearance().setPosition(position);
-				agents.add(a);
+		Collection<VacuumWorldAvatar> avatars = new ArrayList<>();
+		params.dirtapps.forEach((p, a) -> {
+			Dirt d = new Dirt(a.getColor());
+			d.getAppearance().setPosition(p);
+			dirts.add(d);
+		});
+		params.agentapps.forEach((p, a) -> {
+			if (a.getColor() == BodyColor.USER) {
+				agents.add(setUpAgent(VacuumWorld.USERMIND, p, a));
+			} else if (a.getColor() == BodyColor.AVATAR) {
+				avatars.add(setupAvatar(VacuumWorld.AVATARMIND, p, a));
 			} else {
-				VacuumWorldAgent a = VacuumWorld
-						.createVacuumWorldAgent(VacuumWorld.DEFAULTMIND);
-				a.getAppearance().setColor(pair.getFirst());
-				a.getAppearance().setOrientation(pair.getSecond());
-				a.getAppearance().setPosition(position);
-				agents.add(a);
+				agents.add(setUpAgent(params.mindmap.get(a.getColor()), p, a));
 			}
-		}));
-		this.getUniverse().initialiseGrid(dimension, agents, dirts);
-		view.doContent(this.getUniverse());
-		Thread t = new Thread(this.getUniverse());
-		t.start();
+		});
+		this.getUniverse().initialiseGrid(params.dimension,
+				params.simulationRate, agents, dirts, avatars);
+		new Thread(this.getUniverse()).start();
+		// System.out.println(this.view.getFocusOwner());
+	}
+
+	private VacuumWorldAgent setUpAgent(Class<?> mind, Position p,
+			VacuumWorldAgentAppearance a) {
+		VacuumWorldAgent agent = VacuumWorld.createVacuumWorldAgent(mind);
+		agent.getAppearance().setColor(a.getColor());
+		agent.getAppearance().setOrientation(a.getOrientation());
+		agent.getAppearance().setPosition(p);
+		return agent;
+	}
+
+	private VacuumWorldAvatar setupAvatar(
+			Class<? extends AbstractAvatarMind<VacuumWorldAction>> mind,
+			Position p, VacuumWorldAgentAppearance a) {
+		VacuumWorldAvatar avatar = VacuumWorld.createAvatar(mind);
+		avatar.getAppearance().setColor(a.getColor());
+		avatar.getAppearance().setOrientation(a.getOrientation());
+		avatar.getAppearance().setPosition(p);
+		// set up the avatar link
+		VacuumWorldAvatarLink link = new VacuumWorldAvatarLink(avatar.getMind());
+		avatarlinks.add(link);
+		this.view.addKeyListenerToMainPanel(link);
+		return avatar;
 	}
 
 	@Override
@@ -67,16 +112,39 @@ public class VacuumWorldController extends AbstractViewController {
 		System.out.println("update");
 	}
 
-	public class UniverseOnStart {
-		public void start(Integer dimension,
-				Map<Position, List<Pair<BodyColor, Orientation>>> entitymap) {
-			VacuumWorldController.this.start(dimension, entitymap);
+	public class UniversePause {
+		private boolean paused = false;
+
+		public void pause() {
+			setPaused(true);
+			VacuumWorldController.this.pause();
 		}
+
+		public void unpause() {
+			setPaused(false);
+			VacuumWorldController.this.unpause();
+		}
+
+		public boolean isPaused() {
+			return paused;
+		}
+
+		private void setPaused(boolean paused) {
+			this.paused = paused;
+		}
+	}
+
+	public class UniverseStart {
+		public void start(StartParameters params) {
+			VacuumWorldController.this.start(params);
+		}
+	}
+
+	public class UniverseRestart {
 	}
 
 	@Override
 	public VacuumWorldUniverse getUniverse() {
 		return (VacuumWorldUniverse) super.getUniverse();
 	}
-
 }

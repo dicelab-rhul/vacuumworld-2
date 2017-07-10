@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.CustomButton;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldControlButtonPanel extends JPanel {
 
@@ -36,11 +37,12 @@ public class VacuumWorldControlButtonPanel extends JPanel {
 		private static final long serialVersionUID = -5438643093370234321L;
 
 		public ControlButton(BufferedImage image, OnClick onclick) {
-			super(image, onclick);
-			this.setPressed(CustomButton.getOverlayedImage(image, Color.WHITE,
-					0.8f));
-			this.setHover(CustomButton.getOverlayedImage(image, Color.WHITE,
-					0.4f));
+			super(ImageUtilities.getOverlayedImage(image, Color.WHITE, 0.4f),
+					onclick);
+			this.setPressed(ImageUtilities.getOverlayedImage(image,
+					Color.WHITE, 0.8f));
+			this.setHover(ImageUtilities.getOverlayedImage(image, Color.WHITE,
+					0.6f));
 			this.setPreferredSize(SMALLBUTTONDIMENSION);
 		}
 	}

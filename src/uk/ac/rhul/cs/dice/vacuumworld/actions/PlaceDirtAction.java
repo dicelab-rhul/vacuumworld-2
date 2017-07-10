@@ -5,16 +5,20 @@ import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.S
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 
 public class PlaceDirtAction extends PhysicalAction implements
 		VacuumWorldAction {
 	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldPerception.class;
+	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
 	private static final long serialVersionUID = 2069946942493951106L;
 
 	private BodyColor dirtColor;
+
+	public PlaceDirtAction() {
+		this.dirtColor = RandomUtility.getRandom(BodyColor.getDirtColors());
+	}
 
 	public PlaceDirtAction(BodyColor dirtColor) {
 		this.dirtColor = (dirtColor != null) ? dirtColor : RandomUtility

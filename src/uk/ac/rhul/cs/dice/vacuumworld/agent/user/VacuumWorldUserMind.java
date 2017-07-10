@@ -3,34 +3,37 @@ package uk.ac.rhul.cs.dice.vacuumworld.agent.user;
 import java.util.Collection;
 import java.util.Random;
 
+import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.PlaceDirtAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
-import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgentMind;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldMind;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.TurnDirection;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerception;
-import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldPerceptionContent;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
 
-@UserMind
-public class VacuumWorldUserMind extends VacuumWorldAgentMind {
+@UserMindAnnotation
+public class VacuumWorldUserMind extends VacuumWorldMind {
 
 	private static int MESSINESS = 4;
 	private static double MOBILITY = 0.8;
 	private boolean actionfailed = false;
 	private int actioncounter = 0;
 	private Class<?> lastaction;
-	private VacuumWorldPerceptionContent currentpercept;
+	private VacuumWorldGridContent currentpercept;
 	private boolean justTurned = false;
 	private Random random = new Random();
 
 	@Override
-	public void perceive(Collection<VacuumWorldPerception> perceptions) {
-		if (perceptions.size() > 0) {
+	public void perceive(
+			VacuumWorldGridPerception gridperception,
+			Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
+		if (gridperception != null) {
 			actionfailed = false;
-			currentpercept = perceptions.toArray(new VacuumWorldPerception[1])[0]
-					.getPerception();
+			currentpercept = gridperception.getPerception();
 		} else {
 			actionfailed = true;
 		}
@@ -53,8 +56,8 @@ public class VacuumWorldUserMind extends VacuumWorldAgentMind {
 		filledForward = super.filledForward(currentpercept);
 		filledLeft = super.filledLeft(currentpercept);
 		filledRight = super.filledRight(currentpercept);
-		System.out
-				.println(filledForward + " " + filledLeft + " " + filledRight);
+		// System.out
+		// .println(filledForward + " " + filledLeft + " " + filledRight);
 		VacuumWorldAction action = null;
 		if ((action = doMessAction()) != null) {
 			return action;
@@ -85,7 +88,7 @@ public class VacuumWorldUserMind extends VacuumWorldAgentMind {
 	private VacuumWorldAction doMessAction() {
 		if (actioncounter % MESSINESS == 0) {
 			actioncounter++;
-			if (super.onDirt(currentpercept) == null) {
+			if (!super.onDirt(currentpercept)) {
 				return new PlaceDirtAction(null);
 			}
 		}

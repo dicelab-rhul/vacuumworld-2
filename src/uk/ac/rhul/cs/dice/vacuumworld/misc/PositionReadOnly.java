@@ -18,4 +18,10 @@ public class PositionReadOnly extends Position {
 		ReadOnlyWrap.nicetry(this.getClass().getSimpleName() + " y");
 	}
 
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "READONLY " + super.toString();
+	}
+
 }

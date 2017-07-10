@@ -42,6 +42,6 @@ public enum Orientation {
 	}
 
 	public static Orientation getRight(Orientation orientation) {
-		return orientation.left;
+		return orientation.right;
 	}
 }
