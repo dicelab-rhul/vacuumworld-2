@@ -18,6 +18,7 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 
 	private volatile boolean paused = false;
 	private volatile boolean stop = false;
+	private volatile boolean pausedSafe = false;
 
 	public VacuumWorldUniverse(
 			VacuumWorldAmbient ambient,
@@ -99,5 +100,13 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 
 	public boolean shouldStop() {
 		return this.stop;
+	}
+
+	public boolean isPausedSafe() {
+		return pausedSafe;
+	}
+
+	protected void setPausedSafe(boolean pausedSafe) {
+		this.pausedSafe = pausedSafe;
 	}
 }

@@ -3,6 +3,8 @@ package uk.ac.rhul.cs.dice.vacuumworld;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.swing.UIManager;
+
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
@@ -61,6 +63,7 @@ public class VacuumWorld {
 		VacuumWorldUniverse universe = new VacuumWorldUniverse(
 				new VacuumWorldAmbient(null, null, null, null),
 				new VacuumWorldPhysics(), POSSIBLEACTIONS);
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		VacuumWorldView view = new VacuumWorldView();
 		new VacuumWorldController(view, universe);
 	}

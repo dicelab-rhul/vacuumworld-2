@@ -20,15 +20,16 @@ public class AgentMindFinder {
 	public static Collection<Class<?>> getNonUserAgentMinds()
 			throws ClassNotFoundException, IOException {
 		Collection<Class<?>> minds = getAgentMinds();
-		minds.removeAll(ClassFinder.getAnnotatedClasses(UserMindAnnotation.class, minds));
+		minds.removeAll(ClassFinder.getAnnotatedClasses(
+				UserMindAnnotation.class, minds));
 		return minds;
 	}
 
 	public static Collection<Class<?>> getNonUserAgentMinds(
-			Collection<Class<?>> mindclasses) throws ClassNotFoundException,
-			IOException {
+			Collection<Class<?>> mindclasses) {
 		Collection<Class<?>> minds = new HashSet<>(mindclasses);
-		minds.removeAll(ClassFinder.getAnnotatedClasses(UserMindAnnotation.class, minds));
+		minds.removeAll(ClassFinder.getAnnotatedClasses(
+				UserMindAnnotation.class, minds));
 		return minds;
 	}
 }

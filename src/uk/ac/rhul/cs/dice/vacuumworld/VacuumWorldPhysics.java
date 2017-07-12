@@ -28,8 +28,13 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 	@Override
 	public void simulate() {
 		while (!getEnvironment().shouldStop()) {
-			while (getEnvironment().isPaused())
-				;
+			if (getEnvironment().isPaused()) {
+				this.getEnvironment().setPausedSafe(true);
+				while (getEnvironment().isPaused())
+					;
+				this.getEnvironment().setPausedSafe(false);
+			}
+
 			System.out.println("******* CYCLE *******");
 			cycle();
 			this.getEnvironment().updateView();

@@ -62,4 +62,10 @@ public class VacuumWorldAgentAppearance extends ActiveBodyAppearance implements
 	public Class<VacuumWorldAgentAppearanceReadOnly> getReadOnlyClass() {
 		return VacuumWorldAgentAppearanceReadOnly.class;
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " : " + this.position + ", "
+				+ this.color + ", " + this.orientation;
+	}
 }

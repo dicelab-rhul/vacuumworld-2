@@ -4,7 +4,6 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
 
 public class DirtAppearance extends PhysicalBodyAppearance implements
 		VacuumWorldBodyAppearance<DirtAppearanceReadOnly> {
@@ -40,5 +39,11 @@ public class DirtAppearance extends PhysicalBodyAppearance implements
 	@Override
 	public Class<DirtAppearanceReadOnly> getReadOnlyClass() {
 		return DirtAppearanceReadOnly.class;
+	}
+
+	@Override
+	public String toString() {
+		return this.getBody().getSimpleName() + " : " + this.position + ", "
+				+ this.color;
 	}
 }

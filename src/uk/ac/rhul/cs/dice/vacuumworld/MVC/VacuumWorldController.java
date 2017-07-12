@@ -9,6 +9,7 @@ import java.util.Observable;
 
 import uk.ac.rhul.cs.dice.starworlds.MVC.AbstractViewController;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
@@ -30,14 +31,20 @@ public class VacuumWorldController extends AbstractViewController {
 	public static final Integer MINGRIDSIZE = 2;
 	public static final Boolean SINGLEAVATAR = true;
 
+	public static Collection<Class<?>> POSSIBLEAGENTMINDS;
 	public static Collection<Class<?>> POSSIBLEMINDS;
 	static {
 		try {
-			POSSIBLEMINDS = Collections.unmodifiableCollection(AgentMindFinder
-					.getNonUserAgentMinds());
+			POSSIBLEMINDS = AgentMindFinder.getAgentMinds();
+			POSSIBLEAGENTMINDS = Collections
+					.unmodifiableCollection(AgentMindFinder
+							.getNonUserAgentMinds(POSSIBLEMINDS));
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("POSSIBLE MINDS: " + POSSIBLEMINDS);
+		System.out.println("POSSIBLE AGENT MINDS: " + POSSIBLEAGENTMINDS);
+
 	}
 	private VacuumWorldView view;
 	private Collection<VacuumWorldAvatarLink> avatarlinks;
@@ -63,6 +70,12 @@ public class VacuumWorldController extends AbstractViewController {
 		this.getUniverse().setPaused(false);
 	}
 
+	public void getAmbientState() {
+		// wait for the universe to be safely paused
+		while (!this.getUniverse().isPausedSafe())
+			;
+	}
+
 	public void start(StartParameters params) {
 		if (universeThread != null) {
 			// wait for the thread to finish
@@ -73,7 +86,6 @@ public class VacuumWorldController extends AbstractViewController {
 				e.printStackTrace();
 			}
 		}
-
 		Collection<VacuumWorldAgent> agents = new ArrayList<>();
 		Collection<Dirt> dirts = new ArrayList<>();
 		Collection<VacuumWorldAvatar> avatars = new ArrayList<>();

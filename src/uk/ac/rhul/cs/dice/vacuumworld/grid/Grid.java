@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.dice.vacuumworld.grid;
 
 import java.awt.Color;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
-public class Grid {
+public class Grid implements Serializable {
 
 	private Integer dimension;
 	private Map<Position, VacuumWorldTile> grid = new HashMap<>();
@@ -61,6 +63,20 @@ public class Grid {
 		grid.get(position).setAgent(agent);
 		agent.setPosition(position);
 		return old;
+	}
+
+	public Collection<VacuumWorldTile> getTiles() {
+		return this.grid.values();
+	}
+
+	public Collection<VacuumWorldTile> getNonEmptyTiles() {
+		ArrayList<VacuumWorldTile> tiles = new ArrayList<>();
+		this.grid.values().forEach((t) -> {
+			if (!t.isEmpty()) {
+				tiles.add(t);
+			}
+		});
+		return tiles;
 	}
 
 	public Tile getTile(Position position) {

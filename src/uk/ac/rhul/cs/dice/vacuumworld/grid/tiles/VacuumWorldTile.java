@@ -1,11 +1,15 @@
 package uk.ac.rhul.cs.dice.vacuumworld.grid.tiles;
 
+import java.io.Serializable;
+
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyInterface;
 
 public class VacuumWorldTile implements Tile,
-		ReadOnlyInterface<VacuumWorldTileReadOnly> {
+		ReadOnlyInterface<VacuumWorldTileReadOnly>, Serializable {
+
+	private static final long serialVersionUID = -5224816605802757198L;
 
 	private VacuumWorldAgentAppearance agent;
 	private DirtAppearance dirt;
@@ -24,6 +28,10 @@ public class VacuumWorldTile implements Tile,
 
 	public VacuumWorldTile(DirtAppearance dirt) {
 		this.dirt = dirt;
+	}
+
+	public boolean isEmpty() {
+		return !(containsAgent() || containsDirt());
 	}
 
 	@Override

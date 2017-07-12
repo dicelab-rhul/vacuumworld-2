@@ -1,11 +1,20 @@
 package uk.ac.rhul.cs.dice.vacuumworld.misc;
 
+import java.io.Serializable;
+
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyInterface;
 
-public class Position implements ReadOnlyInterface<PositionReadOnly> {
+public class Position implements ReadOnlyInterface<PositionReadOnly>,
+		Serializable {
+	private static final long serialVersionUID = -5137194020124679746L;
 	private Integer x, y;
 
+	public Position() {
+		super();
+	}
+
 	public Position(Integer x, Integer y) {
+		super();
 		this.x = x;
 		this.y = y;
 	}
