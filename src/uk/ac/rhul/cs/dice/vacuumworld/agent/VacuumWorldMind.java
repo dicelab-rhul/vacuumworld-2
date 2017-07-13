@@ -106,7 +106,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 
 	private boolean checkWall(VacuumWorldGridContent perception,
 			Orientation orientation) {
-		return check(perception.getWalls(), orientation);
+		return check(perception.getWallPositions(), orientation);
 	}
 
 	private boolean checkAgent(VacuumWorldGridContent perception,
@@ -119,18 +119,18 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 		return check(perception.getFilledPositions(), orientation);
 	}
 
-	public DirtAppearance getDirt(VacuumWorldGridContent perception) {
+	public DirtAppearance getDirtOn(VacuumWorldGridContent perception) {
 		return perception.getDirt(this.getunsafeAppearance().getPosition());
 	}
 
-	public DirtAppearance getFowardDirt(VacuumWorldGridContent perception) {
+	public DirtAppearance getDirtFoward(VacuumWorldGridContent perception) {
 		Position current = this.getAppearance().getPosition();
 		Orientation orientation = this.getAppearance().getOrientation();
 		return perception.getDirt(new Position(current.getX()
 				+ orientation.getI(), current.getY() + orientation.getJ()));
 	}
 
-	public DirtAppearance getLeftDirt(VacuumWorldGridContent perception) {
+	public DirtAppearance getDirtLeft(VacuumWorldGridContent perception) {
 		Position current = this.getAppearance().getPosition();
 		Orientation orientation = this.getAppearance().getOrientation()
 				.getLeft();
@@ -138,7 +138,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 				+ orientation.getI(), current.getY() + orientation.getJ()));
 	}
 
-	public DirtAppearance getRightDirt(VacuumWorldGridContent perception) {
+	public DirtAppearance getDirtRight(VacuumWorldGridContent perception) {
 		Position current = this.getAppearance().getPosition();
 		Orientation orientation = this.getAppearance().getOrientation()
 				.getRight();
@@ -146,7 +146,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 				+ orientation.getI(), current.getY() + orientation.getJ()));
 	}
 
-	public VacuumWorldAgentAppearance getFowardAgent(
+	public VacuumWorldAgentAppearance getAgentFoward(
 			VacuumWorldGridContent perception) {
 		Position current = this.getAppearance().getPosition();
 		Orientation orientation = this.getAppearance().getOrientation();
@@ -154,7 +154,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 				+ orientation.getI(), current.getY() + orientation.getJ()));
 	}
 
-	public VacuumWorldAgentAppearance getLeftAgent(
+	public VacuumWorldAgentAppearance getAgentLeft(
 			VacuumWorldGridContent perception) {
 		Position current = this.getAppearance().getPosition();
 		Orientation orientation = this.getAppearance().getOrientation()
@@ -163,7 +163,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 				+ orientation.getI(), current.getY() + orientation.getJ()));
 	}
 
-	public VacuumWorldAgentAppearance getRightAgent(
+	public VacuumWorldAgentAppearance getAgentRight(
 			VacuumWorldGridContent perception) {
 		Position current = this.getAppearance().getPosition();
 		Orientation orientation = this.getAppearance().getOrientation()
@@ -181,7 +181,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if the {@link Agent} is currently facing a Wall, false
 	 *         otherwise
 	 */
-	public boolean filledForward(VacuumWorldGridContent perception) {
+	public boolean isFilledForward(VacuumWorldGridContent perception) {
 		return checkFilled(perception, this.getAppearance().getOrientation());
 	}
 
@@ -194,7 +194,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if there is a {@link Agent} or a Wall immediately to the
 	 *         right, false otherwise
 	 */
-	public boolean filledRight(VacuumWorldGridContent perception) {
+	public boolean isFilledRight(VacuumWorldGridContent perception) {
 		return checkFilled(perception, this.getAppearance().getOrientation()
 				.getRight());
 	}
@@ -208,7 +208,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if there is a {@link Agent} or a Wall immediately to the
 	 *         left, false otherwise
 	 */
-	public boolean filledLeft(VacuumWorldGridContent perception) {
+	public boolean isFilledLeft(VacuumWorldGridContent perception) {
 		return checkFilled(perception, this.getAppearance().getOrientation()
 				.getLeft());
 	}
@@ -221,7 +221,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if the {@link Agent} is currently another {@link Agent},
 	 *         false otherwise
 	 */
-	public boolean agentForward(VacuumWorldGridContent perception) {
+	public boolean isAgentForward(VacuumWorldGridContent perception) {
 		return checkAgent(perception, this.getAppearance().getOrientation());
 	}
 
@@ -234,7 +234,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if there is a {@link Agent} immediately to the right, false
 	 *         otherwise
 	 */
-	public boolean agentRight(VacuumWorldGridContent perception) {
+	public boolean isAgentRight(VacuumWorldGridContent perception) {
 		return checkAgent(perception, this.getAppearance().getOrientation()
 				.getRight());
 	}
@@ -248,7 +248,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if there is a {@link Agent} immediately to the left, false
 	 *         otherwise
 	 */
-	public boolean agentLeft(VacuumWorldGridContent perception) {
+	public boolean isAgentLeft(VacuumWorldGridContent perception) {
 		return checkAgent(perception, this.getAppearance().getOrientation()
 				.getLeft());
 	}
@@ -261,7 +261,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if the {@link Agent} is currently facing a Wall, false
 	 *         otherwise
 	 */
-	public boolean wallForward(VacuumWorldGridContent perception) {
+	public boolean isWallFoward(VacuumWorldGridContent perception) {
 		return checkWall(perception, this.getAppearance().getOrientation());
 	}
 
@@ -272,7 +272,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 *            to check
 	 * @return true if there is a Wall immediately to the right, false otherwise
 	 */
-	public boolean wallRight(VacuumWorldGridContent perception) {
+	public boolean isWallRight(VacuumWorldGridContent perception) {
 		return checkWall(perception, this.getAppearance().getOrientation()
 				.getRight());
 	}
@@ -284,7 +284,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 *            to check
 	 * @return true if there is a Wall immediately to the left, false otherwise
 	 */
-	public boolean wallLeft(VacuumWorldGridContent perception) {
+	public boolean isWallLeft(VacuumWorldGridContent perception) {
 		return checkWall(perception, this.getAppearance().getOrientation()
 				.getLeft());
 	}
@@ -295,7 +295,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if this {@link Agent} is currently on top of some
 	 *         {@link Dirt}, false otherwise
 	 */
-	public boolean onDirt(VacuumWorldGridContent perception) {
+	public boolean isDirtOn(VacuumWorldGridContent perception) {
 		return check(perception.getDirtPositions());
 	}
 
@@ -307,7 +307,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if the {@link Agent} is currently facing a {@link Dirt},
 	 *         false otherwise
 	 */
-	public boolean dirtForward(VacuumWorldGridContent perception) {
+	public boolean isDirtFoward(VacuumWorldGridContent perception) {
 		return checkDirt(perception, this.getAppearance().getOrientation());
 	}
 
@@ -320,7 +320,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if there is a {@link Dirt} immediately to the right, false
 	 *         otherwise
 	 */
-	public boolean dirtRight(VacuumWorldGridContent perception) {
+	public boolean isDirtRight(VacuumWorldGridContent perception) {
 		return checkDirt(perception, this.getAppearance().getOrientation()
 				.getRight());
 	}
@@ -334,7 +334,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 * @return true if there is a {@link Dirt} immediately to the left, false
 	 *         otherwise
 	 */
-	public boolean dirtLeft(VacuumWorldGridContent perception) {
+	public boolean isDirtLeft(VacuumWorldGridContent perception) {
 		return checkDirt(perception, this.getAppearance().getOrientation()
 				.getLeft());
 	}
@@ -372,8 +372,9 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	}
 
 	@Override
-	protected VacuumWorldAgent getBody() {
-		return (VacuumWorldAgent) super.getBody();
+	protected final VacuumWorldAgent getBody() {
+		System.out.println("Nice try, you should be trying to do this!");
+		return null;
 	}
 
 	// **************************************************************** //
@@ -415,11 +416,13 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	@Override
 	public final Action execute(Action action) {
 		VacuumWorldAction vwa = execute((VacuumWorldAction) action);
-		if (VacuumWorldCommunicationAction.class.isAssignableFrom(vwa
-				.getClass())) {
-			VacuumWorldCommunicationAction vwca = (VacuumWorldCommunicationAction) vwa;
-			return new CommunicationAction<String>(vwca.getPayload(),
-					vwca.getRecipientsIds());
+		if (vwa != null) {
+			if (VacuumWorldCommunicationAction.class.isAssignableFrom(vwa
+					.getClass())) {
+				VacuumWorldCommunicationAction vwca = (VacuumWorldCommunicationAction) vwa;
+				return new CommunicationAction<String>(vwca.getPayload(),
+						vwca.getRecipientsIds());
+			}
 		}
 		return vwa;
 	}

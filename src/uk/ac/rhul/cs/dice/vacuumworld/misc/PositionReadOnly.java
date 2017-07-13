@@ -4,6 +4,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
 public class PositionReadOnly extends Position {
 
+	private static final long serialVersionUID = -2729496233091137597L;
+
 	public PositionReadOnly(Position position) {
 		super(position.getX(), position.getY());
 	}

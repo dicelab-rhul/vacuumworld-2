@@ -6,6 +6,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
 public class VacuumWorldTileReadOnly extends VacuumWorldTile {
 
+	private static final long serialVersionUID = -5962543062760277746L;
+
 	public VacuumWorldTileReadOnly(VacuumWorldTile tile) throws Exception {
 		super(ReadOnlyWrap.readOnlyCopy(tile.getAgent()), ReadOnlyWrap
 				.readOnlyCopy(tile.getDirt()));
@@ -19,6 +21,12 @@ public class VacuumWorldTileReadOnly extends VacuumWorldTile {
 	@Override
 	public void setDirt(DirtAppearance dirt) {
 		ReadOnlyWrap.nicetry(this.getClass().getSimpleName() + " dirt");
+	}
+
+	@Override
+	public String toString() {
+		return ((this.containsAgent() || this.containsDirt()) ? "READONLY: "
+				: "") + super.toString();
 	}
 
 }

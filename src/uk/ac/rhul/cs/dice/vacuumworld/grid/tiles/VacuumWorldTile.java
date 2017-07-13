@@ -102,8 +102,9 @@ public class VacuumWorldTile implements Tile,
 
 	@Override
 	public String toString() {
-		return (dirt != null) ? ((agent == null) ? dirt.toString() : "*")
-				: ((agent != null) ? agent.toString() : " ");
+		return ((this.dirt != null) ? this.dirt : "")
+				+ ((this.agent != null && this.dirt != null) ? " : " : "")
+				+ ((this.agent != null) ? this.agent : "");
 	}
 
 	@Override

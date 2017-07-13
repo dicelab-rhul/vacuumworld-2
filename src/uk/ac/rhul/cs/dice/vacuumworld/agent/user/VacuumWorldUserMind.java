@@ -1,7 +1,6 @@
 package uk.ac.rhul.cs.dice.vacuumworld.agent.user;
 
 import java.util.Collection;
-import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
@@ -25,7 +24,6 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 	private Class<?> lastaction = VacuumWorldSensingAction.class;
 	private VacuumWorldGridContent currentpercept;
 	private boolean justTurned = false;
-	private Random random = new Random();
 
 	@Override
 	public void perceive(
@@ -55,9 +53,9 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 		if (currentpercept == null) {
 			return new VacuumWorldSensingAction();
 		}
-		filledForward = super.filledForward(currentpercept);
-		filledLeft = super.filledLeft(currentpercept);
-		filledRight = super.filledRight(currentpercept);
+		filledForward = super.isFilledForward(currentpercept);
+		filledLeft = super.isFilledLeft(currentpercept);
+		filledRight = super.isFilledRight(currentpercept);
 		// System.out
 		// .println(filledForward + " " + filledLeft + " " + filledRight);
 		VacuumWorldAction action = null;
@@ -90,7 +88,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 	private VacuumWorldAction doMessAction() {
 		if (actioncounter % MESSINESS == 0) {
 			actioncounter++;
-			if (!super.onDirt(currentpercept)) {
+			if (!super.isDirtOn(currentpercept)) {
 				return new PlaceDirtAction(null);
 			}
 		}

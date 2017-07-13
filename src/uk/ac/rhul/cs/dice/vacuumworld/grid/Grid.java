@@ -29,11 +29,12 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
 public class Grid implements Serializable {
 
-	private Integer dimension;
+	private static final long serialVersionUID = 5027579693128455060L;
+
+	private Integer dimension = null;
 	private Map<Position, VacuumWorldTile> grid = new HashMap<>();
 
-	public Grid(Integer dimension) {
-		this.setDimension(dimension);
+	public Grid() {
 	}
 
 	public void clear() {

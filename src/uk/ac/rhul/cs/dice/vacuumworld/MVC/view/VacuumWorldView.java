@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,31 +25,30 @@ import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseRestart;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseStart;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.Clickable;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
-import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
-import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldView extends JFrame implements Observer {
 
 	static Map<BodyColor, Map<Orientation, BufferedImage>> AGENTIMAGES;
 	static Map<BodyColor, BufferedImage> DIRTIMAGES;
-	public final static String EXTENSION = ".png";
-	public final static String PATH = "res/imgs/";
-	public final static String CONTROLPATH = "res/imgs/control/";
 	private final static Color AVATARCOLOR = new Color(50, 100, 220);
+	public final static String EXTENSION = ".png";
+	public static final String IMGPATH = "res/imgs/";
+	public static final String CONTROLIMGDIR = "control/";
+	public static final ImageLoader IMGLOADER = new ImageLoader();
 
 	static {
 		AGENTIMAGES = new HashMap<>();
 		for (BodyColor c : BodyColor.getRealImageValues()) {
-			String color = PATH + c.toString().toLowerCase() + "_";
+			String color = IMGPATH + c.toString().toLowerCase() + "_";
 			Map<Orientation, BufferedImage> map = new HashMap<>();
 			AGENTIMAGES.put(c, map);
 			for (Orientation o : Orientation.values()) {
-				map.put(o, loadImage(color + o.toString().toLowerCase()
-						+ EXTENSION));
+				map.put(o,
+						IMGLOADER.loadImage(color + o.toString().toLowerCase()
+								+ EXTENSION));
 			}
 		}
 
@@ -66,12 +64,16 @@ public class VacuumWorldView extends JFrame implements Observer {
 		});
 
 		DIRTIMAGES = new HashMap<>();
-		DIRTIMAGES.put(BodyColor.GREEN, loadImage(PATH
-				+ BodyColor.GREEN.toString().toLowerCase() + "_dirt"
-				+ EXTENSION));
-		DIRTIMAGES.put(BodyColor.ORANGE, loadImage(PATH
-				+ BodyColor.ORANGE.toString().toLowerCase() + "_dirt"
-				+ EXTENSION));
+		DIRTIMAGES.put(
+				BodyColor.GREEN,
+				IMGLOADER.loadImage(IMGPATH
+						+ BodyColor.GREEN.toString().toLowerCase() + "_dirt"
+						+ EXTENSION));
+		DIRTIMAGES.put(
+				BodyColor.ORANGE,
+				IMGLOADER.loadImage(IMGPATH
+						+ BodyColor.ORANGE.toString().toLowerCase() + "_dirt"
+						+ EXTENSION));
 	}
 
 	static final int DEFAULTWIDTH = 500, DEFAULTHEIGHT = 500;
@@ -108,8 +110,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 		if (contentPane != null) {
 			this.setContentPane(contentPane);
 		}
-		this.setTitle(VacuumWorld.class.getSimpleName() + " V"
-				+ VacuumWorld.VERSION);
+		this.setTitle(VacuumWorld.class.getSimpleName());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setPreferredSize(new Dimension(width, height));
 		this.getContentPane().setBackground(background);
@@ -118,8 +119,8 @@ public class VacuumWorldView extends JFrame implements Observer {
 	}
 
 	private void doStartMenu() {
-		startmenu = new VacuumWorldViewStartMenu(loadImage(PATH + "start_menu"
-				+ EXTENSION), new StartMenuOnClick());
+		startmenu = new VacuumWorldViewStartMenu(IMGLOADER.loadImage(IMGPATH
+				+ "start_menu" + EXTENSION), new StartMenuOnClick());
 		startmenu.setPreferredSize(DEFAULTDIMENSION);
 		this.getContentPane().add(startmenu);
 	}
@@ -162,21 +163,6 @@ public class VacuumWorldView extends JFrame implements Observer {
 		loadMainPanel();
 	}
 
-	public static BufferedImage loadImage(String file) {
-		System.out.println("LOADING IMAGE: " + file);
-		File img = new File(file);
-		if (img.exists()) {
-			try {
-				return ImageIO.read(new File(file));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			System.err.println("CANNOT FIND IMAGE FILE: " + file);
-		}
-		return null;
-	}
-
 	public void setModel(VacuumWorldAmbient model) {
 		this.model = model;
 	}
@@ -191,5 +177,22 @@ public class VacuumWorldView extends JFrame implements Observer {
 
 	public void setUniverseRestart(UniverseRestart restart) {
 		this.restart = restart;
+	}
+
+	public static class ImageLoader {
+
+		public ImageLoader() {
+		}
+
+		public BufferedImage loadImage(String file) {
+			try {
+				return ImageIO.read(this.getClass().getClassLoader()
+						.getResourceAsStream(file));
+			} catch (IOException e) {
+				System.err.println("CANNOT FIND IMAGE FILE: " + file);
+				e.printStackTrace();
+			}
+			return null;
+		}
 	}
 }

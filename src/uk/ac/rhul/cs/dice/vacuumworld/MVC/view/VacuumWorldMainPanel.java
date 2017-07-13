@@ -68,11 +68,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		this.view = view;
 		this.setBackground(Color.WHITE);
 		this.addComponentListener(new ResizeListener());
-		this.startparams.dirtapps = new HashMap<>();
-		this.startparams.agentapps = new HashMap<>();
-		this.startparams.mindmap = new HashMap<>();
-		this.startparams.dimension = VacuumWorldController.DEFAULTGRIDDIMENSION;
-		this.startparams.simulationRate = VacuumWorldController.DEFAULTSIMULATIONRATE;
 		agentbuttons = new ArrayList<>();
 		dirtbuttons = new ArrayList<>();
 		userbuttons = new ArrayList<>();
@@ -90,6 +85,18 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 			dirtbuttons.add(b);
 		});
 		this.enableInputMethods(true);
+		getDefaultStartParameters();
+	}
+
+	private void getDefaultStartParameters() {
+		try {
+			this.startparams = SaveManager.loadDefault();
+		} catch (ClassNotFoundException | IOException e) {
+			System.err
+					.println("Could not load default start parameters from file, hard loading.");
+			e.printStackTrace();
+			this.startparams = SaveManager.getHardDefault();
+		}
 	}
 
 	public void initialise() {
@@ -103,28 +110,32 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		content.setOpaque(false);
 		// grid panel
 		selectiongrid = new VacuumWorldSelectionGridPanel(
-				VacuumWorldView.DEFAULTDIMENSION,
-				VacuumWorldController.DEFAULTGRIDDIMENSION);
+				VacuumWorldView.DEFAULTDIMENSION, startparams.dimension);
 		simulationgrid = new VacuumWorldViewSimulationPanel(view.model);
 		// side panel
 		side = new SidePanel(VacuumWorldView.SIDEPANELDIMENSION,
-				new VacuumWorldControlButtonPanel(VacuumWorldView
-						.loadImage(VacuumWorldView.CONTROLPATH + "play_button"
+				new VacuumWorldControlButtonPanel(VacuumWorldView.IMGLOADER
+						.loadImage(VacuumWorldView.IMGPATH
+								+ VacuumWorldView.CONTROLIMGDIR + "play_button"
 								+ VacuumWorldView.EXTENSION),
-						new PlayOnClick(), VacuumWorldView
-								.loadImage(VacuumWorldView.CONTROLPATH
+						new PlayOnClick(), VacuumWorldView.IMGLOADER
+								.loadImage(VacuumWorldView.IMGPATH
+										+ VacuumWorldView.CONTROLIMGDIR
 										+ "restart_button"
 										+ VacuumWorldView.EXTENSION),
-						new RestartOnClick(), VacuumWorldView
-								.loadImage(VacuumWorldView.CONTROLPATH
+						new RestartOnClick(), VacuumWorldView.IMGLOADER
+								.loadImage(VacuumWorldView.IMGPATH
+										+ VacuumWorldView.CONTROLIMGDIR
 										+ "pause_button"
 										+ VacuumWorldView.EXTENSION),
-						new PauseOnClick(), VacuumWorldView
-								.loadImage(VacuumWorldView.CONTROLPATH
+						new PauseOnClick(), VacuumWorldView.IMGLOADER
+								.loadImage(VacuumWorldView.IMGPATH
+										+ VacuumWorldView.CONTROLIMGDIR
 										+ "settings_button"
 										+ VacuumWorldView.EXTENSION),
-						new SettingsOnClick(), VacuumWorldView
-								.loadImage(VacuumWorldView.CONTROLPATH
+						new SettingsOnClick(), VacuumWorldView.IMGLOADER
+								.loadImage(VacuumWorldView.IMGPATH
+										+ VacuumWorldView.CONTROLIMGDIR
 										+ "off_button"
 										+ VacuumWorldView.EXTENSION),
 						new OffOnClick()));
@@ -158,6 +169,9 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		// settings panel
 		settings = new VacuumWorldViewSettingsPanel(new SaveOnClick(),
 				new LoadOnClick(), new DoneOnClick());
+		setMindMap();
+		settings.setGridDimension(startparams.dimension);
+		settings.setSimulationRate(startparams.simulationRate);
 		this.add(settings, JLayeredPane.POPUP_LAYER);
 		// pause panel
 		pausepanel = new PausePanel();
@@ -165,6 +179,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		this.add(pausepanel, JLayeredPane.POPUP_LAYER);
 		this.setFocusable(true);
 		this.requestFocusInWindow();
+	}
+
+	private void setMindMap() {
+		settings.setGreenClass(startparams.mindmap.get(BodyColor.GREEN));
+		settings.setOrangeClass(startparams.mindmap.get(BodyColor.ORANGE));
+		settings.setWhiteClass(startparams.mindmap.get(BodyColor.WHITE));
 	}
 
 	private void addFilledPanel(JPanel panel) {
@@ -277,7 +297,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			System.out.println(e.getClickCount());
 			if (e.getClickCount() == 1) {
 				Position p = this.getGridPosition(e.getPoint());
 				if (startparams.agentapps.containsKey(p)) {
@@ -313,7 +332,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		public void onClick(Clickable arg, MouseEvent e) {
 			StartParameters params = SaveManager.jFileChooserLoad();
 			if (params != null) {
-				System.out.println("load: " + params);
 				startparams = params;
 				selectiongrid.gridDimension = params.dimension;
 				settings.setGreenClass(params.mindmap.get(BodyColor.GREEN));
@@ -345,6 +363,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	public class DoneOnClick implements OnClick {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
+			unpause();
 			selectiongrid.setGridDimension(settings.getGridDimension());
 			startparams.dimension = settings.getGridDimension();
 			startparams.simulationRate = settings.getSimulationRate();
@@ -392,6 +411,13 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		}
 	}
 
+	private void unpause() {
+		if (view.pause.isPaused()) {
+			view.pause.unpause();
+			pausepanel.setVisible(false);
+		}
+	}
+
 	public class OffOnClick implements OnClick {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
@@ -402,6 +428,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	public class RestartOnClick implements OnClick {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
+			unpause();
 			startparams.agentapps.clear();
 			startparams.dirtapps.clear();
 			settings.showLoadButton();
@@ -452,7 +479,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		public void onClick(Clickable arg, MouseEvent e) {
 			if (!simulating) {
 				simulating = true;
-				System.out.println("SEL: " + selectiongrid.gridDimension);
 				view.start(startparams);
 				hideSelectionButtons();
 				settings.hideLoadButton();
@@ -518,7 +544,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		public void mouseDragged(MouseEvent e) {
 			this.isPressed = true;
 			if (!drag.isVisible()) {
-				System.out.println("DRAG");
 				drag.setVisible(true);
 			}
 			dragMove(this, e);
@@ -572,7 +597,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("KEYPRESSED: " + this.getClass().getSimpleName());
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			settings.setVisible(false);
 		}

@@ -13,7 +13,7 @@ public class RotateButton extends CustomButton {
 
 	private static final long serialVersionUID = 8896726750341550347L;
 	private static BufferedImage IMG = ImageUtilities.getOverlayedImage(
-			VacuumWorldView.loadImage(VacuumWorldView.PATH + "rotate_button"
+			VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH + "rotate_button"
 					+ VacuumWorldView.EXTENSION), Color.BLACK, 1f);
 	private static BufferedImage HOVER = ImageUtilities.getOverlayedImage(IMG,
 			Color.WHITE, 0.3f);

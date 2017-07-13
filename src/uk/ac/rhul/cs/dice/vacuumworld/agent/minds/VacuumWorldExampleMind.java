@@ -25,7 +25,9 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 			VacuumWorldGridPerception perception,
 			Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
 		if (perception != null) {
+		
 			currentpercept = perception.getPerception();
+			System.out.println(currentpercept);
 		}
 		for (CommunicationPerception<VacuumWorldMessageContent> m : messages) {
 			System.out.println(this.getId() + "received: "
@@ -49,9 +51,9 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		 */
 
 		// check if on some dirt
-		if (super.onDirt(currentpercept)) {
+		if (super.isDirtOn(currentpercept)) {
 			// the agent is on some dirt
-			DirtAppearance dirt = super.getDirt(currentpercept); // get the dirt
+			DirtAppearance dirt = super.getDirtOn(currentpercept); // get the dirt
 			System.out.println(this.getId() + " is on some dirt!");
 			// check if the agent can clean the dirt
 			if (super.canCleanDirt(dirt)) {
@@ -69,9 +71,9 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		 * in the perception. i.e. dirtForwardRight(Perception)
 		 * dirtFowardRight(Perception)
 		 */
-		if (super.dirtForward(currentpercept)) {
+		if (super.isDirtFoward(currentpercept)) {
 			// there is dirt in front of the agent!
-			DirtAppearance dirt = super.getFowardDirt(currentpercept);
+			DirtAppearance dirt = super.getDirtFoward(currentpercept);
 			if (super.canCleanDirt(dirt)) {
 				System.out.println(this.getId()
 						+ " see's cleanable dirt in front!");
@@ -81,11 +83,11 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		// there is no dirt forward, what about to the left or right?
 		DirtAppearance leftdirt = null;
 		DirtAppearance rightdirt = null;
-		if (super.dirtLeft(currentpercept)) {
-			leftdirt = super.getLeftDirt(currentpercept);
+		if (super.isDirtLeft(currentpercept)) {
+			leftdirt = super.getDirtLeft(currentpercept);
 		}
-		if (super.dirtRight(currentpercept)) {
-			rightdirt = super.getRightDirt(currentpercept);
+		if (super.isDirtRight(currentpercept)) {
+			rightdirt = super.getDirtRight(currentpercept);
 		}
 		// if there is dirt to the left and right
 		if (leftdirt != null || rightdirt != null) {
@@ -116,10 +118,10 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		boolean filledRight = false;
 		// the is no cleanable dirt to the left or right
 		// check if the forward location is filled with an agent or a wall
-		if (super.filledForward(currentpercept)) {
+		if (super.isFilledForward(currentpercept)) {
 			// the agent should turn to avoid moving into the wall
-			filledLeft = super.filledLeft(currentpercept);
-			filledRight = super.filledRight(currentpercept);
+			filledLeft = super.isFilledLeft(currentpercept);
+			filledRight = super.isFilledRight(currentpercept);
 			if (filledLeft || filledRight) {
 				if (filledLeft && filledRight) {
 					// the agent is blocked in! turn to try and escape

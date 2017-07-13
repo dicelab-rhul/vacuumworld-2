@@ -51,48 +51,17 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	 *             if multiple attempts are made to initialise the grid (i.e. if
 	 *             this method is called more than once)
 	 */
-	public void initialiseRandomGrid(int dimension) {
-		if (this.grid == null) {
-			if (dimension > this.agents.size()) {
-				grid = new Grid(dimension);
-				grid.fillRandom(this.agents.values(),
-						this.passiveBodies.values());
-				super.addEnvironmentVariable(GRIDKEY, this.grid);
-				grid.printGrid();
-			} else {
-				throw new IllegalArgumentException(
-						"The dimension of a Grid must be > than the number of agents: "
-								+ agents.size());
-			}
-		} else {
-			multiInitError();
-		}
-	}
-
-	/**
-	 * An initialisation method that called by the
-	 * {@link PhysicalEnvironment#postInitialisation()} method (and only by that
-	 * method) to set up the {@link Grid} of this {@link VacuumWorldAmbient}.
-	 * 
-	 * @param dimension
-	 *            to set
-	 * @throws IllegalStateException
-	 *             if multiple attempts are made to initialise the grid (i.e. if
-	 *             this method is called more than once)
-	 */
 	public void initialiseGrid(int dimension) {
 		if (this.grid == null) {
-			grid = new Grid(dimension);
+			grid = new Grid();
 			super.addEnvironmentVariable(GRIDKEY, this.grid);
+		}
+		if (grid.isClear()) {
+			grid.setDimension(dimension);
+			grid.fillGrid(this.agents.values(), this.passiveBodies.values(),
+					this.avatars.values());
 		} else {
-			if (grid.isClear()) {
-				System.out.println("INIT GRID: " + dimension);
-				grid.setDimension(dimension);
-				grid.fillGrid(this.agents.values(),
-						this.passiveBodies.values(), this.avatars.values());
-			} else {
-				multiInitError();
-			}
+			multiInitError();
 		}
 	}
 

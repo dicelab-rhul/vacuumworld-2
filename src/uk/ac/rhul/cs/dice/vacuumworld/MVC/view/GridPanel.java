@@ -104,7 +104,6 @@ public class GridPanel extends JPanel {
 	}
 
 	public void setGridDimension(Integer gridDimension) {
-		System.out.println(gridDimension);
 		this.gridDimension = gridDimension;
 	}
 }

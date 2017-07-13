@@ -109,21 +109,7 @@ public class VacuumWorldGridContent {
 		return filled;
 	}
 
-	/**
-	 * Gets all {@link Appearance}s of the {@link Agent}s that this
-	 * {@link Agent} can currently see.
-	 * 
-	 * @return other {@link Agent} {@link Appearance}s
-	 */
-	public Collection<VacuumWorldAgentAppearance> getAgents() {
-		Collection<VacuumWorldAgentAppearance> agents = new ArrayList<>();
-		view.values().forEach((t) -> {
-			if (t.containsAgent()) {
-				agents.add(t.getAgent());
-			}
-		});
-		return agents;
-	}
+
 
 	/**
 	 * Gets the {@link Position}s of all the Walls that this {@link Agent} can
@@ -131,7 +117,7 @@ public class VacuumWorldGridContent {
 	 * 
 	 * @return wall {@link Position}s
 	 */
-	public Collection<Position> getWalls() {
+	public Collection<Position> getWallPositions() {
 		Collection<Position> walls = new ArrayList<>();
 		view.forEach((p, t) -> {
 			if (t.isWall()) {
@@ -145,7 +131,7 @@ public class VacuumWorldGridContent {
 	 * Gets the {@link Position}s of all the {@link Dirt}s that this
 	 * {@link Dirt} can currently see.
 	 * 
-	 * @return {@link Dirt} {@link Position}s
+	 * @return {@link Dirt} {@link Position}sget
 	 */
 	public Collection<Position> getDirtPositions() {
 		Collection<Position> dirts = new HashSet<>();
@@ -187,6 +173,22 @@ public class VacuumWorldGridContent {
 			}
 		});
 		return dirts;
+	}
+	
+	/**
+	 * Gets all {@link Appearance}s of the {@link Agent}s that this
+	 * {@link Agent} can currently see.
+	 * 
+	 * @return other {@link Agent} {@link Appearance}s
+	 */
+	public Collection<VacuumWorldAgentAppearance> getAgents() {
+		Collection<VacuumWorldAgentAppearance> agents = new ArrayList<>();
+		view.values().forEach((t) -> {
+			if (t.containsAgent()) {
+				agents.add(t.getAgent());
+			}
+		});
+		return agents;
 	}
 
 	@Override

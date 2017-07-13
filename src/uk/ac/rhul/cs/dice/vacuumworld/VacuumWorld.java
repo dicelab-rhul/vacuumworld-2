@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
@@ -60,10 +61,19 @@ public class VacuumWorld {
 	}
 
 	public static void main(String[] args) throws Exception {
+		start();
+	}
+	
+	public static void start() {
 		VacuumWorldUniverse universe = new VacuumWorldUniverse(
 				new VacuumWorldAmbient(null, null, null, null),
 				new VacuumWorldPhysics(), POSSIBLEACTIONS);
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 		VacuumWorldView view = new VacuumWorldView();
 		new VacuumWorldController(view, universe);
 	}

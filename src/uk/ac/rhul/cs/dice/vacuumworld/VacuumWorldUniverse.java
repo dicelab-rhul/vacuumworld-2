@@ -44,7 +44,6 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 			Collection<VacuumWorldAgent> agents, Collection<Dirt> dirts,
 			Collection<VacuumWorldAvatar> avatars) {
 		if (this.getAmbient().getGrid() != null) {
-			System.out.println("clearing");
 			this.getAmbient().clear();
 			this.getSubscriber().clearSensorSubscriptions();
 		}

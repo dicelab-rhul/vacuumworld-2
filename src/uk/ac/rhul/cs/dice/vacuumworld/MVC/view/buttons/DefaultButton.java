@@ -18,7 +18,7 @@ public class DefaultButton extends CustomButton {
 	}
 
 	private static BufferedImage loadButtonImage(String imgname) {
-		return VacuumWorldView.loadImage(VacuumWorldView.PATH + imgname
+		return VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH + imgname
 				+ VacuumWorldView.EXTENSION);
 	}
 }

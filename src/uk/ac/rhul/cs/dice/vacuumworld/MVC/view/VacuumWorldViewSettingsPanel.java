@@ -5,14 +5,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -21,18 +19,16 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
 
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.DefaultButton;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 
 public class VacuumWorldViewSettingsPanel extends JPanel implements
 		MouseListener {
 
 	private static final long serialVersionUID = 1252849880132919023L;
-	private static final String AVATARBUTTONFILENAME = "avatar_button";
+	// private static final String AVATARBUTTONFILENAME = "avatar_button";
 	private static final String DONEBUTTONFILENAME = "done_button";
 	private static final String SAVEBUTTONFILENAME = "save_button";
 	private static final String LOADBUTTONFILENAME = "load_button";
@@ -52,8 +48,8 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 	private SettingsButton donebtn;
 	private SettingsButton loadbtn;
 
-	private Integer gridDimension = VacuumWorldController.DEFAULTGRIDDIMENSION;
-	private Integer simulationRate = VacuumWorldController.DEFAULTSIMULATIONRATE;
+	private Integer gridDimension;
+	private Integer simulationRate;
 
 	public VacuumWorldViewSettingsPanel(OnClick save, OnClick load, OnClick done) {
 		this.addMouseListener(this);
@@ -120,14 +116,10 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		combopanel.setPreferredSize(new Dimension(100, 100));
 		dimensiontf.addPropertyChangeListener("value",
 				new DimensionPropertyListener());
-		dimensiontf.setText(String
-				.valueOf(VacuumWorldController.DEFAULTGRIDDIMENSION));
-		simulationRatetf.setText(String
-				.valueOf(VacuumWorldController.DEFAULTSIMULATIONRATE));
+		dimensiontf.setText(String.valueOf(this.gridDimension));
+		simulationRatetf.setText(String.valueOf(this.simulationRate));
 		simulationRatetf.addPropertyChangeListener("value",
 				new SimulationRatePropertyListener());
-		this.gridDimension = VacuumWorldController.DEFAULTGRIDDIMENSION;
-
 		Font labelFont = new Font("Arial", Font.PLAIN, 14);
 		JLabel gl = new JLabel("Green Mind: ");
 		gl.setFont(labelFont);
@@ -213,6 +205,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 
 	public void setGridDimension(Integer gridDimension) {
 		this.gridDimension = gridDimension;
+		this.dimensiontf.setValue(gridDimension);
 	}
 
 	public Integer getSimulationRate() {
@@ -221,6 +214,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 
 	public void setSimulationRate(Integer simulationRate) {
 		this.simulationRate = simulationRate;
+		this.simulationRatetf.setValue(simulationRate);
 	}
 
 	public void setGreenClass(Class<?> c) {
@@ -254,9 +248,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 			if (evt.getNewValue() != null) {
 				simulationRate = Integer.valueOf(evt.getNewValue().toString());
 			} else {
-				simulationRate = VacuumWorldController.DEFAULTSIMULATIONRATE;
-				simulationRatetf
-						.setValue(VacuumWorldController.DEFAULTSIMULATIONRATE);
+				simulationRatetf.setValue(simulationRate);
 			}
 		}
 	}
@@ -267,9 +259,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 			if (evt.getNewValue() != null) {
 				gridDimension = Integer.valueOf(evt.getNewValue().toString());
 			} else {
-				gridDimension = VacuumWorldController.DEFAULTGRIDDIMENSION;
-				dimensiontf
-						.setValue(VacuumWorldController.DEFAULTGRIDDIMENSION);
+				dimensiontf.setValue(gridDimension);
 			}
 		}
 	}

@@ -9,7 +9,6 @@ import java.util.Observable;
 
 import uk.ac.rhul.cs.dice.starworlds.MVC.AbstractViewController;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
@@ -25,8 +24,6 @@ import uk.ac.rhul.cs.dice.vacuumworld.utilities.AgentMindFinder;
 
 public class VacuumWorldController extends AbstractViewController {
 
-	public static final Integer DEFAULTGRIDDIMENSION = 20;
-	public static final Integer DEFAULTSIMULATIONRATE = 100;
 	public static final Integer MAXGRIDSIZE = 100;
 	public static final Integer MINGRIDSIZE = 2;
 	public static final Boolean SINGLEAVATAR = true;
@@ -44,7 +41,6 @@ public class VacuumWorldController extends AbstractViewController {
 		}
 		System.out.println("POSSIBLE MINDS: " + POSSIBLEMINDS);
 		System.out.println("POSSIBLE AGENT MINDS: " + POSSIBLEAGENTMINDS);
-
 	}
 	private VacuumWorldView view;
 	private Collection<VacuumWorldAvatarLink> avatarlinks;
@@ -80,7 +76,7 @@ public class VacuumWorldController extends AbstractViewController {
 		if (universeThread != null) {
 			// wait for the thread to finish
 			try {
-				System.out.println("Waiting for join");
+				//System.out.println("Waiting for join");
 				universeThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -134,7 +130,6 @@ public class VacuumWorldController extends AbstractViewController {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("update");
 	}
 
 	public class UniversePause {

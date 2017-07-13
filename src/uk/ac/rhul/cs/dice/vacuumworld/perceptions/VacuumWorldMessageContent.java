@@ -22,4 +22,9 @@ public class VacuumWorldMessageContent implements Payload<String> {
 		return message;
 	}
 
+	@Override
+	public String toString() {
+		return "Message: " + this.message;
+	}
+
 }

@@ -15,10 +15,8 @@ import java.util.zip.ZipInputStream;
 
 public class ClassFinder {
 
-	private static final String BIN = "bin";
 	private static final String CLASSEXTENSION = ".class";
 	private static final String JAR = ".jar";
-	private static final URLClassLoader LOADER = new URLClassLoader(new URL[0]);
 
 	public static Collection<Class<?>> findAllClasses() throws IOException,
 			ClassNotFoundException {
@@ -26,7 +24,7 @@ public class ClassFinder {
 		ClassLoader loader = ClassLoader.getSystemClassLoader();
 		URL[] urls = ((URLClassLoader) loader).getURLs();
 		for (URL u : urls) {
-			System.out.println(u);
+			System.out.println(ClassFinder.class.getSimpleName() + " : " + u);
 			try {
 				File root = new File(u.toURI());
 				Collection<String> names;
@@ -59,6 +57,7 @@ public class ClassFinder {
 				names.add(name.replace('/', '.'));
 			}
 		}
+		zip.close();
 		return names;
 	}
 
@@ -121,12 +120,12 @@ public class ClassFinder {
 		}
 	}
 
-	private static class FileFilter implements FilenameFilter {
-		@Override
-		public boolean accept(File current, String name) {
-			return new File(current, name).isFile();
-		}
-	}
+	// private static class FileFilter implements FilenameFilter {
+	// @Override
+	// public boolean accept(File current, String name) {
+	// return new File(current, name).isFile();
+	// }
+	// }
 
 	private static class DirectoryFilter implements FilenameFilter {
 		@Override
