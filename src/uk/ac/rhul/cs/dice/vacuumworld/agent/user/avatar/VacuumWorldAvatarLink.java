@@ -31,11 +31,11 @@ public class VacuumWorldAvatarLink
 			this.addMapping(KeyEvent.VK_A, TurnAction.class,
 					TurnDirection.class);
 			this.mapDefaultArguments(KeyEvent.VK_A, TurnDirection.LEFT);
-		
+
 			this.addMapping(KeyEvent.VK_D, TurnAction.class,
 					TurnDirection.class);
 			this.mapDefaultArguments(KeyEvent.VK_D, TurnDirection.RIGHT);
-			
+
 			this.addMapping(KeyEvent.VK_W, MoveAction.class);
 
 			this.addMapping(KeyEvent.VK_SPACE, PlaceDirtAction.class);
@@ -48,6 +48,14 @@ public class VacuumWorldAvatarLink
 		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void destroy() {
+		this.getMind().destoryLink();
+	}
+
+	public void relink() {
+		this.getMind().link();
 	}
 
 	@Override

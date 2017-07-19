@@ -6,8 +6,7 @@ import java.util.Collection;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
+import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
@@ -15,15 +14,11 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Listeni
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.Avatar;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController;
 import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.CleanAction;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.PlaceDirtAction;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldMind;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldSeeingSensor;
@@ -33,13 +28,19 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatar;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelfishAvatarMind;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelflessAvatarMind;
 
+/**
+ * The entry point of Vacuum World.
+ * 
+ * @author Ben Wilkins
+ * @author Kostas Stathis
+ */
 public class VacuumWorld {
 
-	public final static Double VERSION = 1.5;
+	public final static Double VERSION = 2.0;
 
-	private final static Collection<Class<? extends AbstractEnvironmentalAction>> POSSIBLEACTIONS = new ArrayList<>();
 	private final static Collection<Class<?>> SENSORS = new ArrayList<>();
 	private final static Collection<Class<?>> ACTUATORS = new ArrayList<>();
+
 	public final static Class<? extends VacuumWorldMind> DEFAULTMIND = VacuumWorldExampleMind.class;
 	public final static Class<? extends VacuumWorldMind> USERMIND = VacuumWorldUserMind.class;
 
@@ -52,22 +53,27 @@ public class VacuumWorld {
 		SENSORS.add(ListeningSensor.class);
 		ACTUATORS.add(SpeechActuator.class);
 		ACTUATORS.add(PhysicalActuator.class);
-		POSSIBLEACTIONS.add(CleanAction.class);
-		POSSIBLEACTIONS.add(TurnAction.class);
-		POSSIBLEACTIONS.add(MoveAction.class);
-		POSSIBLEACTIONS.add(CommunicationAction.class);
-		POSSIBLEACTIONS.add(VacuumWorldSensingAction.class);
-		POSSIBLEACTIONS.add(PlaceDirtAction.class);
+
 	}
 
+	/**
+	 * Entry point of {@link VacuumWorld}.
+	 * 
+	 * @param args
+	 *            : none
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		start();
 	}
-	
+
+	/**
+	 * Starts {@link VacuumWorld}.
+	 */
 	public static void start() {
 		VacuumWorldUniverse universe = new VacuumWorldUniverse(
 				new VacuumWorldAmbient(null, null, null, null),
-				new VacuumWorldPhysics(), POSSIBLEACTIONS);
+				new VacuumWorldPhysics());
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
@@ -78,6 +84,13 @@ public class VacuumWorld {
 		new VacuumWorldController(view, universe);
 	}
 
+	/**
+	 * Creates a {@link VacuumWorldAvatar}.
+	 * 
+	 * @param mind
+	 *            : of the {@link Avatar}
+	 * @return a new {@link VacuumWorldAvatar}
+	 */
 	public static VacuumWorldAvatar createAvatar(
 			Class<? extends AbstractAvatarMind<VacuumWorldAction>> mind) {
 		return new VacuumWorldAvatar(AgentFactory.getInstance().constructEmpty(
@@ -86,6 +99,13 @@ public class VacuumWorld {
 				.getInstance().constructEmpty(mind));
 	}
 
+	/**
+	 * Creates a {@link VacuumWorldAgent}
+	 * 
+	 * @param mind
+	 *            : of the {@link Agent}
+	 * @return a new {@link VacuumWorldAgent}
+	 */
 	public static VacuumWorldAgent createVacuumWorldAgent(Class<?> mind) {
 		return new VacuumWorldAgent(AgentFactory.getInstance().constructEmpty(
 				SENSORS, Sensor.class), AgentFactory.getInstance()

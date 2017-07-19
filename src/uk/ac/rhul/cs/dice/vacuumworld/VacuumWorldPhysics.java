@@ -3,24 +3,59 @@ package uk.ac.rhul.cs.dice.vacuumworld;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
+import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldAmbient.PerceptionQuery;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.CleanAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.PlaceDirtAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldCommunicationAction;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldSeeingSensor;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 
+/**
+ * The {@link Physics} of {@link VacuumWorld}. Contain all the necessary
+ * {@link Action} methods etc. The possible {@link Action}s in
+ * {@link VacuumWorld} defined by this {@link Physics} are: </br>
+ * <ul>
+ * <li> {@link CleanAction}
+ * <li> {@link MoveAction}
+ * <li> {@link TurnAction}
+ * <li> {@link PlaceDirtAction}
+ * <li> {@link VacuumWorldCommunicationAction}
+ * <li> {@link VacuumWorldSensingAction}
+ * </ul>
+ * All of which are subclasses of {@link VacuumWorldAction}. </br> The
+ * {@link Perception} that all {@link Agent}s receive, provided by
+ * {@link VacuumWorldPhysics#activeBodyPerceive(ActiveBodyAppearance, Action, Ambient)}
+ * is a {@link VacuumWorldGridPerception} whose content is
+ * {@link VacuumWorldGridContent}, see {@link PerceptionQuery}.
+ * 
+ * @author Ben Wilkins
+ * @author Kostas Stathis
+ *
+ */
 public class VacuumWorldPhysics extends AbstractPhysics {
 
+	/**
+	 * Constructor.
+	 */
 	public VacuumWorldPhysics() {
 		super();
 	}
@@ -34,7 +69,6 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 					;
 				this.getEnvironment().setPausedSafe(false);
 			}
-
 			System.out.println("******* CYCLE *******");
 			cycle();
 			this.getEnvironment().updateView();
@@ -47,10 +81,19 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 		return super.perceivable(sensor, perception, context);
 	}
 
+	@Override
+	public Collection<AbstractPerception<?>> activeBodyPerceive(
+			ActiveBodyAppearance body, Action action, Ambient context) {
+		Collection<AbstractPerception<?>> p = getPerceptions(
+				(AbstractEnvironmentalAction) action,
+				(VacuumWorldAmbient) context);
+		return p;
+	}
+
 	public Collection<AbstractPerception<?>> getPerceptions(
-			AbstractEnvironmentalAction action, VacuumWorldAmbient ambient) {
+			AbstractEnvironmentalAction action, VacuumWorldAmbient context) {
 		Collection<AbstractPerception<?>> percepts = new ArrayList<>();
-		percepts.add(new VacuumWorldGridPerception(ambient
+		percepts.add(new VacuumWorldGridPerception(context
 				.getAgentPerception(action)));
 		return percepts;
 	}
@@ -73,7 +116,8 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 		if (action.getActor().getColor() == BodyColor.getUserColor()
 				|| action.getActor().getColor() == BodyColor.getAvatarColor()) {
 			VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
-			return !ambient.containsDirt(action.getActor().getPosition());
+			return !ambient.getGrid().containsDirt(
+					action.getActor().getPosition());
 		}
 		return false;
 	}
@@ -107,7 +151,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 	public boolean isPossible(CleanAction action, Ambient context) {
 		VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
 		VacuumWorldAgentAppearance actor = action.getActor();
-		if (ambient.containsDirt(actor.getPosition())) {
+		if (ambient.getGrid().containsDirt(actor.getPosition())) {
 			return actor.getColor()
 					.canClean(
 							ambient.getDirt(action.getActor().getPosition())
@@ -177,15 +221,15 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 		Orientation o = action.getActor().getOrientation();
 		Position p = action.getActor().getPosition();
 		opt = new Position(p.getX() + o.getI(), p.getY() + o.getJ());
-		if (!s.outOfBounds(opt)) {
-			return !s.containsAgent(opt);
+		if (!s.getGrid().outOfBounds(opt)) {
+			return !s.getGrid().containsAgent(opt);
 		}
 		return false;
 	}
 
 	public boolean perform(MoveAction action, Ambient context) {
 		VacuumWorldAmbient s = (VacuumWorldAmbient) context;
-		s.moveAgent(action.getActor(), opt);
+		s.getGrid().moveAgent(action.getActor(), opt);
 		return true;
 	}
 

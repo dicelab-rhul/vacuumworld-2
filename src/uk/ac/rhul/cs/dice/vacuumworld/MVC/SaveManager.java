@@ -30,7 +30,7 @@ public class SaveManager {
 	static {
 		File savepath = null;
 		try {
-			savepath = new File(new File("").getCanonicalPath() + "\\save\\");
+			savepath = new File(new File("").getCanonicalPath(), "save");
 		} catch (IOException e) {
 			System.err.println("Something went wrong finding save path");
 			e.printStackTrace();
@@ -46,7 +46,8 @@ public class SaveManager {
 
 	public static StartParameters loadDefault() throws ClassNotFoundException,
 			IOException {
-		File f = new File(SAVEPATH + "\\" + DEFAULTSAVEFILE + SAVEEXTENSION);
+		File f = new File(SAVEPATH.getCanonicalPath(), DEFAULTSAVEFILE
+				+ SAVEEXTENSION);
 		if (f.isFile()) {
 			System.out.println("Loading default file: " + f);
 			return (StartParameters) Loader.load(f);

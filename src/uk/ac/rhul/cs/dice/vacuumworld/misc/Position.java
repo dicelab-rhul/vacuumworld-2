@@ -50,8 +50,6 @@ public class Position implements ReadOnlyInterface<PositionReadOnly>,
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Position other = (Position) obj;
 		if (x == null) {
 			if (other.x != null)

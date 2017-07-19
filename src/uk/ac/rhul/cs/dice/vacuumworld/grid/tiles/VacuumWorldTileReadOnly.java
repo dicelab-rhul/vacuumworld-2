@@ -22,11 +22,4 @@ public class VacuumWorldTileReadOnly extends VacuumWorldTile {
 	public void setDirt(DirtAppearance dirt) {
 		ReadOnlyWrap.nicetry(this.getClass().getSimpleName() + " dirt");
 	}
-
-	@Override
-	public String toString() {
-		return ((this.containsAgent() || this.containsDirt()) ? "READONLY: "
-				: "") + super.toString();
-	}
-
 }

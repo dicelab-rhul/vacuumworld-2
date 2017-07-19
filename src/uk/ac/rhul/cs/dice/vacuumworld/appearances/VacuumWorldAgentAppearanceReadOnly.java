@@ -58,9 +58,4 @@ public class VacuumWorldAgentAppearanceReadOnly extends
 	public void setPosition(Position position) {
 		ReadOnlyWrap.nicetry(this.getClass().getSimpleName() + " position");
 	}
-
-	@Override
-	public String toString() {
-		return "READONLY:" + super.toString();
-	}
 }

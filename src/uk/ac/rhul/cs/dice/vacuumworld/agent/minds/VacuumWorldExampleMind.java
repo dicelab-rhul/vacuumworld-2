@@ -25,12 +25,11 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 			VacuumWorldGridPerception perception,
 			Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
 		if (perception != null) {
-		
 			currentpercept = perception.getPerception();
-			System.out.println(currentpercept);
 		}
+		System.out.println("PERCEPTION: " + currentpercept);
 		for (CommunicationPerception<VacuumWorldMessageContent> m : messages) {
-			System.out.println(this.getId() + "received: "
+			System.out.println(this.getId() + " received message: "
 					+ m.getPerception().getPayload());
 		}
 	}
@@ -53,7 +52,8 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		// check if on some dirt
 		if (super.isDirtOn(currentpercept)) {
 			// the agent is on some dirt
-			DirtAppearance dirt = super.getDirtOn(currentpercept); // get the dirt
+			DirtAppearance dirt = super.getDirtOn(currentpercept); // get the
+			// dirt
 			System.out.println(this.getId() + " is on some dirt!");
 			// check if the agent can clean the dirt
 			if (super.canCleanDirt(dirt)) {
@@ -171,6 +171,7 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 	public VacuumWorldAction execute(VacuumWorldAction action) {
 		currentpercept = null;
 		// returning the action will execute it in the next cycle
+		System.out.println("EXECUTING: " + action);
 		return action;
 	}
 }

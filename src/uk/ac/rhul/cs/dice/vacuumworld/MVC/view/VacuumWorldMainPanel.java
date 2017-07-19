@@ -193,14 +193,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		panel.add(p);
 	}
 
-	// provide the avatar button so it may be removed
-	private void removeAvatarButton(SelectorButton button) {
-		selectionButtonPanel.remove(button);
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		selectionButtonPanel.add(panel, 9);
-	}
-
 	public void dragMove(SelectorButton button, MouseEvent e) {
 		drag.updateImage(button.getImage());
 		drag.setLocation(selectiongrid.snapSelectionBox(SwingUtilities
@@ -214,7 +206,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 				if (VacuumWorldController.SINGLEAVATAR) {
 					if (button.color == BodyColor.AVATAR) {
 						// remove the button
-						removeAvatarButton(button);
+						button.setVisible(false);
 					}
 				}
 				VacuumWorldAgentAppearance app = new VacuumWorldAgentAppearance(
@@ -429,6 +421,8 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
 			unpause();
+			addKeyListener(VacuumWorldMainPanel.this);
+			VacuumWorldMainPanel.this.requestFocus();
 			startparams.agentapps.clear();
 			startparams.dirtapps.clear();
 			settings.showLoadButton();
@@ -436,12 +430,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 			rotate.clear();
 			rotate.setVisible(false);
 			repaint();
+			showSelectionButtons();
 			if (simulating) {
 				simulating = false;
 				// stop the universe
 				view.restart.restart();
 				// clear the view
-				showSelectionButtons();
 				switchToSelectionPanel();
 			}
 		}
@@ -477,6 +471,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	public class PlayOnClick implements OnClick {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
+			requestFocusInWindow(); // to get user input
 			if (!simulating) {
 				simulating = true;
 				view.start(startparams);
@@ -486,7 +481,6 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 				clear();
 				switchToSimulationPanel();
 				removeKeyListener(VacuumWorldMainPanel.this);
-				requestFocusInWindow(); // to get user input
 			} else {
 				if (view.pause.isPaused()) {
 					view.pause.unpause();

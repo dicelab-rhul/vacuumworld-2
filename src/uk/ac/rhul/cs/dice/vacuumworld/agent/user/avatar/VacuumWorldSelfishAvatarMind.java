@@ -18,4 +18,6 @@ public class VacuumWorldSelfishAvatarMind extends
 	public void showAvatarView(Collection<Perception<?>> perceptions) {
 
 	}
+	
+	
 }

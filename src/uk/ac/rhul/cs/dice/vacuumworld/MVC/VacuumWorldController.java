@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.vacuumworld.MVC;
 
+import java.awt.KeyboardFocusManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,9 +75,11 @@ public class VacuumWorldController extends AbstractViewController {
 
 	public void start(StartParameters params) {
 		if (universeThread != null) {
+			avatarlinks.forEach((l) -> l.destroy());
+			avatarlinks.clear();
 			// wait for the thread to finish
 			try {
-				//System.out.println("Waiting for join");
+				// System.out.println("Waiting for join");
 				universeThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -85,11 +88,13 @@ public class VacuumWorldController extends AbstractViewController {
 		Collection<VacuumWorldAgent> agents = new ArrayList<>();
 		Collection<Dirt> dirts = new ArrayList<>();
 		Collection<VacuumWorldAvatar> avatars = new ArrayList<>();
+
 		params.dirtapps.forEach((p, a) -> {
 			Dirt d = new Dirt(a.getColor());
 			d.getAppearance().setPosition(p);
 			dirts.add(d);
 		});
+
 		params.agentapps.forEach((p, a) -> {
 			if (a.getColor() == BodyColor.USER) {
 				agents.add(setUpAgent(VacuumWorld.USERMIND, p, a));

@@ -75,6 +75,23 @@ public class VacuumWorldGridContent {
 	}
 
 	/**
+	 * Gets all of the {@link Position}s that the {@link Agent} can currently
+	 * view. This does not include the {@link Position}s of any walls (as they
+	 * are technically out of bounds).
+	 * 
+	 * @return all {@link Position}s
+	 */
+	public Collection<Position> getAllPositions() {
+		Collection<Position> all = new ArrayList<>();
+		view.forEach((p, t) -> {
+			if (!t.isWall()) {
+				all.add(p);
+			}
+		});
+		return all;
+	}
+
+	/**
 	 * Gets all of the free {@link Position}s in this {@link Agent}s current
 	 * {@link Perception}. That is, all {@link Position}s that have {@link Dirt}
 	 * or nothing in them.
@@ -108,8 +125,6 @@ public class VacuumWorldGridContent {
 		});
 		return filled;
 	}
-
-
 
 	/**
 	 * Gets the {@link Position}s of all the Walls that this {@link Agent} can
@@ -174,7 +189,7 @@ public class VacuumWorldGridContent {
 		});
 		return dirts;
 	}
-	
+
 	/**
 	 * Gets all {@link Appearance}s of the {@link Agent}s that this
 	 * {@link Agent} can currently see.

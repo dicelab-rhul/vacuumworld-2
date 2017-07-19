@@ -100,6 +100,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 
 	public VacuumWorldView() {
 		init(null, DEFAULTWIDTH, DEFAULTHEIGHT, DEFAULTCOLOUR);
+
 		this.setLayout(new BorderLayout());
 		doStartMenu();
 		this.pack();
