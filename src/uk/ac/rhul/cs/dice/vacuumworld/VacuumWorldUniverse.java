@@ -47,9 +47,9 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 		POSSIBLEACTIONS.add(CleanAction.class);
 		POSSIBLEACTIONS.add(TurnAction.class);
 		POSSIBLEACTIONS.add(MoveAction.class);
+		POSSIBLEACTIONS.add(PlaceDirtAction.class);
 		POSSIBLEACTIONS.add(VacuumWorldCommunicationAction.class);
 		POSSIBLEACTIONS.add(VacuumWorldSensingAction.class);
-		POSSIBLEACTIONS.add(PlaceDirtAction.class);
 	}
 
 	private volatile boolean paused = false;
@@ -62,10 +62,11 @@ public class VacuumWorldUniverse extends DefaultSimpleUniverse {
 	 * @param ambient
 	 * @param physics
 	 */
-	public VacuumWorldUniverse(VacuumWorldAmbient ambient,
-			VacuumWorldPhysics physics) {
-		super(ambient, physics, new EnvironmentAppearance(IDFactory
-				.getInstance().getNewID(), false, true), POSSIBLEACTIONS);
+	public VacuumWorldUniverse() {
+		super(new VacuumWorldAmbient(null, null, null, null),
+				new VacuumWorldPhysics(), new EnvironmentAppearance(IDFactory
+						.getInstance().getNewID(), false, true),
+				POSSIBLEACTIONS);
 	}
 
 	/**

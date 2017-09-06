@@ -28,14 +28,14 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  */
 public class VacuumWorldSensingAction extends SensingAction implements
 		VacuumWorldAction {
+	
+	private static final long serialVersionUID = 3191925631824605396L;
 
 	public static final String KEY = VacuumWorldAmbient.GRIDKEY + "."
 			+ VacuumWorldAmbient.PERCEPTIONQUERYKEY;
 
 	@SensiblePerception
 	public static final Class<?> DEFAULTPERCEPTION = ActivePerception.class;
-
-	private static final long serialVersionUID = 3191925631824605396L;
 
 	/**
 	 * Constructor.

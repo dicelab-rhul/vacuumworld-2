@@ -258,6 +258,10 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getNewValue() != null) {
 				gridDimension = Integer.valueOf(evt.getNewValue().toString());
+				if(gridDimension < 1) {
+					gridDimension = 1;
+				}
+				dimensiontf.setValue(gridDimension);
 			} else {
 				dimensiontf.setValue(gridDimension);
 			}

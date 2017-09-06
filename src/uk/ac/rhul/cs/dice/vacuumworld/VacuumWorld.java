@@ -71,9 +71,7 @@ public class VacuumWorld {
 	 * Starts {@link VacuumWorld}.
 	 */
 	public static void start() {
-		VacuumWorldUniverse universe = new VacuumWorldUniverse(
-				new VacuumWorldAmbient(null, null, null, null),
-				new VacuumWorldPhysics());
+		VacuumWorldUniverse universe = new VacuumWorldUniverse();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException

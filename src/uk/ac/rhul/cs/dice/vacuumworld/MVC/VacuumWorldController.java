@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.vacuumworld.MVC;
 
-import java.awt.KeyboardFocusManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;

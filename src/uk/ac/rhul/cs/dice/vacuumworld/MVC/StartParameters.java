@@ -31,6 +31,11 @@ public class StartParameters implements Serializable {
 		this.dirtapps = dirtapps;
 		this.mindmap = mindmap;
 	}
+	
+	public void clearAgentsAndDirts() {
+		dirtapps.clear();
+		agentapps.clear();
+	}
 
 	@Override
 	public String toString() {

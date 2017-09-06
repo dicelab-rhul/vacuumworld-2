@@ -35,13 +35,10 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  */
 public class VacuumWorldAmbient extends AbstractAmbient {
 
-	/**
-	 * The Key for the instance of {@link Grid}.
-	 */
+	/** The Key for the instance of {@link Grid}. */
 	public static final String GRIDKEY = "GRID";
-	/**
-	 * A {@link Query} that will provide {@link VacuumWorldGridContent}.
-	 */
+
+	/** The {@link Query} that will provide {@link VacuumWorldGridContent}. */
 	public static final String PERCEPTIONQUERYKEY = "PERCEPTION";
 
 	/* AmbientAttributes. */
@@ -60,6 +57,8 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
 			Set<AbstractAvatarAgent<?>> avatars) {
 		super(agents, activeBodies, passiveBodies, avatars);
+		grid = new Grid();
+		super.addAmbientAttribute(GRIDKEY, this.grid);
 		super.addQuery(PERCEPTIONQUERYKEY,
 				(perceptionQuery = new PerceptionQuery()));
 	}
@@ -76,10 +75,7 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	 *             this method is called more than once)
 	 */
 	public void initialiseGrid(int dimension) {
-		if (this.grid == null) {
-			grid = new Grid();
-			super.addAmbientAttribute(GRIDKEY, this.grid);
-		}
+		
 		if (grid.isClear()) {
 			grid.setDimension(dimension);
 			grid.fillGrid(this.agents.values(), this.passiveBodies.values(),
@@ -181,7 +177,7 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 
 	/**
 	 * A {@link Query} that takes in the {@link Grid} and provides the limited
-	 * {@link Agent} view of it. This is, the {@link VacuumWorldGridContent} of
+	 * {@link Agent} view of it. That is, the {@link VacuumWorldGridContent} of
 	 * a {@link VacuumWorldGridPerception}.
 	 * 
 	 * @author Ben Wilkins

@@ -16,7 +16,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
 
-public class VacuumWorldExampleMind extends VacuumWorldMind {
+public class VacuumWorldExampleMind extends VacuumWorldMind{
 
 	private VacuumWorldGridContent currentpercept;
 
@@ -27,11 +27,11 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		if (perception != null) {
 			currentpercept = perception.getPerception();
 		}
-		System.out.println("PERCEPTION: " + currentpercept);
-		for (CommunicationPerception<VacuumWorldMessageContent> m : messages) {
-			System.out.println(this.getId() + " received message: "
-					+ m.getPerception().getPayload());
-		}
+		//System.out.println("PERCEPTION: " + currentpercept);
+//		for (CommunicationPerception<VacuumWorldMessageContent> m : messages) {
+//			System.out.println(this.getId() + " received message: "
+//					+ m.getPerception().getPayload());
+//		}
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 	public VacuumWorldAction execute(VacuumWorldAction action) {
 		currentpercept = null;
 		// returning the action will execute it in the next cycle
-		System.out.println("EXECUTING: " + action);
+		// System.out.println("EXECUTING: " + action);
 		return action;
 	}
 }

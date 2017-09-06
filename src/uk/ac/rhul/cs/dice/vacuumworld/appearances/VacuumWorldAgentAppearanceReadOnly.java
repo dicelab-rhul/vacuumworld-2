@@ -13,6 +13,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 public class VacuumWorldAgentAppearanceReadOnly extends
 		VacuumWorldAgentAppearance {
 
+	private static final String APPEARANCETOSTRING = "VacuumWorldAgent{";
 	private static final long serialVersionUID = 3495451081936308325L;
 
 	public VacuumWorldAgentAppearanceReadOnly(
@@ -57,5 +58,11 @@ public class VacuumWorldAgentAppearanceReadOnly extends
 	@Override
 	public void setPosition(Position position) {
 		ReadOnlyWrap.nicetry(this.getClass().getSimpleName() + " position");
+	}
+	
+	@Override
+	public String toString() {
+		return APPEARANCETOSTRING + getColor() + ","  + getPosition() + ","
+				 + getOrientation() + "}";
 	}
 }

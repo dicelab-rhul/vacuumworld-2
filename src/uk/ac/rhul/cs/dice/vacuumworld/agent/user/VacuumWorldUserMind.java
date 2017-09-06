@@ -30,7 +30,6 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 			VacuumWorldGridPerception gridperception,
 			Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
 		if (gridperception != null) {
-			
 			actionfailed = false;
 			currentpercept = gridperception.getPerception();
 		} else {

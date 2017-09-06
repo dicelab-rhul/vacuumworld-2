@@ -356,7 +356,10 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
 			unpause();
-			selectiongrid.setGridDimension(settings.getGridDimension());
+			if(selectiongrid.getGriddimension() != settings.getGridDimension()) {
+				selectiongrid.setGridDimension(settings.getGridDimension());
+				startparams.clearAgentsAndDirts();
+			}
 			startparams.dimension = settings.getGridDimension();
 			startparams.simulationRate = settings.getSimulationRate();
 			startparams.mindmap = getMindMap();

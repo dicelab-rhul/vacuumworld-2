@@ -18,10 +18,11 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class MoveAction extends PhysicalAction implements VacuumWorldAction {
-	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
 	private static final long serialVersionUID = -541182028589848248L;
+
+	@SensiblePerception
+	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
 	@Override
 	public VacuumWorldAgentAppearance getActor() {
