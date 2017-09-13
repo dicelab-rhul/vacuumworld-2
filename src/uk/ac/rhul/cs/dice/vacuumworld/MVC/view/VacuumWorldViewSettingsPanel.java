@@ -247,6 +247,9 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getNewValue() != null) {
 				simulationRate = Integer.valueOf(evt.getNewValue().toString());
+				if(simulationRate < 0) {
+					simulationRate = 0;
+				}
 			} else {
 				simulationRatetf.setValue(simulationRate);
 			}
