@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.actions;
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.Avatar;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.AbstractSubscriptionHandler.SensiblePerception;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.VacuumWorldUserMind;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
