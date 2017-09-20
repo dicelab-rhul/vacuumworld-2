@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -187,8 +188,8 @@ public class VacuumWorldView extends JFrame implements Observer {
 
 		public BufferedImage loadImage(String file) {
 			try {
-				return ImageIO.read(this.getClass().getClassLoader()
-						.getResourceAsStream(file));
+				//return ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(file));
+			    return ImageIO.read(new File(file));
 			} catch (IOException e) {
 				System.err.println("CANNOT FIND IMAGE FILE: " + file);
 				e.printStackTrace();
