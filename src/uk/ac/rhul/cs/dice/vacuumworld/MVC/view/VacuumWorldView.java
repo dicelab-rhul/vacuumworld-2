@@ -193,8 +193,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 			try {
 				// for some reason this is not working inside eclipse, however
 				// it works inside a jar
-				InputStream s = this.getClass().getClassLoader()
-						.getResourceAsStream(file);
+				InputStream s = this.getClass().getClassLoader().getResourceAsStream(file.replace("res/", ""));
 				if (s == null) {
 					return ImageIO.read(new File(file));
 				}
