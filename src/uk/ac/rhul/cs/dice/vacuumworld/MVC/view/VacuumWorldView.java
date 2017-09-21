@@ -7,7 +7,9 @@ import java.awt.Dimension;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -31,154 +33,177 @@ import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldView extends JFrame implements Observer {
 
-    static Map<BodyColor, Map<Orientation, BufferedImage>> AGENTIMAGES;
-    static Map<BodyColor, BufferedImage> DIRTIMAGES;
-    private final static Color AVATARCOLOR = new Color(50, 100, 220);
-    public final static String EXTENSION = ".png";
-    public static final String IMGPATH = "imgs/";
-    public static final String CONTROLIMGDIR = "control/";
-    public static final ImageLoader IMGLOADER = new ImageLoader();
+	static Map<BodyColor, Map<Orientation, BufferedImage>> AGENTIMAGES;
+	static Map<BodyColor, BufferedImage> DIRTIMAGES;
+	private final static Color AVATARCOLOR = new Color(50, 100, 220);
+	public final static String EXTENSION = ".png";
+	public static final String IMGPATH = "res/imgs/";
+	public static final String CONTROLIMGDIR = "control/";
+	public static final ImageLoader IMGLOADER = new ImageLoader();
 
-    static {
-	AGENTIMAGES = new HashMap<>();
-	for (BodyColor c : BodyColor.getRealImageValues()) {
-	    String color = IMGPATH + c.toString().toLowerCase() + "_";
-	    Map<Orientation, BufferedImage> map = new HashMap<>();
-	    AGENTIMAGES.put(c, map);
-	    for (Orientation o : Orientation.values()) {
-		map.put(o, IMGLOADER.loadImage(color + o.toString().toLowerCase() + EXTENSION));
-	    }
+	static {
+		AGENTIMAGES = new HashMap<>();
+		for (BodyColor c : BodyColor.getRealImageValues()) {
+			String color = IMGPATH + c.toString().toLowerCase() + "_";
+			Map<Orientation, BufferedImage> map = new HashMap<>();
+			AGENTIMAGES.put(c, map);
+			for (Orientation o : Orientation.values()) {
+				System.out.println(color + o.toString().toLowerCase()
+						+ EXTENSION);
+				map.put(o,
+						IMGLOADER.loadImage(color + o.toString().toLowerCase()
+								+ EXTENSION));
+			}
+		}
+
+		// do avatar image
+		Map<Orientation, BufferedImage> usermap = AGENTIMAGES
+				.get(BodyColor.USER);
+		Map<Orientation, BufferedImage> map = new HashMap<>();
+		AGENTIMAGES.put(BodyColor.AVATAR, map);
+		usermap.forEach((o, b) -> {
+			BufferedImage u = ImageUtilities.getOverlayedImage(b, AVATARCOLOR,
+					0.5f);
+			map.put(o, u);
+		});
+
+		DIRTIMAGES = new HashMap<>();
+		DIRTIMAGES.put(
+				BodyColor.GREEN,
+				IMGLOADER.loadImage(IMGPATH
+						+ BodyColor.GREEN.toString().toLowerCase() + "_dirt"
+						+ EXTENSION));
+		DIRTIMAGES.put(
+				BodyColor.ORANGE,
+				IMGLOADER.loadImage(IMGPATH
+						+ BodyColor.ORANGE.toString().toLowerCase() + "_dirt"
+						+ EXTENSION));
 	}
 
-	// do avatar image
-	Map<Orientation, BufferedImage> usermap = AGENTIMAGES.get(BodyColor.USER);
-	Map<Orientation, BufferedImage> map = new HashMap<>();
-	AGENTIMAGES.put(BodyColor.AVATAR, map);
-	usermap.forEach((o, b) -> {
-	    BufferedImage u = ImageUtilities.getOverlayedImage(b, AVATARCOLOR, 0.5f);
-	    map.put(o, u);
-	});
+	static final int DEFAULTWIDTH = 500, DEFAULTHEIGHT = 500;
+	static final int SIDEPANELWIDTH = 250;
+	static final int MAINWIDTH = DEFAULTWIDTH + SIDEPANELWIDTH;
 
-	DIRTIMAGES = new HashMap<>();
-	DIRTIMAGES.put(BodyColor.GREEN,
-		IMGLOADER.loadImage(IMGPATH + BodyColor.GREEN.toString().toLowerCase() + "_dirt" + EXTENSION));
-	DIRTIMAGES.put(BodyColor.ORANGE,
-		IMGLOADER.loadImage(IMGPATH + BodyColor.ORANGE.toString().toLowerCase() + "_dirt" + EXTENSION));
-    }
+	static final Dimension DEFAULTDIMENSION = new Dimension(DEFAULTWIDTH,
+			DEFAULTHEIGHT);
+	static final Dimension MAINDIMENSION = new Dimension(MAINWIDTH,
+			DEFAULTHEIGHT);
+	static final Dimension SIDEPANELDIMENSION = new Dimension(SIDEPANELWIDTH,
+			DEFAULTHEIGHT);
 
-    static final int DEFAULTWIDTH = 500, DEFAULTHEIGHT = 500;
-    static final int SIDEPANELWIDTH = 250;
-    static final int MAINWIDTH = DEFAULTWIDTH + SIDEPANELWIDTH;
+	static final Color DEFAULTCOLOUR = Color.WHITE;
+	static final long serialVersionUID = 1L;
 
-    static final Dimension DEFAULTDIMENSION = new Dimension(DEFAULTWIDTH, DEFAULTHEIGHT);
-    static final Dimension MAINDIMENSION = new Dimension(MAINWIDTH, DEFAULTHEIGHT);
-    static final Dimension SIDEPANELDIMENSION = new Dimension(SIDEPANELWIDTH, DEFAULTHEIGHT);
+	protected VacuumWorldAmbient model;
+	protected JPanel contentpanel;
+	protected VacuumWorldMainPanel mainpanel;
+	protected VacuumWorldViewStartMenu startmenu;
+	protected UniverseStart start;
+	protected UniversePause pause;
+	protected UniverseRestart restart;
 
-    static final Color DEFAULTCOLOUR = Color.WHITE;
-    static final long serialVersionUID = 1L;
+	public VacuumWorldView() {
+		init(null, DEFAULTWIDTH, DEFAULTHEIGHT, DEFAULTCOLOUR);
 
-    protected VacuumWorldAmbient model;
-    protected JPanel contentpanel;
-    protected VacuumWorldMainPanel mainpanel;
-    protected VacuumWorldViewStartMenu startmenu;
-    protected UniverseStart start;
-    protected UniversePause pause;
-    protected UniverseRestart restart;
-
-    public VacuumWorldView() {
-	init(null, DEFAULTWIDTH, DEFAULTHEIGHT, DEFAULTCOLOUR);
-
-	this.setLayout(new BorderLayout());
-	doStartMenu();
-	this.pack();
-    }
-
-    private void init(Container contentPane, int width, int height, Color background) {
-	if (contentPane != null) {
-	    this.setContentPane(contentPane);
+		this.setLayout(new BorderLayout());
+		doStartMenu();
+		this.pack();
 	}
-	this.setTitle(VacuumWorld.class.getSimpleName());
-	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	this.getContentPane().setPreferredSize(new Dimension(width, height));
-	this.getContentPane().setBackground(background);
-	this.setVisible(true);
-	this.pack();
-    }
 
-    private void doStartMenu() {
-	startmenu = new VacuumWorldViewStartMenu(IMGLOADER.loadImage(IMGPATH + "start_menu" + EXTENSION),
-		new StartMenuOnClick());
-	startmenu.setPreferredSize(DEFAULTDIMENSION);
-	this.getContentPane().add(startmenu);
-    }
+	private void init(Container contentPane, int width, int height,
+			Color background) {
+		if (contentPane != null) {
+			this.setContentPane(contentPane);
+		}
+		this.setTitle(VacuumWorld.class.getSimpleName());
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.getContentPane().setPreferredSize(new Dimension(width, height));
+		this.getContentPane().setBackground(background);
+		this.setVisible(true);
+		this.pack();
+	}
 
-    public void start(StartParameters params) {
-	start.start(params);
-    }
+	private void doStartMenu() {
+		startmenu = new VacuumWorldViewStartMenu(IMGLOADER.loadImage(IMGPATH
+				+ "start_menu" + EXTENSION), new StartMenuOnClick());
+		startmenu.setPreferredSize(DEFAULTDIMENSION);
+		this.getContentPane().add(startmenu);
+	}
 
-    private void loadMainPanel() {
-	mainpanel = new VacuumWorldMainPanel(this);
-	mainpanel.setOpaque(true);
-	mainpanel.initialise();
-	this.getContentPane().setPreferredSize(MAINDIMENSION);
-	this.getContentPane().add(mainpanel, BorderLayout.CENTER);
-	this.revalidate();
-	this.repaint();
-	this.pack();
-	mainpanel.requestFocusInWindow();
-    }
+	public void start(StartParameters params) {
+		start.start(params);
+	}
 
-    public synchronized void addKeyListenerToMainPanel(KeyListener l) {
-	mainpanel.addKeyListener(l);
-    }
+	private void loadMainPanel() {
+		mainpanel = new VacuumWorldMainPanel(this);
+		mainpanel.setOpaque(true);
+		mainpanel.initialise();
+		this.getContentPane().setPreferredSize(MAINDIMENSION);
+		this.getContentPane().add(mainpanel, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
+		this.pack();
+		mainpanel.requestFocusInWindow();
+	}
 
-    @Override
-    public void update(Observable o, Object arg) {
-	this.repaint();
-    }
+	public synchronized void addKeyListenerToMainPanel(KeyListener l) {
+		mainpanel.addKeyListener(l);
+	}
 
-    public class StartMenuOnClick implements OnClick {
 	@Override
-	public void onClick(Clickable arg, MouseEvent e) {
-	    VacuumWorldView.this.start();
-	}
-    }
-
-    private void start() {
-	this.getContentPane().remove(startmenu);
-	this.repaint();
-	loadMainPanel();
-    }
-
-    public void setModel(VacuumWorldAmbient model) {
-	this.model = model;
-    }
-
-    public void setUniverseStart(UniverseStart start) {
-	this.start = start;
-    }
-
-    public void setUniversePause(UniversePause pause) {
-	this.pause = pause;
-    }
-
-    public void setUniverseRestart(UniverseRestart restart) {
-	this.restart = restart;
-    }
-
-    public static class ImageLoader {
-
-	public ImageLoader() {
+	public void update(Observable o, Object arg) {
+		this.repaint();
 	}
 
-	public BufferedImage loadImage(String file) {
-	    try {
-		return ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(file));
-	    } catch (IOException e) {
-		System.err.println("CANNOT FIND IMAGE FILE: " + file);
-		e.printStackTrace();
-	    }
-	    return null;
+	public class StartMenuOnClick implements OnClick {
+		@Override
+		public void onClick(Clickable arg, MouseEvent e) {
+			VacuumWorldView.this.start();
+		}
 	}
-    }
+
+	private void start() {
+		this.getContentPane().remove(startmenu);
+		this.repaint();
+		loadMainPanel();
+	}
+
+	public void setModel(VacuumWorldAmbient model) {
+		this.model = model;
+	}
+
+	public void setUniverseStart(UniverseStart start) {
+		this.start = start;
+	}
+
+	public void setUniversePause(UniversePause pause) {
+		this.pause = pause;
+	}
+
+	public void setUniverseRestart(UniverseRestart restart) {
+		this.restart = restart;
+	}
+
+	public static class ImageLoader {
+
+		public ImageLoader() {
+		}
+
+		public BufferedImage loadImage(String file) {
+			try {
+				// for some reason this is not working inside eclipse, however
+				// it works inside a jar
+				InputStream s = this.getClass().getClassLoader()
+						.getResourceAsStream(file);
+				if (s == null) {
+					return ImageIO.read(new File(file));
+				}
+				return ImageIO.read(s);
+			} catch (IOException e) {
+				System.err.println("CANNOT FIND IMAGE FILE: " + file);
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
 }

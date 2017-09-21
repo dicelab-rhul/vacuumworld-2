@@ -75,7 +75,7 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	 *             this method is called more than once)
 	 */
 	public void initialiseGrid(int dimension) {
-		
+
 		if (grid.isClear()) {
 			grid.setDimension(dimension);
 			grid.fillGrid(this.agents.values(), this.passiveBodies.values(),
