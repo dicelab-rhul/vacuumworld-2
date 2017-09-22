@@ -26,3 +26,10 @@ There are cleaning agents who move around an nxn grid and clean up dirt, and use
 
 * Repo owner or admin
 * Other community or team contact
+
+
+### CLASSPATH SWITCHING 
+
+* The file .classpath is included in the .gitignore
+* Therefore, it must not be pushed on the repo.
+* Depending on whether yout want to use the starworlds-lite project or the starworlds-lite jar as dependency, make a COPY of .classpath-eclipse OR .classpath-for-jar and call it ".classpath"
