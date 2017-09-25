@@ -3,7 +3,6 @@ bin/*
 bin/**
 
 .directory
-*.jar
 *.class
 *.psd
 
