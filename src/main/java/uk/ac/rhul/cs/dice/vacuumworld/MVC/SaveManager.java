@@ -82,19 +82,19 @@ public class SaveManager {
 		FILEFILTER.setMode("Load");
 		chooser.addChoosableFileFilter(FILEFILTER);
 		chooser.setFileFilter(FILEFILTER);
+		StartParameters loaded = null;
 		if (chooser.showOpenDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
 			if (!file.getName().endsWith(SAVEEXTENSION)) {
 				file = new File(file.getAbsolutePath() + SAVEEXTENSION);
 			}
-			try {
-				return (StartParameters) Loader.load(file);
-			} catch (ClassNotFoundException | IOException e) {
+			loaded = (StartParameters) Loader.load(file);
+			if (loaded == null) {
 				System.err.println("Failed to load save file: "
 						+ file.getAbsolutePath());
 			}
 		}
-		return null;
+		return loaded;
 	}
 
 	public static void jFileChooserSave(StartParameters toSave)

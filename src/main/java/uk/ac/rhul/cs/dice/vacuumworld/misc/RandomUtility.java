@@ -4,9 +4,12 @@ import java.util.Random;
 
 public class RandomUtility {
 
+	private RandomUtility() {
+	}
+
 	public static <T extends Enum<?>> T getRandomEnum(Class<T> type) {
 		T[] values = type.getEnumConstants();
-		return values[(int) Math.ceil(Math.random() * values.length) - 1];
+		return values[new Random().nextInt(values.length)];
 	}
 
 	public static <T> T getRandom(T[] array) {

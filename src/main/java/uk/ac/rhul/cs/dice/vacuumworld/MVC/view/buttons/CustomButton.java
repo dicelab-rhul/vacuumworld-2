@@ -14,10 +14,10 @@ public abstract class CustomButton extends JComponent implements MouseListener,
 
 	private static final long serialVersionUID = -4788283083451918681L;
 
-	protected OnClick onclick;
-	protected BufferedImage image;
-	protected BufferedImage hover;
-	protected BufferedImage pressed;
+	protected transient OnClick onclick;
+	protected transient BufferedImage image;
+	protected transient BufferedImage hover;
+	protected transient BufferedImage pressed;
 
 	protected Boolean isHovering = false;
 	protected Boolean isPressed = false;
@@ -28,7 +28,6 @@ public abstract class CustomButton extends JComponent implements MouseListener,
 		this.image = image;
 		this.hover = image;
 		this.pressed = image;
-		//enableInputMethods(true);
 		addMouseListener(this);
 	}
 
@@ -39,7 +38,6 @@ public abstract class CustomButton extends JComponent implements MouseListener,
 		this.image = image;
 		this.hover = hover;
 		this.pressed = pressed;
-		//enableInputMethods(true);
 		addMouseListener(this);
 	}
 
@@ -49,8 +47,13 @@ public abstract class CustomButton extends JComponent implements MouseListener,
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		this.drawImage(g2, (isHovering || isPressed) ? ((isPressed) ? pressed
-				: hover) : image);
+		if (isPressed) {
+			this.drawImage(g2, pressed);
+		} else if (isHovering) {
+			this.drawImage(g2, hover);
+		} else {
+			this.drawImage(g2, image);
+		}
 	}
 
 	protected void drawImage(Graphics2D g2, BufferedImage image) {
@@ -81,7 +84,7 @@ public abstract class CustomButton extends JComponent implements MouseListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+
 		this.isPressed = true;
 		if (pressOnce) {
 			this.repaint();

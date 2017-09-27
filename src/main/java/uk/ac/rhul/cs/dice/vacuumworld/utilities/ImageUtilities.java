@@ -7,6 +7,10 @@ import java.awt.image.BufferedImage;
 
 public class ImageUtilities {
 
+	private ImageUtilities() {
+		super();
+	}
+
 	public static BufferedImage getOverlayedImage(BufferedImage image,
 			Color overlay, float strength) {
 		BufferedImage result = new BufferedImage(image.getWidth(),

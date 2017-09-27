@@ -39,9 +39,8 @@ public class GridPanel extends JPanel {
 		double sdx = (double) this.getWidth() / gridDimension;
 		double sdy = (double) this.getHeight() / gridDimension;
 
-		Point p = new Point((int) (position.x - position.x % sdx),
+		return new Point((int) (position.x - position.x % sdx),
 				(int) (position.y - position.y % sdy));
-		return p;
 	}
 
 	public Position getGridPosition(Point position) {

@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 public class DragPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	protected BufferedImage image;
+	protected transient BufferedImage image;
 
 	public DragPanel() {
 		this.setOpaque(false);

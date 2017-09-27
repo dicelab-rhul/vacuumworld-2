@@ -1,11 +1,17 @@
 package uk.ac.rhul.cs.dice.vacuumworld.readonly;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class ReadOnlyWrap {
 
-	private static String NICETRY = "Stop trying to change things youre not supposed to!";
+	private static final String NICETRY = "Stop trying to change things youre not supposed to!";
+
+	private ReadOnlyWrap() {
+	}
 
 	public static <T, A extends ReadOnlyInterface<T>> T readOnlyCopy(A obj)
-			throws Exception {
+			throws InstantiationException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
 		if (obj != null) {
 			return obj.getReadOnlyClass().getConstructor(obj.getClass())
 					.newInstance(obj);

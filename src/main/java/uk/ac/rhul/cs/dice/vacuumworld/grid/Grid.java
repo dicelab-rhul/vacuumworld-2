@@ -32,18 +32,19 @@ public class Grid implements Serializable {
 	private static final long serialVersionUID = 5027579693128455060L;
 
 	private Integer dimension = null;
-	private Map<Position, VacuumWorldTile> grid = new HashMap<>();
+	private Map<Position, VacuumWorldTile> gridmap = new HashMap<>();
 
 	public Grid() {
+		super();
 	}
 
 	public void clear() {
-		grid.clear();
+		gridmap.clear();
 		dimension = null;
 	}
 
 	public boolean isClear() {
-		return grid.isEmpty();
+		return gridmap.isEmpty();
 	}
 
 	/**
@@ -60,19 +61,19 @@ public class Grid implements Serializable {
 	public Position moveAgent(VacuumWorldAgentAppearance agent,
 			Position position) {
 		Position old = agent.getPosition();
-		grid.get(old).setAgent(null);
-		grid.get(position).setAgent(agent);
+		gridmap.get(old).setAgent(null);
+		gridmap.get(position).setAgent(agent);
 		agent.setPosition(position);
 		return old;
 	}
 
 	public Collection<VacuumWorldTile> getTiles() {
-		return this.grid.values();
+		return this.gridmap.values();
 	}
 
 	public Collection<VacuumWorldTile> getNonEmptyTiles() {
 		ArrayList<VacuumWorldTile> tiles = new ArrayList<>();
-		this.grid.values().forEach((t) -> {
+		this.gridmap.values().forEach(t -> {
 			if (!t.isEmpty()) {
 				tiles.add(t);
 			}
@@ -81,12 +82,12 @@ public class Grid implements Serializable {
 	}
 
 	public Tile getTile(Position position) {
-		Tile t = this.grid.get(position);
+		Tile t = this.gridmap.get(position);
 		return (t != null) ? t : new WallTile();
 	}
 
 	public Tile getReadOnlyTile(Position position) {
-		Tile t = this.grid.get(position);
+		Tile t = this.gridmap.get(position);
 		if (t != null) {
 			try {
 				return ReadOnlyWrap.readOnlyCopy((VacuumWorldTile) t);
@@ -100,15 +101,15 @@ public class Grid implements Serializable {
 	}
 
 	public void cleanDirt(Position position) {
-		this.grid.get(position).setDirt(null);
+		this.gridmap.get(position).setDirt(null);
 	}
 
 	public VacuumWorldAgentAppearance getAgent(Position position) {
-		return grid.get(position).getAgent();
+		return gridmap.get(position).getAgent();
 	}
 
 	public DirtAppearance getDirt(Position position) {
-		return grid.get(position).getDirt();
+		return gridmap.get(position).getDirt();
 	}
 
 	public Position getAgentPosition(VacuumWorldAgentAppearance appearance) {
@@ -133,7 +134,7 @@ public class Grid implements Serializable {
 	 *         otherwise
 	 */
 	public boolean containsAgent(Position position) {
-		return grid.get(position).containsAgent();
+		return gridmap.get(position).containsAgent();
 	}
 
 	/**
@@ -145,7 +146,7 @@ public class Grid implements Serializable {
 	 *         otherwise
 	 */
 	public boolean containsDirt(Position position) {
-		return grid.get(position).containsDirt();
+		return gridmap.get(position).containsDirt();
 	}
 
 	/**
@@ -202,7 +203,7 @@ public class Grid implements Serializable {
 	 * @return true if the {@link Dirt} was successfully placed, false otherwise
 	 */
 	public boolean placeDirt(Dirt dirt, Position position) {
-		VacuumWorldTile container = grid.get(position);
+		VacuumWorldTile container = gridmap.get(position);
 		if (!container.containsDirt()) {
 			dirt.getAppearance().setPosition(position);
 			container.setDirt(dirt.getAppearance());
@@ -226,7 +227,7 @@ public class Grid implements Serializable {
 	 */
 	public boolean placeAgent(VacuumWorldAgent agent, Position position,
 			Orientation orientation) {
-		VacuumWorldTile container = grid.get(position);
+		VacuumWorldTile container = gridmap.get(position);
 		if (!container.containsAgent()) {
 			agent.getAppearance().setPosition(position);
 			agent.getAppearance().setOrientation(orientation);
@@ -248,7 +249,7 @@ public class Grid implements Serializable {
 	public void fillRandom(Collection<AbstractAutonomousAgent> agents,
 			Collection<PassiveBody> dirts) {
 		Random random = new Random();
-		agents.forEach((a) -> {
+		agents.forEach(a -> {
 			placeAgent(
 					(VacuumWorldAgent) a,
 					new Position(random.nextInt(dimension), random
@@ -257,12 +258,10 @@ public class Grid implements Serializable {
 			((VacuumWorldAgent) a).getAppearance().setColor(
 					RandomUtility.getRandomEnum(BodyColor.class));
 		});
-		dirts.forEach((d) -> {
-			placeDirt(
-					(Dirt) d,
-					new Position(random.nextInt(dimension), random
-							.nextInt(dimension)));
-		});
+		dirts.forEach(d -> placeDirt(
+				(Dirt) d,
+				new Position(random.nextInt(dimension), random
+						.nextInt(dimension))));
 	}
 
 	/**
@@ -278,19 +277,19 @@ public class Grid implements Serializable {
 	public void fillGrid(Collection<AbstractAutonomousAgent> agents,
 			Collection<PassiveBody> dirts,
 			Collection<AbstractAvatarAgent<?>> avatars) {
-		agents.forEach((a) -> {
+		agents.forEach(a -> {
 			VacuumWorldAgentAppearance ap = (VacuumWorldAgentAppearance) a
 					.getAppearance();
-			grid.get(ap.getPosition()).setAgent(ap);
+			gridmap.get(ap.getPosition()).setAgent(ap);
 		});
-		avatars.forEach((a) -> {
+		avatars.forEach(a -> {
 			VacuumWorldAgentAppearance ap = (VacuumWorldAgentAppearance) a
 					.getAppearance();
-			grid.get(ap.getPosition()).setAgent(ap);
+			gridmap.get(ap.getPosition()).setAgent(ap);
 		});
-		dirts.forEach((d) -> {
+		dirts.forEach(d -> {
 			DirtAppearance ap = (DirtAppearance) d.getAppearance();
-			grid.get(ap.getPosition()).setDirt(ap);
+			gridmap.get(ap.getPosition()).setDirt(ap);
 		});
 	}
 
@@ -302,7 +301,7 @@ public class Grid implements Serializable {
 		this.dimension = dimension;
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
-				grid.put(new Position(i, j), new VacuumWorldTile());
+				gridmap.put(new Position(i, j), new VacuumWorldTile());
 			}
 		}
 	}
@@ -315,14 +314,14 @@ public class Grid implements Serializable {
 			}
 			builder.append(System.lineSeparator());
 		}
-		grid.keySet()
+		gridmap.keySet()
 				.forEach(
-						(pos) -> {
+						pos -> {
 							int start = ((pos.getY() * this.dimension + pos
 									.getX()) * 3) + pos.getY() * 2;
 							int end = start + 3;
 							builder.replace(start, end, "["
-									+ grid.get(pos).toString().substring(0, 1)
+									+ gridmap.get(pos).toString().substring(0, 1)
 									+ "]");
 						});
 		System.out.println(builder.toString());

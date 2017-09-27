@@ -12,7 +12,8 @@ public enum Orientation {
 
 	private Orientation left;
 	private Orientation right;
-	private int i, j;
+	private int i;
+	private int j;
 
 	private void setNeighbours(int i, int j, Orientation left, Orientation right) {
 		this.left = left;

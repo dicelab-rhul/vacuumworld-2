@@ -7,7 +7,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyInterface;
 public class Position implements ReadOnlyInterface<PositionReadOnly>,
 		Serializable {
 	private static final long serialVersionUID = -5137194020124679746L;
-	private Integer x, y;
+	private Integer x;
+	private Integer y;
 
 	public Position() {
 		super();
@@ -46,10 +47,15 @@ public class Position implements ReadOnlyInterface<PositionReadOnly>,
 
 	@Override
 	public boolean equals(Object obj) {
+
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
+		// Do not change the type check on this. Ignore sonar
+		if (!Position.class.isAssignableFrom(obj.getClass())) {
+			return false;
+		}
 		Position other = (Position) obj;
 		if (x == null) {
 			if (other.x != null)

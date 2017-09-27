@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -15,11 +16,14 @@ import java.util.zip.ZipInputStream;
 
 public class ClassFinder {
 
+	private ClassFinder() {
+	}
+
 	private static final String CLASSEXTENSION = ".class";
 	private static final String JAR = ".jar";
 
-	public static Collection<Class<?>> findAllClasses() throws IOException,
-			ClassNotFoundException {
+	public static Collection<Class<?>> findAllClasses()
+			throws ClassNotFoundException {
 		Collection<Class<?>> classes = new HashSet<>();
 		ClassLoader loader = ClassLoader.getSystemClassLoader();
 		URL[] urls = ((URLClassLoader) loader).getURLs();
@@ -49,21 +53,29 @@ public class ClassFinder {
 		return classes;
 	}
 
-	public static Collection<String> getClassNamesFromJar(File jar)
-			throws IOException {
+	public static Collection<String> getClassNamesFromJar(File jar) {
 		Collection<String> names = new HashSet<>();
-		ZipInputStream zip = new ZipInputStream(new FileInputStream(jar));
-		for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip
-				.getNextEntry()) {
-			if (!entry.isDirectory()
-					&& entry.getName().endsWith(CLASSEXTENSION)) {
-				String name = entry.getName();
-				name = name.substring(0,
-						name.length() - CLASSEXTENSION.length());
-				names.add(name.replace('/', '.'));
+		ZipInputStream zip = null;
+
+		try (FileInputStream fins = new FileInputStream(jar)) {
+			zip = new ZipInputStream(fins);
+			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip
+					.getNextEntry()) {
+				if (!entry.isDirectory()
+						&& entry.getName().endsWith(CLASSEXTENSION)) {
+					String name = entry.getName();
+					name = name.substring(0,
+							name.length() - CLASSEXTENSION.length());
+					names.add(name.replace('/', '.'));
+				}
 			}
+			fins.close();
+			zip.close();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
 		}
-		zip.close();
 		return names;
 	}
 
@@ -92,11 +104,9 @@ public class ClassFinder {
 	private static Collection<String> recurseDirectories(File file, File root) {
 		Collection<String> classnames = new HashSet<>();
 		File[] dirs = getDirectories(file);
-		if (dirs != null) {
-			if (dirs.length > 0) {
-				for (File f : dirs) {
-					classnames.addAll(recurseDirectories(f, root));
-				}
+		if (dirs != null && dirs.length > 0) {
+			for (File f : dirs) {
+				classnames.addAll(recurseDirectories(f, root));
 			}
 		}
 		File[] classfiles = getClassFiles(file);
@@ -120,18 +130,11 @@ public class ClassFinder {
 		@Override
 		public boolean accept(File current, String name) {
 			if (new File(current, name).isFile()) {
-				return CLASSEXTENSION.equals(name.substring(name.indexOf(".")));
+				return CLASSEXTENSION.equals(name.substring(name.indexOf('.')));
 			}
 			return false;
 		}
 	}
-
-	// private static class FileFilter implements FilenameFilter {
-	// @Override
-	// public boolean accept(File current, String name) {
-	// return new File(current, name).isFile();
-	// }
-	// }
 
 	private static class DirectoryFilter implements FilenameFilter {
 		@Override

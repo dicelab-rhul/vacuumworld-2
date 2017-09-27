@@ -9,6 +9,11 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.UserMindAnnotation;
 
 public class AgentMindFinder {
 
+	private static final AgentMindFinder INSTANCE = new AgentMindFinder();
+
+	private AgentMindFinder() {
+	}
+
 	public static Collection<Class<?>> getAgentMinds()
 			throws ClassNotFoundException, IOException {
 		Collection<Class<?>> mindclasses = ClassFinder.getSubClasses(
@@ -31,5 +36,9 @@ public class AgentMindFinder {
 		minds.removeAll(ClassFinder.getAnnotatedClasses(
 				UserMindAnnotation.class, minds));
 		return minds;
+	}
+
+	public static AgentMindFinder getInstance() {
+		return INSTANCE;
 	}
 }
