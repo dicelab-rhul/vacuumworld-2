@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view;
 
 import java.awt.Color;
 import java.awt.Graphics;

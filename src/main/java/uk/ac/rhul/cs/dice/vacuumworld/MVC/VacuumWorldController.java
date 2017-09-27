@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import uk.ac.rhul.cs.dice.starworlds.MVC.AbstractViewController;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldUniverse;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatar;
@@ -20,6 +19,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.AgentMindFinder;
 
 public class VacuumWorldController extends AbstractViewController {

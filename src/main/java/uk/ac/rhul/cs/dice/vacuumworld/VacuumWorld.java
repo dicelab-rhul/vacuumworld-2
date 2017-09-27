@@ -16,8 +16,6 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechAc
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.Avatar;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldMind;
@@ -27,6 +25,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.VacuumWorldUserMind;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldAvatar;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelfishAvatarMind;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelflessAvatarMind;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
 
 /**
  * The entry point of Vacuum World.

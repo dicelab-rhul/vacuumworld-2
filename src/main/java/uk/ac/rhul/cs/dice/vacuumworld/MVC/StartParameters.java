@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc;
 
 import java.io.Serializable;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons;
 
 public class AvatarButton extends DefaultButton {
 

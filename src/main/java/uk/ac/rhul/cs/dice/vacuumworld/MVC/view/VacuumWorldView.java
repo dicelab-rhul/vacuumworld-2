@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,14 +20,14 @@ import javax.swing.JPanel;
 
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldAmbient;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.StartParameters;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniversePause;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseRestart;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController.UniverseStart;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.Clickable;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.StartParameters;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController.UniversePause;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController.UniverseRestart;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController.UniverseStart;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.Clickable;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.OnClick;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldView extends JFrame implements Observer {

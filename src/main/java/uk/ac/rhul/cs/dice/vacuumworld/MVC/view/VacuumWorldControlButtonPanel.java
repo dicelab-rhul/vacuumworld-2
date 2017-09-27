@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.CustomButton;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.CustomButton;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.OnClick;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldControlButtonPanel extends JPanel {

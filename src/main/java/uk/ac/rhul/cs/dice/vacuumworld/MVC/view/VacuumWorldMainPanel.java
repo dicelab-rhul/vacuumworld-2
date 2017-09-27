@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,18 +26,18 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.SaveManager;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.StartParameters;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.Clickable;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.CustomButton;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.RotateButton;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.SaveManager;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.StartParameters;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.Clickable;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.CustomButton;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.OnClick;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.RotateButton;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {

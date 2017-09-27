@@ -1,12 +1,12 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 
 public class RotateButton extends CustomButton {

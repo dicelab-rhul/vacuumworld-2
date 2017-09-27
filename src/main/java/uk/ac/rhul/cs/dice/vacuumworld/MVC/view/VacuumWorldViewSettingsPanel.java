@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,9 +20,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.VacuumWorldController;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.DefaultButton;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.OnClick;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.DefaultButton;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.OnClick;
 
 public class VacuumWorldViewSettingsPanel extends JPanel implements
 		MouseListener {

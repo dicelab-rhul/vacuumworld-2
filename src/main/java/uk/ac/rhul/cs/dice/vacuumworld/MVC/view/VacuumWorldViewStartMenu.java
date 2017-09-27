@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.vacuumworld.MVC.view;
+package uk.ac.rhul.cs.dice.vacuumworld.mvc.view;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -12,8 +12,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.VacuumWorldView.StartMenuOnClick;
-import uk.ac.rhul.cs.dice.vacuumworld.MVC.view.buttons.StartButton;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView.StartMenuOnClick;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.StartButton;
 
 public class VacuumWorldViewStartMenu extends JPanel implements ActionListener {
 
