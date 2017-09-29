@@ -137,12 +137,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		for (int i = 0; i < gs; i++) {
 			addFilledPanel(selectionButtonPanel);
 		}
-		agentbuttons.forEach((b) -> selectionButtonPanel.add(b));
+		agentbuttons.forEach(b -> selectionButtonPanel.add(b));
 		addFilledPanel(selectionButtonPanel);
-		userbuttons.forEach((b) -> selectionButtonPanel.add(b));
+		userbuttons.forEach(b -> selectionButtonPanel.add(b));
 		addFilledPanel(selectionButtonPanel);
 		addFilledPanel(selectionButtonPanel);
-		dirtbuttons.forEach((b) -> selectionButtonPanel.add(b));
+		dirtbuttons.forEach(b -> selectionButtonPanel.add(b));
 		for (int i = 0; i < 13; i++) {
 			addFilledPanel(selectionButtonPanel);
 		}
@@ -334,11 +334,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 			startparams.mindmap = getMindMap();
 			startparams.dimension = settings.getGridDimension();
 			startparams.simulationRate = settings.getSimulationRate();
-			try {
-				SaveManager.jFileChooserSave(startparams);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			SaveManager.jFileChooserSave(startparams);
 		}
 	}
 

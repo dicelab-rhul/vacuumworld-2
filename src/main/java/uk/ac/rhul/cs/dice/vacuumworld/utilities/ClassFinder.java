@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.dice.vacuumworld.utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -23,7 +22,7 @@ public class ClassFinder {
 	private static final String JAR = ".jar";
 
 	public static Collection<Class<?>> findAllClasses()
-			throws ClassNotFoundException {
+			throws ClassFinderException {
 		Collection<Class<?>> classes = new HashSet<>();
 		ClassLoader loader = ClassLoader.getSystemClassLoader();
 		URL[] urls = ((URLClassLoader) loader).getURLs();
@@ -43,20 +42,19 @@ public class ClassFinder {
 						name = name.substring(u.getPath().length()).replace(
 								"/", ".");
 					}
-
 					classes.add(loader.loadClass(name));
 				}
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
+			} catch (ClassNotFoundException | URISyntaxException e) {
+				throw new ClassFinderException(e);
 			}
 		}
 		return classes;
 	}
 
-	public static Collection<String> getClassNamesFromJar(File jar) {
+	public static Collection<String> getClassNamesFromJar(File jar)
+			throws ClassFinderException {
 		Collection<String> names = new HashSet<>();
 		ZipInputStream zip = null;
-
 		try (FileInputStream fins = new FileInputStream(jar)) {
 			zip = new ZipInputStream(fins);
 			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip
@@ -71,10 +69,8 @@ public class ClassFinder {
 			}
 			fins.close();
 			zip.close();
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e2) {
-			e2.printStackTrace();
+		} catch (IOException e) {
+			throw new ClassFinderException(e);
 		}
 		return names;
 	}
@@ -140,6 +136,28 @@ public class ClassFinder {
 		@Override
 		public boolean accept(File current, String name) {
 			return new File(current, name).isDirectory();
+		}
+	}
+
+	/**
+	 * The {@link Exception} that is thrown by methods in the
+	 * {@link ClassFinder} class for any reason that results in the failure to
+	 * produce desired output. i.e. to properly find any classes.
+	 * 
+	 * @author Ben Wilkins
+	 *
+	 */
+	public static class ClassFinderException extends Exception {
+
+		private static final long serialVersionUID = 5574666660440435064L;
+		private static final String MESSAGE = "Failed to find class.";
+
+		public ClassFinderException() {
+			super(MESSAGE);
+		}
+
+		public ClassFinderException(Throwable cause) {
+			super(MESSAGE, cause);
 		}
 	}
 }

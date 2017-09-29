@@ -7,12 +7,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
+import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldPhysics;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldAgent;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
@@ -89,12 +91,7 @@ public class Grid implements Serializable {
 	public Tile getReadOnlyTile(Position position) {
 		Tile t = this.gridmap.get(position);
 		if (t != null) {
-			try {
-				return ReadOnlyWrap.readOnlyCopy((VacuumWorldTile) t);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
-			}
+			return ReadOnlyWrap.readOnlyCopy((VacuumWorldTile) t);
 		} else {
 			return new WallTile();
 		}
@@ -320,10 +317,12 @@ public class Grid implements Serializable {
 							int start = ((pos.getY() * this.dimension + pos
 									.getX()) * 3) + pos.getY() * 2;
 							int end = start + 3;
-							builder.replace(start, end, "["
-									+ gridmap.get(pos).toString().substring(0, 1)
-									+ "]");
+							builder.replace(start, end,
+									"["
+											+ gridmap.get(pos).toString()
+													.substring(0, 1) + "]");
 						});
-		System.out.println(builder.toString());
+		String grid = builder.toString();
+		VacuumWorld.LOGGER.log(Level.INFO, grid);
 	}
 }

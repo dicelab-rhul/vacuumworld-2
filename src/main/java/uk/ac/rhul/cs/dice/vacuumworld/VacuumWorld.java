@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.vacuumworld;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.swing.UIManager;
 
@@ -26,6 +27,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelfishAvatar
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelflessAvatarMind;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ConsoleLogger;
 
 /**
  * The entry point of Vacuum World.
@@ -34,6 +36,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
  * @author Kostas Stathis
  */
 public class VacuumWorld {
+	
+	public static final Logger LOGGER = ConsoleLogger.getInstance();
     public static final Double VERSION = 2.0;
     private static final Collection<Class<?>> SENSORS = new ArrayList<>();
     private static final Collection<Class<?>> ACTUATORS = new ArrayList<>();

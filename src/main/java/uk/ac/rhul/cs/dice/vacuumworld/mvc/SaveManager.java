@@ -6,11 +6,13 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
+import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.minds.VacuumWorldExampleMind;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.saveload.Loader;
@@ -18,6 +20,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.saveload.Saver;
 
 public class SaveManager {
 
+	public static final String SAVEFOLDERNAME = "save";
 	public static final String SAVEEXTENSION = ".vwc";
 	public static final String DEFAULTSAVEFILE = "defaultsave";
 	public static final File SAVEPATH;
@@ -34,16 +37,15 @@ public class SaveManager {
 	static {
 		File savepath = null;
 		try {
-			savepath = new File(new File("").getCanonicalPath(), "save");
+			savepath = new File(new File("").getCanonicalPath(), SAVEFOLDERNAME);
 		} catch (IOException e) {
-			System.err.println("Something went wrong finding save path");
-			e.printStackTrace();
+			VacuumWorld.LOGGER.log(Level.SEVERE,
+					"Failed to get valid save folder path", e);
 		}
 		SAVEPATH = savepath;
 		if (!savepath.isDirectory() && !savepath.mkdir()) {
-			System.err
-					.println("Could not make a save folder, please check system permissions.");
-
+			VacuumWorld.LOGGER.log(Level.WARNING, "Could not make a save folder, please check system permissions.");
+			//TODO disable saving on failure
 		}
 	}
 
@@ -51,7 +53,6 @@ public class SaveManager {
 		File f = new File(SAVEPATH.getCanonicalPath(), DEFAULTSAVEFILE
 				+ SAVEEXTENSION);
 		if (f.isFile()) {
-			System.out.println("Loading default file: " + f);
 			return (StartParameters) Loader.load(f);
 		}
 		StartParameters dsp = getHardDefault();
@@ -73,7 +74,7 @@ public class SaveManager {
 		return result;
 	}
 
-	public static void saveDefault(StartParameters params) throws IOException {
+	public static void saveDefault(StartParameters params) {
 		URL ds = SaveManager.class.getClassLoader()
 				.getResource(DEFAULTSAVEFILE);
 		Saver.save(new File(ds.getPath()), params);
@@ -99,8 +100,7 @@ public class SaveManager {
 		return loaded;
 	}
 
-	public static void jFileChooserSave(StartParameters toSave)
-			throws IOException {
+	public static void jFileChooserSave(StartParameters toSave) {
 		JFileChooser chooser = new JFileChooser(SAVEPATH);
 		FILEFILTER.setMode("Save");
 		chooser.addChoosableFileFilter(FILEFILTER);

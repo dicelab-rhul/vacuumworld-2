@@ -1,11 +1,11 @@
 package uk.ac.rhul.cs.dice.vacuumworld.mvc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Observable;
+import java.util.logging.Level;
 
 import uk.ac.rhul.cs.dice.starworlds.MVC.AbstractViewController;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
@@ -21,6 +21,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.AgentMindFinder;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ClassFinder.ClassFinderException;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.VacuumWorldInitialisationException;
 
 public class VacuumWorldController extends AbstractViewController {
 
@@ -38,14 +40,14 @@ public class VacuumWorldController extends AbstractViewController {
 			possibleagentminds = Collections
 					.unmodifiableCollection(AgentMindFinder
 							.getNonUserAgentMinds(possibleminds));
-		} catch (ClassNotFoundException | IOException e) {
-			System.err.println("Failed to find possible agent minds");
-			e.printStackTrace();
+		} catch (ClassFinderException e) {
+			throw new VacuumWorldInitialisationException(e);
 		}
 		POSSIBLEAGENTMINDS = possibleagentminds;
 		POSSIBLEMINDS = possibleminds;
-		System.out.println("POSSIBLE MINDS: " + POSSIBLEMINDS);
-		System.out.println("POSSIBLE AGENT MINDS: " + POSSIBLEAGENTMINDS);
+		VacuumWorld.LOGGER.log(Level.INFO, "possible minds %s", POSSIBLEMINDS);
+		VacuumWorld.LOGGER.log(Level.INFO, "possible agent minds %s",
+				POSSIBLEAGENTMINDS);
 	}
 
 	public static Collection<Class<?>> getPossibleAgentMinds() {
@@ -78,7 +80,8 @@ public class VacuumWorldController extends AbstractViewController {
 
 	public void getAmbientState() {
 		// wait for the universe to be safely paused
-		while (!this.getUniverse().isPausedSafe());
+		while (!this.getUniverse().isPausedSafe())
+			;
 	}
 
 	public void start(StartParameters params) {
@@ -142,7 +145,7 @@ public class VacuumWorldController extends AbstractViewController {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		//unused
+		// unused
 	}
 
 	public class UniversePause {

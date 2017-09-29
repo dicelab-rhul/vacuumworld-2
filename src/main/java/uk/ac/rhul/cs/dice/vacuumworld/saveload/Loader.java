@@ -6,8 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.logging.Level;
+
+import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 
 public class Loader {
+
+	private static final String FAILEDTOLOAD = "Failed to load save file: ";
 
 	private Loader() {
 		super();
@@ -23,12 +28,15 @@ public class Loader {
 			Serializable result = (Serializable) stream.readObject();
 			stream.close();
 			return result;
-		} catch (ClassNotFoundException | FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException fnfe) {
+			VacuumWorld.LOGGER.log(Level.SEVERE, FAILEDTOLOAD + file
+					+ " as it doesnt exist", fnfe);
+		} catch (ClassNotFoundException cnfe) {
+			VacuumWorld.LOGGER.log(Level.SEVERE, FAILEDTOLOAD + file
+					+ " deserialization failed", cnfe);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			VacuumWorld.LOGGER.log(Level.SEVERE, FAILEDTOLOAD + file, ioe);
 		}
-		
 		return null;
 	}
 }

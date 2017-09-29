@@ -11,12 +11,7 @@ public class DirtAppearanceReadOnly extends DirtAppearance {
 	public DirtAppearanceReadOnly(DirtAppearance appearance) {
 		super(appearance.getColor());
 		super.setId(appearance.getId());
-		try {
-			super.setPosition(ReadOnlyWrap.readOnlyCopy(appearance
-					.getPosition()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		super.setPosition(ReadOnlyWrap.readOnlyCopy(appearance.getPosition()));
 	}
 
 	@Override

@@ -1,11 +1,11 @@
 package uk.ac.rhul.cs.dice.vacuumworld.utilities;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldMind;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.UserMindAnnotation;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.ClassFinder.ClassFinderException;
 
 public class AgentMindFinder {
 
@@ -15,7 +15,7 @@ public class AgentMindFinder {
 	}
 
 	public static Collection<Class<?>> getAgentMinds()
-			throws ClassNotFoundException, IOException {
+			throws ClassFinderException {
 		Collection<Class<?>> mindclasses = ClassFinder.getSubClasses(
 				VacuumWorldMind.class, ClassFinder.findAllClasses());
 		mindclasses.remove(VacuumWorldMind.class);
@@ -23,7 +23,7 @@ public class AgentMindFinder {
 	}
 
 	public static Collection<Class<?>> getNonUserAgentMinds()
-			throws ClassNotFoundException, IOException {
+			throws ClassFinderException {
 		Collection<Class<?>> minds = getAgentMinds();
 		minds.removeAll(ClassFinder.getAnnotatedClasses(
 				UserMindAnnotation.class, minds));
