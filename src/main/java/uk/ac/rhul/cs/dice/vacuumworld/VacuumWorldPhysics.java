@@ -20,6 +20,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldCommunicationAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
+import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldSeeingSensor;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
@@ -53,6 +54,15 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 public class VacuumWorldPhysics extends AbstractPhysics {
     private Position opt; // this is a bit hacky! beware doing this!
 
+    public boolean perceivable(VacuumWorldSeeingSensor sensor, AbstractPerception<?> perception, Ambient context) {
+	if(sensor != null) {
+	    return super.perceivable(sensor, perception, context);
+	}
+	else {
+	    return false;
+	}
+}
+    
     @Override
     public void simulate() {
 	while (!getEnvironment().shouldStop()) {
