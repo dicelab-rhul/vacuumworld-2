@@ -22,12 +22,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/starworlds-lite"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Ben/Dropbox/StarWorlds/VacuumWorldOngoing/VacuumWorld/StarWorldsLite_V1_0_1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
