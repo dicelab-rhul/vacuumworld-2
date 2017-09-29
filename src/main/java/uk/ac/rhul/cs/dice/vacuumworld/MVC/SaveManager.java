@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.mvc;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ public class SaveManager {
 
 	private static final VWCFileFilter FILEFILTER = new VWCFileFilter();
 
+	private SaveManager() {
+	}
+
 	static {
 		File savepath = null;
 		try {
@@ -36,16 +40,14 @@ public class SaveManager {
 			e.printStackTrace();
 		}
 		SAVEPATH = savepath;
-		if (!savepath.isDirectory()) {
-			if (!savepath.mkdir()) {
-				System.err
-						.println("Could not make a save folder, please check system permissions.");
-			}
+		if (!savepath.isDirectory() && !savepath.mkdir()) {
+			System.err
+					.println("Could not make a save folder, please check system permissions.");
+
 		}
 	}
 
-	public static StartParameters loadDefault() throws ClassNotFoundException,
-			IOException {
+	public static StartParameters loadDefault() throws IOException {
 		File f = new File(SAVEPATH.getCanonicalPath(), DEFAULTSAVEFILE
 				+ SAVEEXTENSION);
 		if (f.isFile()) {
@@ -64,7 +66,7 @@ public class SaveManager {
 	}
 
 	private static Map<BodyColor, Class<?>> getDefaultAgentMinds() {
-		Map<BodyColor, Class<?>> result = new HashMap<>();
+		EnumMap<BodyColor, Class<?>> result = new EnumMap<>(BodyColor.class);
 		result.put(BodyColor.GREEN, DEFAULTAGENTMIND);
 		result.put(BodyColor.ORANGE, DEFAULTAGENTMIND);
 		result.put(BodyColor.WHITE, DEFAULTAGENTMIND);

@@ -33,8 +33,8 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 	private static final String SAVEBUTTONFILENAME = "save_button";
 	private static final String LOADBUTTONFILENAME = "load_button";
 
-	private Class<?>[] possibleminds = VacuumWorldController.POSSIBLEAGENTMINDS
-			.toArray(new Class<?>[0]);
+	private Class<?>[] possibleminds = VacuumWorldController
+			.getPossibleAgentMinds().toArray(new Class<?>[0]);
 	private JPanel combopanel;
 	private JComboBox<Class<?>> greencombo = new JComboBox<>();
 	private JComboBox<Class<?>> orangecombo = new JComboBox<>();
@@ -247,7 +247,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getNewValue() != null) {
 				simulationRate = Integer.valueOf(evt.getNewValue().toString());
-				if(simulationRate < 0) {
+				if (simulationRate < 0) {
 					simulationRate = 0;
 				}
 			} else {
@@ -261,7 +261,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getNewValue() != null) {
 				gridDimension = Integer.valueOf(evt.getNewValue().toString());
-				if(gridDimension < 1) {
+				if (gridDimension < 1) {
 					gridDimension = 1;
 				}
 				dimensiontf.setValue(gridDimension);

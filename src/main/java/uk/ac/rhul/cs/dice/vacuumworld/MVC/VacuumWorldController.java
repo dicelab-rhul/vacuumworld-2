@@ -28,20 +28,30 @@ public class VacuumWorldController extends AbstractViewController {
 	public static final Integer MINGRIDSIZE = 2;
 	public static final Boolean SINGLEAVATAR = true;
 
-	public static Collection<Class<?>> POSSIBLEAGENTMINDS;
-	public static Collection<Class<?>> POSSIBLEMINDS;
+	protected static final Collection<Class<?>> POSSIBLEAGENTMINDS;
+	protected static final Collection<Class<?>> POSSIBLEMINDS;
 	static {
+		Collection<Class<?>> possibleminds = null;
+		Collection<Class<?>> possibleagentminds = null;
 		try {
-			POSSIBLEMINDS = AgentMindFinder.getAgentMinds();
-			POSSIBLEAGENTMINDS = Collections
+			possibleminds = AgentMindFinder.getAgentMinds();
+			possibleagentminds = Collections
 					.unmodifiableCollection(AgentMindFinder
-							.getNonUserAgentMinds(POSSIBLEMINDS));
+							.getNonUserAgentMinds(possibleminds));
 		} catch (ClassNotFoundException | IOException e) {
+			System.err.println("Failed to find possible agent minds");
 			e.printStackTrace();
 		}
+		POSSIBLEAGENTMINDS = possibleagentminds;
+		POSSIBLEMINDS = possibleminds;
 		System.out.println("POSSIBLE MINDS: " + POSSIBLEMINDS);
 		System.out.println("POSSIBLE AGENT MINDS: " + POSSIBLEAGENTMINDS);
 	}
+
+	public static Collection<Class<?>> getPossibleAgentMinds() {
+		return POSSIBLEAGENTMINDS;
+	}
+
 	private VacuumWorldView view;
 	private Collection<VacuumWorldAvatarLink> avatarlinks;
 	private Thread universeThread;
@@ -68,17 +78,15 @@ public class VacuumWorldController extends AbstractViewController {
 
 	public void getAmbientState() {
 		// wait for the universe to be safely paused
-		while (!this.getUniverse().isPausedSafe())
-			;
+		while (!this.getUniverse().isPausedSafe());
 	}
 
 	public void start(StartParameters params) {
 		if (universeThread != null) {
-			avatarlinks.forEach((l) -> l.destroy());
+			avatarlinks.forEach(VacuumWorldAvatarLink::destroy);
 			avatarlinks.clear();
 			// wait for the thread to finish
 			try {
-				// System.out.println("Waiting for join");
 				universeThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -134,6 +142,7 @@ public class VacuumWorldController extends AbstractViewController {
 
 	@Override
 	public void update(Observable o, Object arg) {
+		//unused
 	}
 
 	public class UniversePause {

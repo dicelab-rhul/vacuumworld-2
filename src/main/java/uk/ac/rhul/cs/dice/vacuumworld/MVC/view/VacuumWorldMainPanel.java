@@ -91,7 +91,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	private void getDefaultStartParameters() {
 		try {
 			this.startparams = SaveManager.loadDefault();
-		} catch (ClassNotFoundException | IOException e) {
+		} catch (IOException e) {
 			System.err
 					.println("Could not load default start parameters from file, hard loading.");
 			e.printStackTrace();
@@ -113,32 +113,22 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 				VacuumWorldView.DEFAULTDIMENSION, startparams.dimension);
 		simulationgrid = new VacuumWorldViewSimulationPanel(view.model);
 		// side panel
-		side = new SidePanel(VacuumWorldView.SIDEPANELDIMENSION,
-				new VacuumWorldControlButtonPanel(VacuumWorldView.IMGLOADER
-						.loadImage(VacuumWorldView.IMGPATH
-								+ VacuumWorldView.CONTROLIMGDIR + "play_button"
-								+ VacuumWorldView.EXTENSION),
-						new PlayOnClick(), VacuumWorldView.IMGLOADER
-								.loadImage(VacuumWorldView.IMGPATH
-										+ VacuumWorldView.CONTROLIMGDIR
-										+ "restart_button"
-										+ VacuumWorldView.EXTENSION),
-						new RestartOnClick(), VacuumWorldView.IMGLOADER
-								.loadImage(VacuumWorldView.IMGPATH
-										+ VacuumWorldView.CONTROLIMGDIR
-										+ "pause_button"
-										+ VacuumWorldView.EXTENSION),
-						new PauseOnClick(), VacuumWorldView.IMGLOADER
-								.loadImage(VacuumWorldView.IMGPATH
-										+ VacuumWorldView.CONTROLIMGDIR
-										+ "settings_button"
-										+ VacuumWorldView.EXTENSION),
-						new SettingsOnClick(), VacuumWorldView.IMGLOADER
-								.loadImage(VacuumWorldView.IMGPATH
-										+ VacuumWorldView.CONTROLIMGDIR
-										+ "off_button"
-										+ VacuumWorldView.EXTENSION),
-						new OffOnClick()));
+		side = new SidePanel(new VacuumWorldControlButtonPanel(
+				VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH
+						+ VacuumWorldView.CONTROLIMGDIR + "play_button"
+						+ VacuumWorldView.EXTENSION), new PlayOnClick(),
+				VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH
+						+ VacuumWorldView.CONTROLIMGDIR + "restart_button"
+						+ VacuumWorldView.EXTENSION), new RestartOnClick(),
+				VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH
+						+ VacuumWorldView.CONTROLIMGDIR + "pause_button"
+						+ VacuumWorldView.EXTENSION), new PauseOnClick(),
+				VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH
+						+ VacuumWorldView.CONTROLIMGDIR + "settings_button"
+						+ VacuumWorldView.EXTENSION), new SettingsOnClick(),
+				VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH
+						+ VacuumWorldView.CONTROLIMGDIR + "off_button"
+						+ VacuumWorldView.EXTENSION), new OffOnClick()));
 		selectionButtonPanel = new JPanel();
 
 		int gs = 4;
@@ -356,7 +346,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 		@Override
 		public void onClick(Clickable arg, MouseEvent e) {
 			unpause();
-			if(selectiongrid.getGriddimension() != settings.getGridDimension()) {
+			if (selectiongrid.getGriddimension() != settings.getGridDimension()) {
 				selectiongrid.setGridDimension(settings.getGridDimension());
 				startparams.clearAgentsAndDirts();
 			}
