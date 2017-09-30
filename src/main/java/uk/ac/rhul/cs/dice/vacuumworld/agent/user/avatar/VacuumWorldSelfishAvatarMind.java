@@ -11,13 +11,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.UserMindAnnotation;
 public class VacuumWorldSelfishAvatarMind extends
 		AbstractSelfishAvatarMind<VacuumWorldAction> {
 
-	public VacuumWorldSelfishAvatarMind() {
-	}
-
 	@Override
 	public void showAvatarView(Collection<Perception<?>> perceptions) {
-
+		// not implemented yet
 	}
-	
-	
 }

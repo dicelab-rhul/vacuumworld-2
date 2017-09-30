@@ -17,6 +17,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.minds.VacuumWorldExampleMind;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 import uk.ac.rhul.cs.dice.vacuumworld.saveload.Loader;
 import uk.ac.rhul.cs.dice.vacuumworld.saveload.Saver;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.VacuumWorldSaveLoadException;
 
 public class SaveManager {
 
@@ -31,6 +32,10 @@ public class SaveManager {
 
 	private static final VWCFileFilter FILEFILTER = new VWCFileFilter();
 
+	private static final String LOADINGHARD = "Loading hard default.";
+	private static final String DISABLEMESSAGE = "Save/Load initialisation failed. Saving and loading have been disabled.";
+	private static boolean disable = false;
+
 	private SaveManager() {
 	}
 
@@ -39,26 +44,61 @@ public class SaveManager {
 		try {
 			savepath = new File(new File("").getCanonicalPath(), SAVEFOLDERNAME);
 		} catch (IOException e) {
-			VacuumWorld.LOGGER.log(Level.SEVERE,
-					"Failed to get valid save folder path", e);
+			VacuumWorld.LOGGER.log(
+					Level.SEVERE,
+					"Failed to get valid save folder path"
+							+ System.lineSeparator() + DISABLEMESSAGE, e);
+			disable = true;
 		}
 		SAVEPATH = savepath;
-		if (!savepath.isDirectory() && !savepath.mkdir()) {
-			VacuumWorld.LOGGER.log(Level.WARNING, "Could not make a save folder, please check system permissions.");
-			//TODO disable saving on failure
+		if (savepath != null && !savepath.isDirectory() && !savepath.mkdir()) {
+			String message = "Could not make a save folder, please check system permissions."
+					+ System.lineSeparator() + DISABLEMESSAGE;
+			VacuumWorld.LOGGER.log(Level.WARNING, message);
+			disable = true;
 		}
 	}
 
-	public static StartParameters loadDefault() throws IOException {
-		File f = new File(SAVEPATH.getCanonicalPath(), DEFAULTSAVEFILE
-				+ SAVEEXTENSION);
-		if (f.isFile()) {
-			return (StartParameters) Loader.load(f);
+	public static StartParameters loadDefault() {
+		if (disable) {
+			return getHardDefault();
 		}
-		StartParameters dsp = getHardDefault();
-		// save the default
-		Saver.save(f, getHardDefault());
-		return dsp;
+		File f;
+		try {
+			f = new File(SAVEPATH.getCanonicalPath(), DEFAULTSAVEFILE
+					+ SAVEEXTENSION);
+			if (f.isFile()) {
+				StartParameters startparams = load(f);
+				if (startparams != null) {
+					return startparams;
+				}
+			} else {
+				// the file does exist, this may be because of first time set up
+				save(f, getHardDefault());
+			}
+		} catch (IOException ioe) {
+			VacuumWorld.LOGGER.log(Level.WARNING, LOADINGHARD, ioe);
+		}
+		// failed to get he default file for some reason
+		return getHardDefault();
+	}
+
+	private static StartParameters load(File file) {
+		try {
+			return (StartParameters) Loader.load(file);
+		} catch (RuntimeException | VacuumWorldSaveLoadException e) {
+			VacuumWorld.LOGGER.log(Level.WARNING, LOADINGHARD, e);
+		}
+		return null;
+	}
+
+	private static void save(File file, StartParameters params) {
+		try {
+			Saver.save(file, params);
+		} catch (RuntimeException | VacuumWorldSaveLoadException e) {
+			VacuumWorld.LOGGER.log(Level.WARNING, "Failed to save: " + params
+					+ " to file: " + file, e);
+		}
 	}
 
 	public static StartParameters getHardDefault() {
@@ -77,7 +117,7 @@ public class SaveManager {
 	public static void saveDefault(StartParameters params) {
 		URL ds = SaveManager.class.getClassLoader()
 				.getResource(DEFAULTSAVEFILE);
-		Saver.save(new File(ds.getPath()), params);
+		save(new File(ds.getPath()), params);
 	}
 
 	public static StartParameters jFileChooserLoad() {
@@ -91,10 +131,11 @@ public class SaveManager {
 			if (!file.getName().endsWith(SAVEEXTENSION)) {
 				file = new File(file.getAbsolutePath() + SAVEEXTENSION);
 			}
-			loaded = (StartParameters) Loader.load(file);
-			if (loaded == null) {
-				System.err.println("Failed to load save file: "
-						+ file.getAbsolutePath());
+			try {
+				loaded = (StartParameters) Loader.load(file);
+			} catch (VacuumWorldSaveLoadException e) {
+				VacuumWorld.LOGGER.log(Level.WARNING, LOADINGHARD, e);
+				return getHardDefault();
 			}
 		}
 		return loaded;
@@ -110,7 +151,7 @@ public class SaveManager {
 			if (!file.getName().endsWith(SAVEEXTENSION)) {
 				file = new File(file.getAbsolutePath() + SAVEEXTENSION);
 			}
-			Saver.save(file, toSave);
+			save(file, toSave);
 		}
 	}
 

@@ -12,11 +12,11 @@ public class StartParameters implements Serializable {
 
 	private static final long serialVersionUID = -6330032688028892878L;
 
-	public Integer dimension;
-	public Integer simulationRate;
-	public Map<Position, VacuumWorldAgentAppearance> agentapps;
-	public Map<Position, DirtAppearance> dirtapps;
-	public Map<BodyColor, Class<?>> mindmap;
+	private Integer dimension;
+	private Integer simulationRate;
+	private Map<Position, VacuumWorldAgentAppearance> agentapps;
+	private Map<Position, DirtAppearance> dirtapps;
+	private Map<BodyColor, Class<?>> mindmap;
 
 	public StartParameters() {
 	}
@@ -36,16 +36,58 @@ public class StartParameters implements Serializable {
 		dirtapps.clear();
 		agentapps.clear();
 	}
+	
+	
+
+	public Integer getDimension() {
+		return dimension;
+	}
+
+	public void setDimension(Integer dimension) {
+		this.dimension = dimension;
+	}
+
+	public Integer getSimulationRate() {
+		return simulationRate;
+	}
+
+	public void setSimulationRate(Integer simulationRate) {
+		this.simulationRate = simulationRate;
+	}
+
+	public Map<Position, VacuumWorldAgentAppearance> getAgentapps() {
+		return agentapps;
+	}
+
+	public void setAgentapps(Map<Position, VacuumWorldAgentAppearance> agentapps) {
+		this.agentapps = agentapps;
+	}
+
+	public Map<Position, DirtAppearance> getDirtapps() {
+		return dirtapps;
+	}
+
+	public void setDirtapps(Map<Position, DirtAppearance> dirtapps) {
+		this.dirtapps = dirtapps;
+	}
+
+	public Map<BodyColor, Class<?>> getMindmap() {
+		return mindmap;
+	}
+
+	public void setMindmap(Map<BodyColor, Class<?>> mindmap) {
+		this.mindmap = mindmap;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append("   Agents: " + System.lineSeparator());
 		agentapps.values().forEach(
-				(a) -> b.append("   " + a + System.lineSeparator()));
+				a -> b.append("   " + a + System.lineSeparator()));
 		b.append("   Dirts: " + System.lineSeparator());
 		dirtapps.values().forEach(
-				(a) -> b.append("   " + a + System.lineSeparator()));
+				a -> b.append("   " + a + System.lineSeparator()));
 		b.append("   Minds: " + System.lineSeparator());
 		mindmap.forEach((col, cla) -> b.append("   " + col + "->" + cla
 				+ System.lineSeparator()));

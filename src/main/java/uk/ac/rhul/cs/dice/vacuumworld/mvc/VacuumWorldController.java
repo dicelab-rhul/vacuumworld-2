@@ -45,9 +45,10 @@ public class VacuumWorldController extends AbstractViewController {
 		}
 		POSSIBLEAGENTMINDS = possibleagentminds;
 		POSSIBLEMINDS = possibleminds;
-		VacuumWorld.LOGGER.log(Level.INFO, "possible minds %s", POSSIBLEMINDS);
-		VacuumWorld.LOGGER.log(Level.INFO, "possible agent minds %s",
-				POSSIBLEAGENTMINDS);
+		String pminfo = "possible minds: " + POSSIBLEMINDS;
+		String paminfo = "possible agent minds: " + POSSIBLEAGENTMINDS;
+		VacuumWorld.LOGGER.log(Level.INFO, pminfo);
+		VacuumWorld.LOGGER.log(Level.INFO, paminfo);
 	}
 
 	public static Collection<Class<?>> getPossibleAgentMinds() {
@@ -80,42 +81,41 @@ public class VacuumWorldController extends AbstractViewController {
 
 	public void getAmbientState() {
 		// wait for the universe to be safely paused
-		while (!this.getUniverse().isPausedSafe())
-			;
+		while (!this.getUniverse().isPausedSafe()) {
+			//do nothing
+		}
 	}
 
-	public void start(StartParameters params) {
+	public void start(StartParameters params) throws InterruptedException {
 		if (universeThread != null) {
 			avatarlinks.forEach(VacuumWorldAvatarLink::destroy);
 			avatarlinks.clear();
 			// wait for the thread to finish
-			try {
-				universeThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			universeThread.join();
 		}
 		Collection<VacuumWorldAgent> agents = new ArrayList<>();
 		Collection<Dirt> dirts = new ArrayList<>();
 		Collection<VacuumWorldAvatar> avatars = new ArrayList<>();
 
-		params.dirtapps.forEach((p, a) -> {
+		params.getDirtapps().forEach((p, a) -> {
 			Dirt d = new Dirt(a.getColor());
 			d.getAppearance().setPosition(p);
 			dirts.add(d);
 		});
 
-		params.agentapps.forEach((p, a) -> {
-			if (a.getColor() == BodyColor.USER) {
-				agents.add(setUpAgent(VacuumWorld.USERMIND, p, a));
-			} else if (a.getColor() == BodyColor.AVATAR) {
-				avatars.add(setupAvatar(VacuumWorld.AVATARMIND, p, a));
-			} else {
-				agents.add(setUpAgent(params.mindmap.get(a.getColor()), p, a));
-			}
-		});
-		this.getUniverse().initialiseGrid(params.dimension,
-				params.simulationRate, agents, dirts, avatars);
+		params.getAgentapps().forEach(
+				(p, a) -> {
+					if (a.getColor() == BodyColor.USER) {
+						agents.add(setUpAgent(VacuumWorld.USERMIND, p, a));
+					} else if (a.getColor() == BodyColor.AVATAR) {
+						avatars.add(setupAvatar(VacuumWorld.AVATARMIND, p, a));
+					} else {
+						agents.add(setUpAgent(
+								params.getMindmap().get(a.getColor()), p, a));
+					}
+				});
+		this.getUniverse().initialiseGrid(params.getDimension(),
+				params.getSimulationRate(), agents, dirts, avatars);
 		universeThread = new Thread(this.getUniverse());
 		universeThread.start();
 	}
@@ -172,7 +172,13 @@ public class VacuumWorldController extends AbstractViewController {
 
 	public class UniverseStart {
 		public void start(StartParameters params) {
-			VacuumWorldController.this.start(params);
+			try {
+				VacuumWorldController.this.start(params);
+			} catch (InterruptedException e) {
+				VacuumWorld.LOGGER.log(Level.SEVERE,
+						"Simulation thread interrupted.", e);
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 

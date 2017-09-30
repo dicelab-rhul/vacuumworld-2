@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.vacuumworld;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
@@ -41,8 +42,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  * <li>{@link VacuumWorldCommunicationAction}
  * <li>{@link VacuumWorldSensingAction}
  * </ul>
- * All of which are subclasses of {@link VacuumWorldAction}. </br>
- * The {@link Perception} that all {@link Agent}s receive, provided by
+ * All of which are subclasses of {@link VacuumWorldAction}. </br> The
+ * {@link Perception} that all {@link Agent}s receive, provided by
  * {@link VacuumWorldPhysics#activeBodyPerceive(ActiveBodyAppearance, Action, Ambient)}
  * is a {@link VacuumWorldGridPerception} whose content is
  * {@link VacuumWorldGridContent}, see {@link PerceptionQuery}.
@@ -52,192 +53,208 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class VacuumWorldPhysics extends AbstractPhysics {
-    private Position opt; // this is a bit hacky! beware doing this!
+	private Position opt; // this is a bit hacky! beware doing this!
 
-    public boolean perceivable(VacuumWorldSeeingSensor sensor, AbstractPerception<?> perception, Ambient context) {
-	if(sensor != null) {
-	    return super.perceivable(sensor, perception, context);
-	}
-	else {
-	    return false;
-	}
-}
-    
-    @Override
-    public void simulate() {
-	while (!getEnvironment().shouldStop()) {
-	    if (getEnvironment().isPaused()) {
-		this.getEnvironment().setPausedSafe(true);
-		
-		while (getEnvironment().isPaused()) {
-		    if(getEnvironment().isPaused()) {
-			continue;
-		    }
+	public boolean perceivable(VacuumWorldSeeingSensor sensor,
+			AbstractPerception<?> perception, Ambient context) {
+		if (sensor != null) {
+			return super.perceivable(sensor, perception, context);
+		} else {
+			return false;
 		}
-		
-		this.getEnvironment().setPausedSafe(false);
-	    }
-	    System.out.println("******* CYCLE *******");
-	    cycle();
-	    this.getEnvironment().updateView();
-	    sleep();
 	}
-    }
 
-    @Override
-    public Collection<AbstractPerception<?>> activeBodyPerceive(ActiveBodyAppearance body, Action action, Ambient context) {
-	return getPerceptions((AbstractEnvironmentalAction) action, (VacuumWorldAmbient) context);
-    }
+	@Override
+	public void simulate() {
+		while (!getEnvironment().shouldStop()) {
+			if (getEnvironment().isPaused()) {
+				this.getEnvironment().setPausedSafe(true);
 
-    public Collection<AbstractPerception<?>> getPerceptions(AbstractEnvironmentalAction action,
-	    VacuumWorldAmbient context) {
-	Collection<AbstractPerception<?>> percepts = new ArrayList<>();
-	percepts.add(new VacuumWorldGridPerception(context.getAgentPerception(action)));
-	return percepts;
-    }
+				while (getEnvironment().isPaused()) {
+					if (getEnvironment().isPaused()) {
+						continue;
+					}
+				}
 
-    // *************************************************************** //
-    // ********************* PLACE ACTION METHODS ********************* //
-    // *************************************************************** //
-
-    public Collection<AbstractPerception<?>> getAgentPerceptions(PlaceDirtAction action, Ambient context) {
-	return getPerceptions(action, (VacuumWorldAmbient) context);
-    }
-
-    public Collection<AbstractPerception<?>> getOtherPerceptions(PlaceDirtAction action, Ambient context) {
-	//TODO remove useless parameters.
-	return new ArrayList<>();
-    }
-
-    public boolean isPossible(PlaceDirtAction action, Ambient context) {
-	if (action.getActor().getColor() == BodyColor.getUserColor()
-		|| action.getActor().getColor() == BodyColor.getAvatarColor()) {
-	    VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
-	    return !ambient.getGrid().containsDirt(action.getActor().getPosition());
+				this.getEnvironment().setPausedSafe(false);
+			}
+			VacuumWorld.LOGGER.log(Level.INFO,
+					"*************CYCLE**************");
+			cycle();
+			this.getEnvironment().updateView();
+			sleep();
+		}
 	}
-	return false;
-    }
 
-    public boolean perform(PlaceDirtAction action, Ambient context) {
-	VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
-	ambient.placeDirt(action.getActor().getPosition(), new Dirt(action.getDirtColor()));
-	
-	return true;
-    }
-
-    public boolean verify(PlaceDirtAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
-	return true;
-    }
-
-    // *************************************************************** //
-    // ********************* CLEAN ACTION METHODS ********************* //
-    // *************************************************************** //
-
-    public Collection<AbstractPerception<?>> getAgentPerceptions(CleanAction action, Ambient context) {
-	return getPerceptions(action, (VacuumWorldAmbient) context);
-    }
-
-    public Collection<AbstractPerception<?>> getOtherPerceptions(CleanAction action, Ambient context) {
-	//TODO remove useless parameters.
-	return new ArrayList<>();
-    }
-
-    public boolean isPossible(CleanAction action, Ambient context) {
-	VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
-	VacuumWorldAgentAppearance actor = action.getActor();
-	if (ambient.getGrid().containsDirt(actor.getPosition())) {
-	    return actor.getColor().canClean(ambient.getDirt(action.getActor().getPosition()).getColor());
+	@Override
+	public Collection<AbstractPerception<?>> activeBodyPerceive(
+			ActiveBodyAppearance body, Action action, Ambient context) {
+		return getPerceptions((AbstractEnvironmentalAction) action,
+				(VacuumWorldAmbient) context);
 	}
-	return false;
-    }
 
-    public boolean perform(CleanAction action, Ambient context) {
-	((VacuumWorldAmbient) context).cleanDirt(action.getActor().getPosition());
-	return true;
-    }
-
-    public boolean verify(CleanAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
-	return true;
-    }
-
-    // *************************************************************** //
-    // ********************* TURN ACTION METHODS ********************* //
-    // *************************************************************** //
-
-    public Collection<AbstractPerception<?>> getAgentPerceptions(TurnAction action, Ambient context) {
-	return getPerceptions(action, (VacuumWorldAmbient) context);
-    }
-
-    public Collection<AbstractPerception<?>> getOtherPerceptions(TurnAction action, Ambient context) {
-	//TODO remove useless parameters.
-	return new ArrayList<>();
-    }
-
-    public boolean isPossible(TurnAction action, Ambient context) {
-	//TODO remove useless parameters.
-	return true;
-    }
-
-    public boolean perform(TurnAction action, Ambient context) throws Exception {
-	//TODO remove useless parameters.
-	VacuumWorldAgentAppearance app = action.getActor();
-	app.setOrientation(action.getDirection().turn(app.getOrientation()));
-	return true;
-    }
-
-    public boolean verify(TurnAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
-	return true;
-    }
-
-    // *************************************************************** //
-    // ********************* MOVE ACTION METHODS ********************* //
-    // *************************************************************** //
-
-    public Collection<AbstractPerception<?>> getAgentPerceptions(MoveAction action, Ambient context) {
-	return getPerceptions(action, (VacuumWorldAmbient) context);
-    }
-
-    public Collection<AbstractPerception<?>> getOtherPerceptions(MoveAction action, Ambient context) {
-	//TODO remove useless parameters.
-	return new ArrayList<>();
-    }
-
-    public boolean isPossible(MoveAction action, Ambient context) {
-	VacuumWorldAmbient s = (VacuumWorldAmbient) context;
-	Orientation o = action.getActor().getOrientation();
-	Position p = action.getActor().getPosition();
-	this.opt = new Position(p.getX() + o.getI(), p.getY() + o.getJ());
-	if (!s.getGrid().outOfBounds(this.opt)) {
-	    return !s.getGrid().containsAgent(this.opt);
+	public Collection<AbstractPerception<?>> getPerceptions(
+			AbstractEnvironmentalAction action, VacuumWorldAmbient context) {
+		Collection<AbstractPerception<?>> percepts = new ArrayList<>();
+		percepts.add(new VacuumWorldGridPerception(context
+				.getAgentPerception(action)));
+		return percepts;
 	}
-	return false;
-    }
 
-    public boolean perform(MoveAction action, Ambient context) {
-	VacuumWorldAmbient s = (VacuumWorldAmbient) context;
-	s.getGrid().moveAgent(action.getActor(), this.opt);
-	return true;
-    }
+	// THE PARAMETERS OF METHODS BELOW MUST BE UNUSED.
+	// THE METHODS MUST BE DEFINED IN THIS WAY FOR THE SYSTEM TO WORK! THIS IS
+	// BECAUSE THEY ARE ACCESSED VIA A REFLECTIVE CALL.
 
-    public boolean verify(MoveAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
-	return true;
-    }
+	// *************************************************************** //
+	// ********************* PLACE ACTION METHODS ********************* //
+	// *************************************************************** //
 
-    public VacuumWorldAmbient getState() {
-	return (VacuumWorldAmbient) super.state;
-    }
+	public Collection<AbstractPerception<?>> getAgentPerceptions(
+			PlaceDirtAction action, Ambient context) {
+		return getPerceptions(action, (VacuumWorldAmbient) context);
+	}
 
-    @Override
-    public VacuumWorldUniverse getEnvironment() {
-	return (VacuumWorldUniverse) this.environment;
-    }
+	public Collection<AbstractPerception<?>> getOtherPerceptions(
+			PlaceDirtAction action, Ambient context) {
+		// TODO remove useless parameters.
+		return new ArrayList<>();
+	}
 
-    @Override
-    public void cycleAddition() {
-	//not needed?
-    }
+	public boolean isPossible(PlaceDirtAction action, Ambient context) {
+		if (action.getActor().getColor() == BodyColor.getUserColor()
+				|| action.getActor().getColor() == BodyColor.getAvatarColor()) {
+			VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
+			return !ambient.getGrid().containsDirt(
+					action.getActor().getPosition());
+		}
+		return false;
+	}
+
+	public boolean perform(PlaceDirtAction action, Ambient context) {
+		VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
+		ambient.placeDirt(action.getActor().getPosition(),
+				new Dirt(action.getDirtColor()));
+
+		return true;
+	}
+
+	public boolean verify(PlaceDirtAction action, Ambient context) {
+		// TODO verify the actual success
+		return true;
+	}
+
+	// *************************************************************** //
+	// ********************* CLEAN ACTION METHODS ********************* //
+	// *************************************************************** //
+
+	public Collection<AbstractPerception<?>> getAgentPerceptions(
+			CleanAction action, Ambient context) {
+		return getPerceptions(action, (VacuumWorldAmbient) context);
+	}
+
+	public Collection<AbstractPerception<?>> getOtherPerceptions(
+			CleanAction action, Ambient context) {
+		return new ArrayList<>();
+	}
+
+	public boolean isPossible(CleanAction action, Ambient context) {
+		VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
+		VacuumWorldAgentAppearance actor = action.getActor();
+		if (ambient.getGrid().containsDirt(actor.getPosition())) {
+			return actor.getColor()
+					.canClean(
+							ambient.getDirt(action.getActor().getPosition())
+									.getColor());
+		}
+		return false;
+	}
+
+	public boolean perform(CleanAction action, Ambient context) {
+		((VacuumWorldAmbient) context).cleanDirt(action.getActor()
+				.getPosition());
+		return true;
+	}
+
+	public boolean verify(CleanAction action, Ambient context) {
+		// TODO verify the actual success
+		return true;
+	}
+
+	// *************************************************************** //
+	// ********************* TURN ACTION METHODS ********************* //
+	// *************************************************************** //
+
+	public Collection<AbstractPerception<?>> getAgentPerceptions(
+			TurnAction action, Ambient context) {
+		return getPerceptions(action, (VacuumWorldAmbient) context);
+	}
+
+	public Collection<AbstractPerception<?>> getOtherPerceptions(
+			TurnAction action, Ambient context) {
+		return new ArrayList<>();
+	}
+
+	public boolean isPossible(TurnAction action, Ambient context) {
+		return true;
+	}
+
+	public boolean perform(TurnAction action, Ambient context) {
+		VacuumWorldAgentAppearance app = action.getActor();
+		app.setOrientation(action.getDirection().turn(app.getOrientation()));
+		return true;
+	}
+
+	public boolean verify(TurnAction action, Ambient context) {
+		return true;
+	}
+
+	// *************************************************************** //
+	// ********************* MOVE ACTION METHODS ********************* //
+	// *************************************************************** //
+
+	public Collection<AbstractPerception<?>> getAgentPerceptions(
+			MoveAction action, Ambient context) {
+		return getPerceptions(action, (VacuumWorldAmbient) context);
+	}
+
+	public Collection<AbstractPerception<?>> getOtherPerceptions(
+			MoveAction action, Ambient context) {
+		return new ArrayList<>();
+	}
+
+	public boolean isPossible(MoveAction action, Ambient context) {
+		VacuumWorldAmbient s = (VacuumWorldAmbient) context;
+		Orientation o = action.getActor().getOrientation();
+		Position p = action.getActor().getPosition();
+		this.opt = new Position(p.getX() + o.getI(), p.getY() + o.getJ());
+		if (!s.getGrid().outOfBounds(this.opt)) {
+			return !s.getGrid().containsAgent(this.opt);
+		}
+		return false;
+	}
+
+	public boolean perform(MoveAction action, Ambient context) {
+		VacuumWorldAmbient s = (VacuumWorldAmbient) context;
+		s.getGrid().moveAgent(action.getActor(), this.opt);
+		return true;
+	}
+
+	public boolean verify(MoveAction action, Ambient context) {
+		// TODO verify action was actually performed
+		return true;
+	}
+
+	public VacuumWorldAmbient getState() {
+		return (VacuumWorldAmbient) super.state;
+	}
+
+	@Override
+	public VacuumWorldUniverse getEnvironment() {
+		return (VacuumWorldUniverse) this.environment;
+	}
+
+	@Override
+	public void cycleAddition() {
+		// not needed?
+	}
 }

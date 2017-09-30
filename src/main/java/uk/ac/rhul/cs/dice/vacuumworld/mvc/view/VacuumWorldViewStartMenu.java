@@ -13,32 +13,29 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView.StartMenuOnClick;
-import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.StartButton;
+import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.DefaultButton;
 
 public class VacuumWorldViewStartMenu extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 5094145897652688375L;
-	private static Integer STARTBUTTONWIDTH = 165, STARTBUTTONHEIGHT = 45;
+	private static final Integer STARTBUTTONWIDTH = 165;
+	private static final Integer STARTBUTTONHEIGHT = 45;
 
-	private BufferedImage startmenu;
-	private StartButton start;
+	private transient BufferedImage startmenu;
+	private transient DefaultButton start;
 
 	public VacuumWorldViewStartMenu(BufferedImage startmenu,
 			StartMenuOnClick onClickStart) {
 		super();
 		this.startmenu = startmenu;
 		this.setLayout(new GridBagLayout());
-		start = new StartButton(onClickStart);
+		start = new DefaultButton(DefaultButton.FILENAME_STARTBUTTON,
+				onClickStart);
 		start.setPreferredSize(new Dimension(STARTBUTTONWIDTH,
 				STARTBUTTONHEIGHT));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		this.add(start, gbc);
-	}
-
-	@Override
-	public Dimension getPreferredSize() {
-		return super.getPreferredSize();
 	}
 
 	@Override
@@ -57,6 +54,6 @@ public class VacuumWorldViewStartMenu extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		// unused
 	}
 }

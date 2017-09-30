@@ -17,8 +17,10 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
 @UserMindAnnotation
 public class VacuumWorldUserMind extends VacuumWorldMind {
 
-	private static int MESSINESS = 4;
-	private static double MOBILITY = 0.8;
+	// TODO responding to requests from agents to move!
+
+	private static int messiness = 4;
+	private static double mobility = 0.8;
 	private boolean actionfailed = false;
 	private int actioncounter = 0;
 	private Class<?> lastaction = VacuumWorldSensingAction.class;
@@ -37,11 +39,12 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 		}
 	}
 
-	private boolean filledForward, filledLeft, filledRight;
+	private boolean filledForward;
+	private boolean filledLeft;
+	private boolean filledRight;
 
 	@Override
 	public VacuumWorldAction decide() {
-		System.out.println(lastaction);
 		if (!actionfailed) {
 			if (MoveAction.class.isAssignableFrom(lastaction)) {
 				actioncounter++;
@@ -52,11 +55,9 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 		if (currentpercept == null) {
 			return new VacuumWorldSensingAction();
 		}
-		filledForward = super.isFilledForward(currentpercept);
-		filledLeft = super.isFilledLeft(currentpercept);
-		filledRight = super.isFilledRight(currentpercept);
-		// System.out
-		// .println(filledForward + " " + filledLeft + " " + filledRight);
+		filledForward = isFilledForward(currentpercept);
+		filledLeft = isFilledLeft(currentpercept);
+		filledRight = isFilledRight(currentpercept);
 		VacuumWorldAction action = null;
 		if ((action = doMessAction()) != null) {
 			return action;
@@ -68,7 +69,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 	}
 
 	private VacuumWorldAction doRandomAction() {
-		if (Math.random() <= MOBILITY || justTurned) {
+		if (Math.random() <= mobility || justTurned) {
 			justTurned = false;
 			return new MoveAction();
 		} else {
@@ -85,9 +86,9 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 	}
 
 	private VacuumWorldAction doMessAction() {
-		if (actioncounter % MESSINESS == 0) {
+		if (actioncounter % messiness == 0) {
 			actioncounter++;
-			if (!super.isDirtOn(currentpercept)) {
+			if (!isDirtOn(currentpercept)) {
 				return new PlaceDirtAction(null);
 			}
 		}
@@ -109,7 +110,6 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 
 	@Override
 	public VacuumWorldAction execute(VacuumWorldAction action) {
-		System.out.println(action);
 		lastaction = action.getClass();
 		currentpercept = null;
 		return action;

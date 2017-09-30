@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar;
 
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.link.AbstractAvatarLink;
@@ -31,13 +32,10 @@ public class VacuumWorldAvatarLink
 			this.addMapping(KeyEvent.VK_A, TurnAction.class,
 					TurnDirection.class);
 			this.mapDefaultArguments(KeyEvent.VK_A, TurnDirection.LEFT);
-
 			this.addMapping(KeyEvent.VK_D, TurnAction.class,
 					TurnDirection.class);
 			this.mapDefaultArguments(KeyEvent.VK_D, TurnDirection.RIGHT);
-
 			this.addMapping(KeyEvent.VK_W, MoveAction.class);
-
 			this.addMapping(KeyEvent.VK_SPACE, PlaceDirtAction.class);
 			this.addMapping(KeyEvent.VK_O, PlaceDirtAction.class,
 					BodyColor.class);
@@ -46,7 +44,11 @@ public class VacuumWorldAvatarLink
 					BodyColor.class);
 			this.mapDefaultArguments(KeyEvent.VK_G, BodyColor.GREEN);
 		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			VacuumWorld.LOGGER
+					.log(Level.SEVERE,
+							"Failed to initialise avatar link, the Avatar cannot be used properly.",
+							e);
+			super.clearMappings();
 		}
 	}
 
@@ -67,9 +69,11 @@ public class VacuumWorldAvatarLink
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		// unused
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+		// unused
 	}
 }

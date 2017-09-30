@@ -12,17 +12,17 @@ import uk.ac.rhul.cs.dice.vacuumworld.utilities.ImageUtilities;
 public class RotateButton extends CustomButton {
 
 	private static final long serialVersionUID = 8896726750341550347L;
-	private static BufferedImage IMG = ImageUtilities.getOverlayedImage(
+	private static final BufferedImage IMG = ImageUtilities.getOverlayedImage(
 			VacuumWorldView.IMGLOADER.loadImage(VacuumWorldView.IMGPATH + "rotate_button"
 					+ VacuumWorldView.EXTENSION), Color.BLACK, 1f);
-	private static BufferedImage HOVER = ImageUtilities.getOverlayedImage(IMG,
+	private static final BufferedImage ROTATEHOVER = ImageUtilities.getOverlayedImage(IMG,
 			Color.WHITE, 0.3f);
 
 	private VacuumWorldAgentAppearance current;
 	private boolean left = true;
 
 	public RotateButton(OnClick onclick) {
-		super(IMG, HOVER, HOVER, onclick);
+		super(IMG, ROTATEHOVER, ROTATEHOVER, onclick);
 		this.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		this.setFocusable(true);
 	}
