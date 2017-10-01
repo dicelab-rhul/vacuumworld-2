@@ -38,7 +38,11 @@ public class ClassFinder {
 				for (String name : names) {
 					// THIS STEP IS TO ENSURE THAT FROM ECLIPSE YOU WON'T GET A
 					// CLASSNOTFOUNDEXCEPTION!!!
-					if (name.startsWith(u.getPath())) {
+				    System.out.println(name);
+				    if(name.startsWith("bin")) {
+					name = name.substring(4);
+				    }
+				    else if (name.startsWith(u.getPath())) {
 						name = name.substring(u.getPath().length()).replace(
 								"/", ".");
 					}
