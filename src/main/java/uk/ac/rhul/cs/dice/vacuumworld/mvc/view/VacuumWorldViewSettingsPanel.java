@@ -43,9 +43,8 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 	private JFormattedTextField simulationRatetf = new JFormattedTextField(
 			NumberFormat.getIntegerInstance());
 
-	private SettingsButton savebtn;
-	private SettingsButton donebtn;
-	private SettingsButton loadbtn;
+	private transient SettingsButton savebtn;
+	private transient SettingsButton loadbtn;
 
 	private Integer gridDimension;
 	private Integer simulationRate;
@@ -100,7 +99,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		c.weightx = 0;
 		c.weighty = 0;
 		c.anchor = GridBagConstraints.SOUTHEAST;
-		donebtn = new SettingsButton(DONEBUTTONFILENAME, done);
+		SettingsButton donebtn = new SettingsButton(DONEBUTTONFILENAME, done);
 		donebtn.setPreferredSize(new Dimension(110, 30));
 		buttonpanel.add(donebtn, c);
 		return buttonpanel;

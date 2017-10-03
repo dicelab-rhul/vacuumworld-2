@@ -53,6 +53,8 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 		}
 	}
 
+	//this is just a compact example.
+	//TODO separate this into smaller methods to reduce the cyclomatic complexity and the number of nested conditional statements.
 	@Override
 	public VacuumWorldAction decide() {
 		if (currentpercept == null) {
@@ -130,8 +132,8 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 			return new TurnAction(TurnDirection.RIGHT); // turn right
 		}
 
-		boolean filledLeft = false;
-		boolean filledRight = false;
+		boolean filledLeft;
+		boolean filledRight;
 		// the is no cleanable dirt to the left or right
 		// check if the forward location is filled with an agent or a wall
 		if (isFilledForward(currentpercept)) {

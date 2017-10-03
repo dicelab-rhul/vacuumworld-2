@@ -68,20 +68,24 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 	while (!getEnvironment().shouldStop()) {
 	    if (getEnvironment().isPaused()) {
 		this.getEnvironment().setPausedSafe(true);
-
-		while (getEnvironment().isPaused()) {
-		    if (getEnvironment().isPaused()) {
-			continue;
-		    }
-		}
-
-		this.getEnvironment().setPausedSafe(false);
+		simulateHelper();
 	    }
+	    
 	    LogUtils.log("*************CYCLE**************");
 	    cycle();
 	    this.getEnvironment().updateView();
 	    sleep();
 	}
+    }
+
+    private void simulateHelper() {
+	while (getEnvironment().isPaused()) {
+	    if (getEnvironment().isPaused()) {
+		continue;
+	    }
+	}
+
+	this.getEnvironment().setPausedSafe(false);
     }
 
     @Override

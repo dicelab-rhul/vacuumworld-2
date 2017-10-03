@@ -53,13 +53,13 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	protected DragPanel drag;
 	protected PausePanel pausepanel;
 	protected VacuumWorldViewSettingsPanel settings;
-	protected VacuumWorldSelectionGridPanel selectiongrid;
+	protected transient VacuumWorldSelectionGridPanel selectiongrid;
 	protected VacuumWorldViewSimulationPanel simulationgrid;
 	protected JPanel selectionButtonPanel;
 
-	private List<SelectorButton> agentbuttons;
-	private List<SelectorButton> dirtbuttons;
-	private List<SelectorButton> userbuttons;
+	private transient List<SelectorButton> agentbuttons;
+	private transient List<SelectorButton> dirtbuttons;
+	private transient List<SelectorButton> userbuttons;
 
 	private StartParameters startparams = new StartParameters();
 
