@@ -8,4 +8,5 @@ bin/**
 *.psd
 
 /target/
-.classpath
+
+*.donotpush

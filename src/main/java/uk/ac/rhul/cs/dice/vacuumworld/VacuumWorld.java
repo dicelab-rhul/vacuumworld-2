@@ -26,6 +26,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelfishAvatar
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.avatar.VacuumWorldSelflessAvatarMind;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.VacuumWorldView;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.LogUtils;
 
 /**
  * The entry point of Vacuum World.
@@ -72,7 +73,7 @@ public class VacuumWorld {
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	} 
 	catch (Exception e) {
-	    e.printStackTrace();
+	    LogUtils.log(e);
 	}
 	
 	VacuumWorldView view = new VacuumWorldView();
