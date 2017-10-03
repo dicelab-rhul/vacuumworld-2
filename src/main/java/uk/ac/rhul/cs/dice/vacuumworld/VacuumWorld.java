@@ -68,14 +68,12 @@ public class VacuumWorld {
      */
     public static void start() {
 	VacuumWorldUniverse universe = new VacuumWorldUniverse();
-	
 	try {
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	} 
-	catch (Exception e) {
+	} catch (Exception e) {
 	    LogUtils.log(e);
 	}
-	
+
 	VacuumWorldView view = new VacuumWorldView();
 	new VacuumWorldController(view, universe);
     }

@@ -27,6 +27,7 @@ public class WallTile implements Tile {
 
 	@Override
 	public void setAgent(VacuumWorldAgentAppearance agent) {
+		// unused, a wall tile cannot contain an agent
 	}
 
 	@Override
@@ -36,6 +37,7 @@ public class WallTile implements Tile {
 
 	@Override
 	public void setDirt(DirtAppearance dirt) {
+		// unused, a wall tile cannot contain dirt
 	}
 
 	@Override

@@ -68,4 +68,37 @@ public class VacuumWorldAgentAppearance extends ActiveBodyAppearance implements
 		return this.getClass().getSimpleName() + " : " + this.position + ", "
 				+ this.color + ", " + this.orientation;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result
+				+ ((orientation == null) ? 0 : orientation.hashCode());
+		result = prime * result
+				+ ((position == null) ? 0 : position.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VacuumWorldAgentAppearance other = (VacuumWorldAgentAppearance) obj;
+		if (color != other.color)
+			return false;
+		if (orientation != other.orientation)
+			return false;
+		if (position == null) {
+			if (other.position != null)
+				return false;
+		} else if (!position.equals(other.position))
+			return false;
+		return true;
+	}
 }

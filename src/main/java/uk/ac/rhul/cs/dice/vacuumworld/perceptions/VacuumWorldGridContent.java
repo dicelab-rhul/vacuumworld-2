@@ -36,10 +36,8 @@ public class VacuumWorldGridContent {
 	 */
 	public VacuumWorldAgentAppearance getAgent(Position position) {
 		Tile t = view.get(position);
-		if (t != null) {
-			if (t.containsAgent()) {
-				return t.getAgent();
-			}
+		if (t != null && t.containsAgent()) {
+			return t.getAgent();
 		}
 		return null;
 	}
@@ -55,10 +53,8 @@ public class VacuumWorldGridContent {
 	 */
 	public DirtAppearance getDirt(Position position) {
 		Tile t = view.get(position);
-		if (t != null) {
-			if (t.containsDirt()) {
-				return t.getDirt();
-			}
+		if (t != null && t.containsDirt()) {
+			return t.getDirt();
 		}
 		return null;
 	}
@@ -182,7 +178,7 @@ public class VacuumWorldGridContent {
 	 */
 	public Collection<DirtAppearance> getDirts() {
 		Collection<DirtAppearance> dirts = new ArrayList<>();
-		view.values().forEach((t) -> {
+		view.values().forEach(t -> {
 			if (t.containsDirt()) {
 				dirts.add(t.getDirt());
 			}
@@ -198,7 +194,7 @@ public class VacuumWorldGridContent {
 	 */
 	public Collection<VacuumWorldAgentAppearance> getAgents() {
 		Collection<VacuumWorldAgentAppearance> agents = new ArrayList<>();
-		view.values().forEach((t) -> {
+		view.values().forEach(t -> {
 			if (t.containsAgent()) {
 				agents.add(t.getAgent());
 			}

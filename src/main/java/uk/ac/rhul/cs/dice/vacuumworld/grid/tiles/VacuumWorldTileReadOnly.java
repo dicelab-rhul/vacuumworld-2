@@ -8,7 +8,7 @@ public class VacuumWorldTileReadOnly extends VacuumWorldTile {
 
 	private static final long serialVersionUID = -5962543062760277746L;
 
-	public VacuumWorldTileReadOnly(VacuumWorldTile tile) throws Exception {
+	public VacuumWorldTileReadOnly(VacuumWorldTile tile) {
 		super(ReadOnlyWrap.readOnlyCopy(tile.getAgent()), ReadOnlyWrap
 				.readOnlyCopy(tile.getDirt()));
 	}

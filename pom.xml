@@ -19,7 +19,7 @@
   		<artifactId>junit-vintage-engine</artifactId>
   		<version>4.12.0</version>
   	</dependency>
-  	  	<dependency>
+  	<dependency>
   		<groupId>uk.ac.rhul.dice</groupId>
   		<artifactId>starworlds-lite</artifactId>
   		<version>1.0.1-SNAPSHOT</version>

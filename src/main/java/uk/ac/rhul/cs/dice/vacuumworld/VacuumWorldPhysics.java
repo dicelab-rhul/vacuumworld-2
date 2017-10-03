@@ -28,6 +28,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.LogUtils;
 
 /**
  * The {@link Physics} of {@link VacuumWorld}. Contain all the necessary
@@ -55,29 +56,28 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     private Position opt; // this is a bit hacky! beware doing this!
 
     public boolean perceivable(VacuumWorldSeeingSensor sensor, AbstractPerception<?> perception, Ambient context) {
-	if(sensor != null) {
+	if (sensor != null) {
 	    return super.perceivable(sensor, perception, context);
-	}
-	else {
+	} else {
 	    return false;
 	}
-}
-    
+    }
+
     @Override
     public void simulate() {
 	while (!getEnvironment().shouldStop()) {
 	    if (getEnvironment().isPaused()) {
 		this.getEnvironment().setPausedSafe(true);
-		
+
 		while (getEnvironment().isPaused()) {
-		    if(getEnvironment().isPaused()) {
+		    if (getEnvironment().isPaused()) {
 			continue;
 		    }
 		}
-		
+
 		this.getEnvironment().setPausedSafe(false);
 	    }
-	    System.out.println("******* CYCLE *******");
+	    LogUtils.log("*************CYCLE**************");
 	    cycle();
 	    this.getEnvironment().updateView();
 	    sleep();
@@ -85,7 +85,8 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     @Override
-    public Collection<AbstractPerception<?>> activeBodyPerceive(ActiveBodyAppearance body, Action action, Ambient context) {
+    public Collection<AbstractPerception<?>> activeBodyPerceive(ActiveBodyAppearance body, Action action,
+	    Ambient context) {
 	return getPerceptions((AbstractEnvironmentalAction) action, (VacuumWorldAmbient) context);
     }
 
@@ -96,6 +97,10 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 	return percepts;
     }
 
+    // THE PARAMETERS OF METHODS BELOW MUST BE UNUSED.
+    // THE METHODS MUST BE DEFINED IN THIS WAY FOR THE SYSTEM TO WORK! THIS IS
+    // BECAUSE THEY ARE ACCESSED VIA A REFLECTIVE CALL.
+
     // *************************************************************** //
     // ********************* PLACE ACTION METHODS ********************* //
     // *************************************************************** //
@@ -105,7 +110,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(PlaceDirtAction action, Ambient context) {
-	//TODO remove useless parameters.
+	// TODO remove useless parameters.
 	return new ArrayList<>();
     }
 
@@ -121,12 +126,12 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     public boolean perform(PlaceDirtAction action, Ambient context) {
 	VacuumWorldAmbient ambient = (VacuumWorldAmbient) context;
 	ambient.placeDirt(action.getActor().getPosition(), new Dirt(action.getDirtColor()));
-	
+
 	return true;
     }
 
     public boolean verify(PlaceDirtAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
+	// TODO verify the actual success
 	return true;
     }
 
@@ -139,7 +144,6 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(CleanAction action, Ambient context) {
-	//TODO remove useless parameters.
 	return new ArrayList<>();
     }
 
@@ -158,7 +162,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public boolean verify(CleanAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
+	// TODO verify the actual success
 	return true;
     }
 
@@ -171,24 +175,20 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(TurnAction action, Ambient context) {
-	//TODO remove useless parameters.
 	return new ArrayList<>();
     }
 
     public boolean isPossible(TurnAction action, Ambient context) {
-	//TODO remove useless parameters.
 	return true;
     }
 
-    public boolean perform(TurnAction action, Ambient context) throws Exception {
-	//TODO remove useless parameters.
+    public boolean perform(TurnAction action, Ambient context) {
 	VacuumWorldAgentAppearance app = action.getActor();
 	app.setOrientation(action.getDirection().turn(app.getOrientation()));
 	return true;
     }
 
     public boolean verify(TurnAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
 	return true;
     }
 
@@ -201,7 +201,6 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(MoveAction action, Ambient context) {
-	//TODO remove useless parameters.
 	return new ArrayList<>();
     }
 
@@ -223,7 +222,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public boolean verify(MoveAction action, Ambient context) {
-	//TODO verify the actual success and remove useless parameters.
+	// TODO verify action was actually performed
 	return true;
     }
 
@@ -238,6 +237,6 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 
     @Override
     public void cycleAddition() {
-	//not needed?
+	// not needed?
     }
 }

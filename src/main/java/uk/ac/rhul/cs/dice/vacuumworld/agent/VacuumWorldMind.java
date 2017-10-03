@@ -2,6 +2,9 @@ package uk.ac.rhul.cs.dice.vacuumworld.agent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
@@ -22,8 +25,21 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.SuperSimpleFormatter;
 
 public abstract class VacuumWorldMind extends AbstractAgentMind {
+
+	public static final Logger LOGGER = Logger.getLogger("MindLogger");
+	static {
+		// set up logger
+		for (Handler handler : LOGGER.getParent().getHandlers()) {
+			LOGGER.getParent().removeHandler(handler);
+		}
+		ConsoleHandler handler = new ConsoleHandler();
+		LOGGER.addHandler(handler);
+		SuperSimpleFormatter formatter = new SuperSimpleFormatter();
+		handler.setFormatter(formatter);
+	}
 
 	// **************************************************************** //
 	// ************** DELEGATED PERCEIVE DECIDE EXECUTE *************** //
@@ -319,22 +335,21 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	 *         given {@link Dirt}, <code>false</code> otherwise.
 	 */
 	public boolean canCleanDirt(DirtAppearance dirt) {
-		return this.getAppearance().getColor().canClean(dirt.getColor());
+		return getUnsafeAppearance().getColor().canClean(dirt.getColor());
+	}
+
+	private final VacuumWorldAgentAppearance getUnsafeAppearance() {
+		return (VacuumWorldAgentAppearance) super.getBody().getAppearance();
 	}
 
 	protected final VacuumWorldAgentAppearance getAppearance() {
-		try {
-			return ReadOnlyWrap.readOnlyCopy((VacuumWorldAgentAppearance) super
-					.getBody().getAppearance());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		return ReadOnlyWrap.readOnlyCopy((VacuumWorldAgentAppearance) super
+				.getBody().getAppearance());
 	}
 
 	@Override
 	protected final VacuumWorldAgent getBody() {
-		System.out.println("Nice try, you shouldnt be trying to do this!");
+		ReadOnlyWrap.nicetry();
 		return null;
 	}
 

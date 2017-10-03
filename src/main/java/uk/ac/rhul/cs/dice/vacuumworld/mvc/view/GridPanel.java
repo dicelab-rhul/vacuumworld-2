@@ -67,13 +67,13 @@ public class GridPanel extends JPanel {
 	}
 
 	protected void drawDirt(Graphics g, Position position, BodyColor color) {
-		BufferedImage img = VacuumWorldView.DIRTIMAGES.get(color);
+		BufferedImage img = VacuumWorldView.dirtimages.get(color);
 		drawBody(g, img, position);
 	}
 
 	protected void drawAgent(Graphics g, Position position, BodyColor color,
 			Orientation orientation) {
-		BufferedImage img = VacuumWorldView.AGENTIMAGES.get(color).get(
+		BufferedImage img = VacuumWorldView.agentimages.get(color).get(
 				orientation);
 		drawBody(g, img, position);
 	}

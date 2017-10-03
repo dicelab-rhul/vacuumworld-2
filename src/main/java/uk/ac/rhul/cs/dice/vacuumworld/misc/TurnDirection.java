@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.dice.vacuumworld.misc;
 
-import java.lang.reflect.Method;
-
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 
 /**
@@ -14,11 +12,32 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
  */
 public enum TurnDirection {
 
-	LEFT(getTurnMethod("getLeft")), RIGHT(getTurnMethod("getRight"));
+	LEFT(new TurnLeft()), RIGHT(new TurnRight());
 
-	private Method turn;
+	private Turn turn;
 
-	private TurnDirection(Method turn) {
+	private static interface Turn {
+		public Orientation turn(Orientation orientation);
+	}
+
+	static class TurnLeft implements Turn {
+
+		@Override
+		public Orientation turn(Orientation orientation) {
+			return orientation.getLeft();
+		}
+	}
+
+	static class TurnRight implements Turn {
+
+		@Override
+		public Orientation turn(Orientation orientation) {
+			return orientation.getRight();
+		}
+
+	}
+
+	private TurnDirection(Turn turn) {
 		this.turn = turn;
 	}
 
@@ -29,18 +48,8 @@ public enum TurnDirection {
 	 * @param orientation
 	 *            : to turn
 	 * @return the turned {@link Orientation}.
-	 * @throws Exception
 	 */
-	public Orientation turn(Orientation orientation) throws Exception {
-		return (Orientation) turn.invoke(this, orientation);
-	}
-
-	private static Method getTurnMethod(String name) {
-		try {
-			return Orientation.class.getMethod(name, Orientation.class);
-		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public Orientation turn(Orientation orientation) {
+		return turn.turn(orientation);
 	}
 }

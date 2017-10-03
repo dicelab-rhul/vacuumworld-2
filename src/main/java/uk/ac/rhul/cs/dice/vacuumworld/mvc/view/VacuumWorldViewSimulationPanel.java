@@ -16,7 +16,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 public class VacuumWorldViewSimulationPanel extends GridPanel {
 
 	private static final long serialVersionUID = -5008822076025428472L;
-	private VacuumWorldAmbient model;
+	/* This class should never be serialised */
+	private transient VacuumWorldAmbient model;
 
 	public VacuumWorldViewSimulationPanel(VacuumWorldAmbient model) {
 		super(null);
@@ -47,7 +48,7 @@ public class VacuumWorldViewSimulationPanel extends GridPanel {
 
 	private void drawDirt(Graphics g, PassiveBody body) {
 		DirtAppearance appearance = (DirtAppearance) body.getAppearance();
-		drawBody(g, VacuumWorldView.DIRTIMAGES.get(appearance.getColor()),
+		drawBody(g, VacuumWorldView.dirtimages.get(appearance.getColor()),
 				appearance.getPosition());
 	}
 
@@ -56,7 +57,7 @@ public class VacuumWorldViewSimulationPanel extends GridPanel {
 				.getAppearance();
 		drawBody(
 				g,
-				VacuumWorldView.AGENTIMAGES.get(appearance.getColor()).get(
+				VacuumWorldView.agentimages.get(appearance.getColor()).get(
 						appearance.getOrientation()), appearance.getPosition());
 	}
 }

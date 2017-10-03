@@ -8,8 +8,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 public class VacuumWorldSeeingSensor extends SeeingSensor {
 
 	@SensiblePerception
-	public static final Class<?> VACUUMWORLDPERCEPTION = VacuumWorldGridPerception.class;
+	public static final Class<?> VACUUMWORLDACTIVEPERCEPTION = ActivePerception.class;
 	@SensiblePerception
-	public static final Class<?> ACTIVEPERCEPTION = ActivePerception.class;
+	public static final Class<?> VACUUMWORLDPERCEPTION = VacuumWorldGridPerception.class;
 
 }

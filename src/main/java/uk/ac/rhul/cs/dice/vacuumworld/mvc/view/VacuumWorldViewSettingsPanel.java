@@ -28,13 +28,12 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		MouseListener {
 
 	private static final long serialVersionUID = 1252849880132919023L;
-	// private static final String AVATARBUTTONFILENAME = "avatar_button";
 	private static final String DONEBUTTONFILENAME = "done_button";
 	private static final String SAVEBUTTONFILENAME = "save_button";
 	private static final String LOADBUTTONFILENAME = "load_button";
 
-	private Class<?>[] possibleminds = VacuumWorldController.POSSIBLEAGENTMINDS
-			.toArray(new Class<?>[0]);
+	private Class<?>[] possibleminds = VacuumWorldController
+			.getPossibleAgentMinds().toArray(new Class<?>[0]);
 	private JPanel combopanel;
 	private JComboBox<Class<?>> greencombo = new JComboBox<>();
 	private JComboBox<Class<?>> orangecombo = new JComboBox<>();
@@ -43,7 +42,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 			NumberFormat.getIntegerInstance());
 	private JFormattedTextField simulationRatetf = new JFormattedTextField(
 			NumberFormat.getIntegerInstance());
-	// private DefaultButton avatarbtn;
+
 	private SettingsButton savebtn;
 	private SettingsButton donebtn;
 	private SettingsButton loadbtn;
@@ -57,7 +56,6 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		this.setBackground(Color.WHITE);
 		this.setOpaque(true);
 		this.setLayout(new GridBagLayout());
-		// avatarbtn = new DefaultButton(AVATARBUTTONFILENAME, null);
 		GridBagConstraints c = new GridBagConstraints();
 
 		c.insets = new Insets(10, 10, 10, 10);
@@ -181,22 +179,27 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		// unused
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		// unused
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// unused
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		// unused
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		// unused
 	}
 
 	public Integer getGridDimension() {
@@ -247,7 +250,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getNewValue() != null) {
 				simulationRate = Integer.valueOf(evt.getNewValue().toString());
-				if(simulationRate < 0) {
+				if (simulationRate < 0) {
 					simulationRate = 0;
 				}
 			} else {
@@ -261,7 +264,7 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getNewValue() != null) {
 				gridDimension = Integer.valueOf(evt.getNewValue().toString());
-				if(gridDimension < 1) {
+				if (gridDimension < 1) {
 					gridDimension = 1;
 				}
 				dimensiontf.setValue(gridDimension);

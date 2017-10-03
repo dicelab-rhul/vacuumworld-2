@@ -22,12 +22,7 @@ public class VacuumWorldAgentAppearanceReadOnly extends
 				appearance.getSensors(), appearance.getActuators());
 		super.setColor(appearance.getColor());
 		super.setOrientation(appearance.getOrientation());
-		try {
-			super.setPosition(ReadOnlyWrap.readOnlyCopy(appearance
-					.getPosition()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		super.setPosition(ReadOnlyWrap.readOnlyCopy(appearance.getPosition()));
 	}
 
 	@Override
@@ -59,10 +54,10 @@ public class VacuumWorldAgentAppearanceReadOnly extends
 	public void setPosition(Position position) {
 		ReadOnlyWrap.nicetry(this.getClass().getSimpleName() + " position");
 	}
-	
+
 	@Override
 	public String toString() {
-		return APPEARANCETOSTRING + getColor() + ","  + getPosition() + ","
-				 + getOrientation() + "}";
+		return APPEARANCETOSTRING + getColor() + "," + getPosition() + ","
+				+ getOrientation() + "}";
 	}
 }

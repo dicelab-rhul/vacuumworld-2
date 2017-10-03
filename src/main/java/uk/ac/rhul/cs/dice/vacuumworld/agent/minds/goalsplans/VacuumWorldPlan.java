@@ -23,7 +23,7 @@ public abstract class VacuumWorldPlan extends StackPlan<VacuumWorldAction> {
 		final String egap = gap + "  ";
 		if (this.hasSubGoals()) {
 			this.getSubgoals().forEach(
-					(g) -> b.append(System.lineSeparator() + g.toString(egap)));
+					g -> b.append(System.lineSeparator() + g.toString(egap)));
 		}
 		if (this.hasActions()) {
 			for (int i = 0; i < this.actions.size() - 1; i++) {
