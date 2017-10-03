@@ -134,7 +134,7 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 
 		boolean filledLeft;
 		boolean filledRight;
-		// the is no cleanable dirt to the left or right
+		// there is no cleanable dirt to the left or right
 		// check if the forward location is filled with an agent or a wall
 		if (isFilledForward(currentpercept)) {
 			// the agent should turn to avoid moving into the wall

@@ -79,8 +79,8 @@ public class VacuumWorldAgentAppearance extends ActiveBodyAppearance
 
     @Override
     public boolean equals(Object obj) {
-	if (Utils.equalsHelper(this, obj)) {
-	    return true;
+	if (!Utils.equalsHelper(this, obj)) {
+	    return false;
 	}
 
 	VacuumWorldAgentAppearance other = (VacuumWorldAgentAppearance) obj;

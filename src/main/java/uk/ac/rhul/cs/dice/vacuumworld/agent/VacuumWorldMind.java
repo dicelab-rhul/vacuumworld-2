@@ -357,6 +357,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	// ***************** REAL PERCEIVE DECIDE EXECUTE ***************** //
 	// **************************************************************** //
 	@SuppressWarnings("unchecked")
+	//TODO this is a bad practice and can lead to bugs. I.e., solve the "unchecked" part.
 	@Override
 	public final Perception<?> perceive(Collection<Perception<?>> perceptions) {
 		VacuumWorldGridPerception vwpercepts = null;
@@ -424,7 +425,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 				.getSelf().getPosition());
 	}
 
-	private static boolean checkFilled(VacuumWorldGridContent perception,
+    private static boolean checkFilled(VacuumWorldGridContent perception,
 			Orientation orientation) {
 		return check(perception.getFilledPositions(), orientation, perception
 				.getSelf().getPosition());
