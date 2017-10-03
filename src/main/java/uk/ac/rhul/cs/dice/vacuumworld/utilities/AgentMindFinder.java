@@ -16,8 +16,9 @@ public class AgentMindFinder {
     }
 
     public static Collection<Class<?>> getAgentMinds() throws ClassFinderException {
-	Collection<Class<?>> mindclasses = ClassFinder.getSubClasses(VacuumWorldMind.class, ClassFinder.findAllClasses());
-	
+	Collection<Class<?>> mindclasses = ClassFinder.getSubClasses(VacuumWorldMind.class,
+		ClassFinder.findAllClasses());
+
 	return mindclasses.stream().filter(elm -> !elm.equals(VacuumWorldMind.class)).collect(Collectors.toList());
 
     }

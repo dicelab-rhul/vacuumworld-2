@@ -6,11 +6,11 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyInterface;
 
 public interface VacuumWorldBodyAppearance<T> extends ReadOnlyInterface<T> {
 
-	public Position getPosition();
+    public Position getPosition();
 
-	public void setPosition(Position position);
+    public void setPosition(Position position);
 
-	public BodyColor getColor();
+    public BodyColor getColor();
 
-	public void setColor(BodyColor color);
+    public void setColor(BodyColor color);
 }

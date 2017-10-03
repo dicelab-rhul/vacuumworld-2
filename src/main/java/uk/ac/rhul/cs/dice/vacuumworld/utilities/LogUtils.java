@@ -6,9 +6,10 @@ import java.util.logging.Logger;
 
 public class LogUtils {
     private static final Logger LOGGER = initLogger();
-    
-    private LogUtils() {}
-    
+
+    private LogUtils() {
+    }
+
     private static Logger initLogger() {
 	Logger logger = Logger.getAnonymousLogger();
 	logger.setUseParentHandlers(false);
@@ -26,8 +27,7 @@ public class LogUtils {
     public static void log(Exception e) {
 	if (e.getMessage() != null) {
 	    log(e.getMessage(), e);
-	}
-	else {
+	} else {
 	    log(e.getClass().getSimpleName(), e);
 	}
     }
@@ -35,8 +35,7 @@ public class LogUtils {
     public static void log(Exception e, String className) {
 	if (e.getMessage() != null) {
 	    log(className + ": " + e.getMessage(), e);
-	}
-	else {
+	} else {
 	    log(className + ": " + e.getClass().getSimpleName(), e);
 	}
     }

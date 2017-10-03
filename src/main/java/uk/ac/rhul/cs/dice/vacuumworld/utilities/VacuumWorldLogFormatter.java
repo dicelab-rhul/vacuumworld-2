@@ -5,8 +5,8 @@ import java.util.logging.SimpleFormatter;
 
 public class VacuumWorldLogFormatter extends SimpleFormatter {
 
-	@Override
-	public String format(LogRecord record) {
-		return record.getMessage() + "\n";		
-	}
+    @Override
+    public String format(LogRecord record) {
+	return record.getMessage() + "\n";
+    }
 }

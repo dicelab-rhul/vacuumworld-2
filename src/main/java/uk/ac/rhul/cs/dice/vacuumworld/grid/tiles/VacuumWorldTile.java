@@ -14,7 +14,7 @@ public class VacuumWorldTile implements Tile, ReadOnlyInterface<VacuumWorldTileR
     private DirtAppearance dirt;
 
     public VacuumWorldTile() {
-	//empty because of reflection?
+	// empty because of reflection?
     }
 
     public VacuumWorldTile(VacuumWorldAgentAppearance agent, DirtAppearance dirt) {

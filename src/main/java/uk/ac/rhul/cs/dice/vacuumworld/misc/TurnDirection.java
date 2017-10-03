@@ -12,44 +12,44 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
  */
 public enum TurnDirection {
 
-	LEFT(new TurnLeft()), RIGHT(new TurnRight());
+    LEFT(new TurnLeft()), RIGHT(new TurnRight());
 
-	private Turn turn;
+    private Turn turn;
 
-	private static interface Turn {
-		public Orientation turn(Orientation orientation);
-	}
+    private static interface Turn {
+	public Orientation turn(Orientation orientation);
+    }
 
-	static class TurnLeft implements Turn {
+    static class TurnLeft implements Turn {
 
-		@Override
-		public Orientation turn(Orientation orientation) {
-			return orientation.getLeft();
-		}
-	}
-
-	static class TurnRight implements Turn {
-
-		@Override
-		public Orientation turn(Orientation orientation) {
-			return orientation.getRight();
-		}
-
-	}
-
-	private TurnDirection(Turn turn) {
-		this.turn = turn;
-	}
-
-	/**
-	 * Given an {@link Orientation}, this method will 'turn' it in the direction
-	 * specified by this {@link TurnDirection}.
-	 * 
-	 * @param orientation
-	 *            : to turn
-	 * @return the turned {@link Orientation}.
-	 */
+	@Override
 	public Orientation turn(Orientation orientation) {
-		return turn.turn(orientation);
+	    return orientation.getLeft();
 	}
+    }
+
+    static class TurnRight implements Turn {
+
+	@Override
+	public Orientation turn(Orientation orientation) {
+	    return orientation.getRight();
+	}
+
+    }
+
+    private TurnDirection(Turn turn) {
+	this.turn = turn;
+    }
+
+    /**
+     * Given an {@link Orientation}, this method will 'turn' it in the direction
+     * specified by this {@link TurnDirection}.
+     * 
+     * @param orientation
+     *            : to turn
+     * @return the turned {@link Orientation}.
+     */
+    public Orientation turn(Orientation orientation) {
+	return turn.turn(orientation);
+    }
 }

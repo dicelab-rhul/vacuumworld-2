@@ -78,8 +78,7 @@ public class VacuumWorldAmbient extends AbstractAmbient {
 	if (this.grid.isClear()) {
 	    this.grid.setDimension(dimension);
 	    this.grid.fillGrid(this.agents.values(), this.passiveBodies.values(), this.avatars.values());
-	}
-	else {
+	} else {
 	    multiInitError();
 	}
     }

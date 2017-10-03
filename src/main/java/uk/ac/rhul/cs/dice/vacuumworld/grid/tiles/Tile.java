@@ -4,19 +4,19 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 
 public interface Tile {
-	
-	public boolean isWall();
 
-	public boolean containsAgent();
+    public boolean isWall();
 
-	public boolean containsDirt();
+    public boolean containsAgent();
 
-	public VacuumWorldAgentAppearance getAgent();
+    public boolean containsDirt();
 
-	public void setAgent(VacuumWorldAgentAppearance agent);
+    public VacuumWorldAgentAppearance getAgent();
 
-	public DirtAppearance getDirt();
+    public void setAgent(VacuumWorldAgentAppearance agent);
 
-	public void setDirt(DirtAppearance dirt);
+    public DirtAppearance getDirt();
+
+    public void setDirt(DirtAppearance dirt);
 
 }

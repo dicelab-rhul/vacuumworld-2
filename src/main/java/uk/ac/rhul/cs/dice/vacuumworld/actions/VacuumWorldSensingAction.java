@@ -14,9 +14,10 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 /**
  * A {@link SensingAction} that will return the limited view of the a
  * {@link VacuumWorldAgent}. The views will be one of the following depending on
- * the {@link Orientation} of the {@link Agent}.</br><img
- * src="./doc-files/westview.png"> <img src="./doc-files/eastview.png"> <img
- * src="./doc-files/northview.png"> <img src="./doc-files/southview.png"> </br>
+ * the {@link Orientation} of the {@link Agent}.</br>
+ * <img src="./doc-files/westview.png"> <img src="./doc-files/eastview.png">
+ * <img src="./doc-files/northview.png"> <img src="./doc-files/southview.png">
+ * </br>
  * All {@link VacuumWorldAction}s will provide a
  * {@link VacuumWorldGridPerception} that contains
  * {@link VacuumWorldGridContent}. The {@link VacuumWorldGridContent} is the 2x3
@@ -26,26 +27,24 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  * @author Kostas Stathis
  *
  */
-public class VacuumWorldSensingAction extends SensingAction implements
-		VacuumWorldAction {
-	
-	private static final long serialVersionUID = 3191925631824605396L;
+public class VacuumWorldSensingAction extends SensingAction implements VacuumWorldAction {
 
-	public static final String KEY = VacuumWorldAmbient.GRIDKEY + "."
-			+ VacuumWorldAmbient.PERCEPTIONQUERYKEY;
+    private static final long serialVersionUID = 3191925631824605396L;
 
-	@SensiblePerception
-	public static final Class<?> DEFAULTPERCEPTION = ActivePerception.class;
+    public static final String KEY = VacuumWorldAmbient.GRIDKEY + "." + VacuumWorldAmbient.PERCEPTIONQUERYKEY;
 
-	/**
-	 * Constructor.
-	 */
-	public VacuumWorldSensingAction() {
-		super(KEY);
-	}
+    @SensiblePerception
+    public static final Class<?> DEFAULTPERCEPTION = ActivePerception.class;
 
-	@Override
-	public VacuumWorldAgentAppearance getActor() {
-		return (VacuumWorldAgentAppearance) super.getActor();
-	}
+    /**
+     * Constructor.
+     */
+    public VacuumWorldSensingAction() {
+	super(KEY);
+    }
+
+    @Override
+    public VacuumWorldAgentAppearance getActor() {
+	return (VacuumWorldAgentAppearance) super.getActor();
+    }
 }

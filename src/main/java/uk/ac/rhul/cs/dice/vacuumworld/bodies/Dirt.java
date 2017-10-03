@@ -6,16 +6,16 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
 
 public class Dirt extends PassiveBody {
 
-	public Dirt(BodyColor color) {
-		super(new DirtAppearance(color));
-	}
+    public Dirt(BodyColor color) {
+	super(new DirtAppearance(color));
+    }
 
-	public void getColor() {
-		this.getAppearance().getColor();
-	}
+    public void getColor() {
+	this.getAppearance().getColor();
+    }
 
-	@Override
-	public DirtAppearance getAppearance() {
-		return (DirtAppearance) super.getAppearance();
-	}
+    @Override
+    public DirtAppearance getAppearance() {
+	return (DirtAppearance) super.getAppearance();
+    }
 }

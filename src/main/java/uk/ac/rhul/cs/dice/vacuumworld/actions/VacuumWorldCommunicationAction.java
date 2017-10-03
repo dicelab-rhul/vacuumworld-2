@@ -21,47 +21,45 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
  * @author Kostas Stathis
  *
  */
-public class VacuumWorldCommunicationAction extends CommunicationAction<String>
-		implements VacuumWorldAction {
+public class VacuumWorldCommunicationAction extends CommunicationAction<String> implements VacuumWorldAction {
 
-	private static final long serialVersionUID = 641986939290090117L;
-	@SensiblePerception
-	public static final Class<?> COMMUNICATIONPERCEPTION = CommunicationPerception.class;
-	/*
-	 * This must be set so that when an communication action is attempted the
-	 * agent still gets a perception of the grid.
-	 */
-	@SensiblePerception
-	public static final Class<?> GRIDPERCEPTION = VacuumWorldGridPerception.class;
+    private static final long serialVersionUID = 641986939290090117L;
+    @SensiblePerception
+    public static final Class<?> COMMUNICATIONPERCEPTION = CommunicationPerception.class;
+    /*
+     * This must be set so that when an communication action is attempted the agent
+     * still gets a perception of the grid.
+     */
+    @SensiblePerception
+    public static final Class<?> GRIDPERCEPTION = VacuumWorldGridPerception.class;
 
-	/**
-	 * Constructor. Sends the message to all other {@link Agent}s.
-	 * 
-	 * @param message
-	 *            : the message
-	 * 
-	 */
-	public VacuumWorldCommunicationAction(String message) {
-		super(new VacuumWorldMessageContent(message), new ArrayList<>());
-	}
+    /**
+     * Constructor. Sends the message to all other {@link Agent}s.
+     * 
+     * @param message
+     *            : the message
+     * 
+     */
+    public VacuumWorldCommunicationAction(String message) {
+	super(new VacuumWorldMessageContent(message), new ArrayList<>());
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param message
-	 *            : the message
-	 * @param recipientsIds
-	 *            : a {@link List} of IDs of the recipients.
-	 * 
-	 */
-	public VacuumWorldCommunicationAction(String message,
-			List<String> recipientsIds) {
-		super(new VacuumWorldMessageContent(message), recipientsIds);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param message
+     *            : the message
+     * @param recipientsIds
+     *            : a {@link List} of IDs of the recipients.
+     * 
+     */
+    public VacuumWorldCommunicationAction(String message, List<String> recipientsIds) {
+	super(new VacuumWorldMessageContent(message), recipientsIds);
+    }
 
-	@Override
-	public VacuumWorldAgentAppearance getActor() {
-		return (VacuumWorldAgentAppearance) super.getActor();
-	}
+    @Override
+    public VacuumWorldAgentAppearance getActor() {
+	return (VacuumWorldAgentAppearance) super.getActor();
+    }
 
 }

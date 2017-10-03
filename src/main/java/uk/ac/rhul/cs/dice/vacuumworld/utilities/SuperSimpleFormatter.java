@@ -5,13 +5,13 @@ import java.util.logging.LogRecord;
 
 public class SuperSimpleFormatter extends Formatter {
 
-	@Override
-	public String format(LogRecord record) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(record.getLevel() + ": ");
-		builder.append(record.getMessage());
-		builder.append(System.lineSeparator());
-		return builder.toString();
-	}
+    @Override
+    public String format(LogRecord record) {
+	StringBuilder builder = new StringBuilder();
+	builder.append(record.getLevel() + ": ");
+	builder.append(record.getMessage());
+	builder.append(System.lineSeparator());
+	return builder.toString();
+    }
 
 }

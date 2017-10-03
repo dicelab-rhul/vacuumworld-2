@@ -9,20 +9,20 @@ package uk.ac.rhul.cs.dice.vacuumworld.utilities;
  */
 public class VacuumWorldInitialisationException extends RuntimeException {
 
-	private static final String DEFAULTMESSAGE = "Failed to initialise VacuumWorld";
+    private static final String DEFAULTMESSAGE = "Failed to initialise VacuumWorld";
 
-	public VacuumWorldInitialisationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public VacuumWorldInitialisationException(String message, Throwable cause) {
+	super(message, cause);
+    }
 
-	public VacuumWorldInitialisationException(String message) {
-		super(message);
-	}
+    public VacuumWorldInitialisationException(String message) {
+	super(message);
+    }
 
-	public VacuumWorldInitialisationException(Throwable cause) {
-		super(DEFAULTMESSAGE, cause);
-	}
+    public VacuumWorldInitialisationException(Throwable cause) {
+	super(DEFAULTMESSAGE, cause);
+    }
 
-	private static final long serialVersionUID = 2866986549324463147L;
+    private static final long serialVersionUID = 2866986549324463147L;
 
 }

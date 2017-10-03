@@ -52,8 +52,9 @@ public class VacuumWorld {
 
     }
 
-    private VacuumWorld() {}
-    
+    private VacuumWorld() {
+    }
+
     /**
      * Entry point of {@link VacuumWorld}.
      * 

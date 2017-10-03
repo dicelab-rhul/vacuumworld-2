@@ -11,15 +11,15 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 
 public class VacuumWorldAvatar extends AbstractAvatarAgent<VacuumWorldAction> {
 
-	public VacuumWorldAvatar(List<Sensor> sensors, List<Actuator> actuators,
-			AbstractAvatarMind<VacuumWorldAction> mind) {
-		super(sensors, actuators, mind);
-		this.setAppearance(new VacuumWorldAgentAppearance(this));
-	}
+    public VacuumWorldAvatar(List<Sensor> sensors, List<Actuator> actuators,
+	    AbstractAvatarMind<VacuumWorldAction> mind) {
+	super(sensors, actuators, mind);
+	this.setAppearance(new VacuumWorldAgentAppearance(this));
+    }
 
-	@Override
-	public VacuumWorldAgentAppearance getAppearance() {
-		return (VacuumWorldAgentAppearance) super.getAppearance();
-	}
+    @Override
+    public VacuumWorldAgentAppearance getAppearance() {
+	return (VacuumWorldAgentAppearance) super.getAppearance();
+    }
 
 }

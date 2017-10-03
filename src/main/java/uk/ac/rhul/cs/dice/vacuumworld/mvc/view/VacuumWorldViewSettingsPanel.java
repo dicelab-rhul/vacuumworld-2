@@ -24,284 +24,269 @@ import uk.ac.rhul.cs.dice.vacuumworld.mvc.VacuumWorldController;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.DefaultButton;
 import uk.ac.rhul.cs.dice.vacuumworld.mvc.view.buttons.OnClick;
 
-public class VacuumWorldViewSettingsPanel extends JPanel implements
-		MouseListener {
+public class VacuumWorldViewSettingsPanel extends JPanel implements MouseListener {
 
-	private static final long serialVersionUID = 1252849880132919023L;
-	private static final String DONEBUTTONFILENAME = "done_button";
-	private static final String SAVEBUTTONFILENAME = "save_button";
-	private static final String LOADBUTTONFILENAME = "load_button";
+    private static final long serialVersionUID = 1252849880132919023L;
+    private static final String DONEBUTTONFILENAME = "done_button";
+    private static final String SAVEBUTTONFILENAME = "save_button";
+    private static final String LOADBUTTONFILENAME = "load_button";
 
-	private Class<?>[] possibleminds = VacuumWorldController
-			.getPossibleAgentMinds().toArray(new Class<?>[0]);
-	private JPanel combopanel;
-	private JComboBox<Class<?>> greencombo = new JComboBox<>();
-	private JComboBox<Class<?>> orangecombo = new JComboBox<>();
-	private JComboBox<Class<?>> whitecombo = new JComboBox<>();
-	private JFormattedTextField dimensiontf = new JFormattedTextField(
-			NumberFormat.getIntegerInstance());
-	private JFormattedTextField simulationRatetf = new JFormattedTextField(
-			NumberFormat.getIntegerInstance());
+    private Class<?>[] possibleminds = VacuumWorldController.getPossibleAgentMinds().toArray(new Class<?>[0]);
+    private JPanel combopanel;
+    private JComboBox<Class<?>> greencombo = new JComboBox<>();
+    private JComboBox<Class<?>> orangecombo = new JComboBox<>();
+    private JComboBox<Class<?>> whitecombo = new JComboBox<>();
+    private JFormattedTextField dimensiontf = new JFormattedTextField(NumberFormat.getIntegerInstance());
+    private JFormattedTextField simulationRatetf = new JFormattedTextField(NumberFormat.getIntegerInstance());
 
-	private transient SettingsButton savebtn;
-	private transient SettingsButton loadbtn;
+    private transient SettingsButton savebtn;
+    private transient SettingsButton loadbtn;
 
-	private Integer gridDimension;
-	private Integer simulationRate;
+    private Integer gridDimension;
+    private Integer simulationRate;
 
-	public VacuumWorldViewSettingsPanel(OnClick save, OnClick load, OnClick done) {
-		this.addMouseListener(this);
-		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		this.setBackground(Color.WHITE);
-		this.setOpaque(true);
-		this.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+    public VacuumWorldViewSettingsPanel(OnClick save, OnClick load, OnClick done) {
+	this.addMouseListener(this);
+	this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	this.setBackground(Color.WHITE);
+	this.setOpaque(true);
+	this.setLayout(new GridBagLayout());
+	GridBagConstraints c = new GridBagConstraints();
 
-		c.insets = new Insets(10, 10, 10, 10);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1;
-		this.add(initMindComboPanel(), c);
-		c.fill = GridBagConstraints.BOTH;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weighty = 0.5;
-		c.anchor = GridBagConstraints.SOUTHEAST;
-		this.add(initSaveDoneLoadButtonPanel(save, load, done), c);
+	c.insets = new Insets(10, 10, 10, 10);
+	c.fill = GridBagConstraints.HORIZONTAL;
+	c.gridx = 0;
+	c.gridy = 0;
+	c.weightx = 1;
+	this.add(initMindComboPanel(), c);
+	c.fill = GridBagConstraints.BOTH;
+	c.gridx = 0;
+	c.gridy = 1;
+	c.weighty = 0.5;
+	c.anchor = GridBagConstraints.SOUTHEAST;
+	this.add(initSaveDoneLoadButtonPanel(save, load, done), c);
+    }
+
+    private JPanel initSaveDoneLoadButtonPanel(OnClick save, OnClick load, OnClick done) {
+	GridBagConstraints c = new GridBagConstraints();
+	JPanel buttonpanel = new JPanel();
+	buttonpanel.setLayout(new GridBagLayout());
+	buttonpanel.setPreferredSize(new Dimension(3 * 110, 3 * 30));
+	buttonpanel.setOpaque(false);
+	c.gridx = 0;
+	c.gridy = 0;
+	c.weighty = 1;
+	c.weightx = 1;
+	c.anchor = GridBagConstraints.SOUTHEAST;
+	savebtn = new SettingsButton(SAVEBUTTONFILENAME, save);
+	savebtn.setPreferredSize(new Dimension(110, 30));
+	buttonpanel.add(savebtn, c);
+	c.gridx = 1;
+	c.gridy = 0;
+	c.weightx = 0;
+	c.weighty = 0;
+	c.anchor = GridBagConstraints.SOUTHEAST;
+	loadbtn = new SettingsButton(LOADBUTTONFILENAME, load);
+	loadbtn.setPreferredSize(new Dimension(110, 30));
+	buttonpanel.add(loadbtn, c);
+	c.gridx = 2;
+	c.gridy = 0;
+	c.weightx = 0;
+	c.weighty = 0;
+	c.anchor = GridBagConstraints.SOUTHEAST;
+	SettingsButton donebtn = new SettingsButton(DONEBUTTONFILENAME, done);
+	donebtn.setPreferredSize(new Dimension(110, 30));
+	buttonpanel.add(donebtn, c);
+	return buttonpanel;
+    }
+
+    private JPanel initMindComboPanel() {
+	combopanel = new JPanel();
+	GroupLayout layout = new GroupLayout(combopanel);
+	combopanel.setLayout(layout);
+	combopanel.setOpaque(false);
+	combopanel.setPreferredSize(new Dimension(100, 100));
+	dimensiontf.addPropertyChangeListener("value", new DimensionPropertyListener());
+	dimensiontf.setText(String.valueOf(this.gridDimension));
+	simulationRatetf.setText(String.valueOf(this.simulationRate));
+	simulationRatetf.addPropertyChangeListener("value", new SimulationRatePropertyListener());
+	Font labelFont = new Font("Arial", Font.PLAIN, 14);
+	JLabel gl = new JLabel("Green Mind: ");
+	gl.setFont(labelFont);
+	JLabel ol = new JLabel("Orange Mind: ");
+	ol.setFont(labelFont);
+	JLabel wl = new JLabel("White Mind: ");
+	wl.setFont(labelFont);
+	JLabel dl = new JLabel("Dimension: ");
+	dl.setFont(labelFont);
+	JLabel rl = new JLabel("Simulation Rate: ");
+	rl.setFont(labelFont);
+
+	layout.setAutoCreateGaps(true);
+	GroupLayout.SequentialGroup horizontal = layout.createSequentialGroup();
+	horizontal.addGroup(layout.createParallelGroup().addComponent(gl).addComponent(ol).addComponent(wl)
+		.addComponent(dl).addComponent(rl));
+	horizontal.addGroup(layout.createParallelGroup().addComponent(simulationRatetf).addComponent(dimensiontf)
+		.addComponent(initComboBox(greencombo)).addComponent(initComboBox(orangecombo))
+		.addComponent(initComboBox(whitecombo)));
+	horizontal.addGroup(layout.createParallelGroup());
+	layout.setHorizontalGroup(horizontal);
+	GroupLayout.SequentialGroup vertical = layout.createSequentialGroup();
+	vertical.addGroup(
+		layout.createParallelGroup(Alignment.LEADING).addComponent(rl).addComponent(simulationRatetf));
+	vertical.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(dl).addComponent(dimensiontf));
+	vertical.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(gl).addComponent(greencombo));
+	vertical.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(ol).addComponent(orangecombo));
+	vertical.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(wl).addComponent(whitecombo));
+	layout.setVerticalGroup(vertical);
+	return combopanel;
+    }
+
+    private JComboBox<Class<?>> initComboBox(JComboBox<Class<?>> box) {
+	for (Class<?> c : possibleminds) {
+	    box.addItem(c);
 	}
+	return box;
+    }
 
-	private JPanel initSaveDoneLoadButtonPanel(OnClick save, OnClick load,
-			OnClick done) {
-		GridBagConstraints c = new GridBagConstraints();
-		JPanel buttonpanel = new JPanel();
-		buttonpanel.setLayout(new GridBagLayout());
-		buttonpanel.setPreferredSize(new Dimension(3 * 110, 3 * 30));
-		buttonpanel.setOpaque(false);
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weighty = 1;
-		c.weightx = 1;
-		c.anchor = GridBagConstraints.SOUTHEAST;
-		savebtn = new SettingsButton(SAVEBUTTONFILENAME, save);
-		savebtn.setPreferredSize(new Dimension(110, 30));
-		buttonpanel.add(savebtn, c);
-		c.gridx = 1;
-		c.gridy = 0;
-		c.weightx = 0;
-		c.weighty = 0;
-		c.anchor = GridBagConstraints.SOUTHEAST;
-		loadbtn = new SettingsButton(LOADBUTTONFILENAME, load);
-		loadbtn.setPreferredSize(new Dimension(110, 30));
-		buttonpanel.add(loadbtn, c);
-		c.gridx = 2;
-		c.gridy = 0;
-		c.weightx = 0;
-		c.weighty = 0;
-		c.anchor = GridBagConstraints.SOUTHEAST;
-		SettingsButton donebtn = new SettingsButton(DONEBUTTONFILENAME, done);
-		donebtn.setPreferredSize(new Dimension(110, 30));
-		buttonpanel.add(donebtn, c);
-		return buttonpanel;
-	}
+    public void updateFields() {
+	this.dimensiontf.setValue(this.gridDimension);
+	this.simulationRatetf.setValue(this.simulationRate);
+    }
 
-	private JPanel initMindComboPanel() {
-		combopanel = new JPanel();
-		GroupLayout layout = new GroupLayout(combopanel);
-		combopanel.setLayout(layout);
-		combopanel.setOpaque(false);
-		combopanel.setPreferredSize(new Dimension(100, 100));
-		dimensiontf.addPropertyChangeListener("value",
-				new DimensionPropertyListener());
-		dimensiontf.setText(String.valueOf(this.gridDimension));
-		simulationRatetf.setText(String.valueOf(this.simulationRate));
-		simulationRatetf.addPropertyChangeListener("value",
-				new SimulationRatePropertyListener());
-		Font labelFont = new Font("Arial", Font.PLAIN, 14);
-		JLabel gl = new JLabel("Green Mind: ");
-		gl.setFont(labelFont);
-		JLabel ol = new JLabel("Orange Mind: ");
-		ol.setFont(labelFont);
-		JLabel wl = new JLabel("White Mind: ");
-		wl.setFont(labelFont);
-		JLabel dl = new JLabel("Dimension: ");
-		dl.setFont(labelFont);
-		JLabel rl = new JLabel("Simulation Rate: ");
-		rl.setFont(labelFont);
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+	super.setBounds(x, y, width, height);
+	this.combopanel.setPreferredSize(new Dimension(width, height));
+	this.revalidate();
+	this.repaint();
+    }
 
-		layout.setAutoCreateGaps(true);
-		GroupLayout.SequentialGroup horizontal = layout.createSequentialGroup();
-		horizontal.addGroup(layout.createParallelGroup().addComponent(gl)
-				.addComponent(ol).addComponent(wl).addComponent(dl)
-				.addComponent(rl));
-		horizontal.addGroup(layout.createParallelGroup()
-				.addComponent(simulationRatetf).addComponent(dimensiontf)
-				.addComponent(initComboBox(greencombo))
-				.addComponent(initComboBox(orangecombo))
-				.addComponent(initComboBox(whitecombo)));
-		horizontal.addGroup(layout.createParallelGroup());
-		layout.setHorizontalGroup(horizontal);
-		GroupLayout.SequentialGroup vertical = layout.createSequentialGroup();
-		vertical.addGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addComponent(rl).addComponent(simulationRatetf));
-		vertical.addGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addComponent(dl).addComponent(dimensiontf));
-		vertical.addGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addComponent(gl).addComponent(greencombo));
-		vertical.addGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addComponent(ol).addComponent(orangecombo));
-		vertical.addGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addComponent(wl).addComponent(whitecombo));
-		layout.setVerticalGroup(vertical);
-		return combopanel;
-	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+	// unused
+    }
 
-	private JComboBox<Class<?>> initComboBox(JComboBox<Class<?>> box) {
-		for (Class<?> c : possibleminds) {
-			box.addItem(c);
+    @Override
+    public void mouseEntered(MouseEvent e) {
+	// unused
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+	// unused
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+	// unused
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+	// unused
+    }
+
+    public Integer getGridDimension() {
+	return gridDimension;
+    }
+
+    public void setGridDimension(Integer gridDimension) {
+	this.gridDimension = gridDimension;
+	this.dimensiontf.setValue(gridDimension);
+    }
+
+    public Integer getSimulationRate() {
+	return simulationRate;
+    }
+
+    public void setSimulationRate(Integer simulationRate) {
+	this.simulationRate = simulationRate;
+	this.simulationRatetf.setValue(simulationRate);
+    }
+
+    public void setGreenClass(Class<?> c) {
+	greencombo.setSelectedItem(c);
+    }
+
+    public void setOrangeClass(Class<?> c) {
+	orangecombo.setSelectedItem(c);
+    }
+
+    public void setWhiteClass(Class<?> c) {
+	whitecombo.setSelectedItem(c);
+    }
+
+    public Class<?> getGreenclass() {
+	return (Class<?>) greencombo.getSelectedItem();
+    }
+
+    public Class<?> getOrangeclass() {
+	return (Class<?>) orangecombo.getSelectedItem();
+    }
+
+    public Class<?> getWhiteclass() {
+	return (Class<?>) whitecombo.getSelectedItem();
+    }
+
+    private class SimulationRatePropertyListener implements PropertyChangeListener {
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+	    if (evt.getNewValue() != null) {
+		simulationRate = Integer.valueOf(evt.getNewValue().toString());
+		if (simulationRate < 0) {
+		    simulationRate = 0;
 		}
-		return box;
+	    } else {
+		simulationRatetf.setValue(simulationRate);
+	    }
 	}
+    }
 
-	public void updateFields() {
-		this.dimensiontf.setValue(this.gridDimension);
-		this.simulationRatetf.setValue(this.simulationRate);
-	}
-
+    private class DimensionPropertyListener implements PropertyChangeListener {
 	@Override
-	public void setBounds(int x, int y, int width, int height) {
-		super.setBounds(x, y, width, height);
-		this.combopanel.setPreferredSize(new Dimension(width, height));
-		this.revalidate();
-		this.repaint();
+	public void propertyChange(PropertyChangeEvent evt) {
+	    if (evt.getNewValue() != null) {
+		gridDimension = Integer.valueOf(evt.getNewValue().toString());
+		if (gridDimension < 1) {
+		    gridDimension = 1;
+		}
+		dimensiontf.setValue(gridDimension);
+	    } else {
+		dimensiontf.setValue(gridDimension);
+	    }
 	}
+    }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// unused
-	}
+    private class SettingsButton extends DefaultButton {
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// unused
-	}
+	private static final long serialVersionUID = 5209655783650341511L;
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// unused
+	public SettingsButton(String imgname, OnClick onclick) {
+	    super(imgname, onclick);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// unused
+	    this.setFocusable(true);
+	    this.requestFocusInWindow();
+	    super.mousePressed(e);
 	}
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// unused
-	}
+    public void hideSaveButton() {
+	savebtn.setVisible(false);
+    }
 
-	public Integer getGridDimension() {
-		return gridDimension;
-	}
+    public void showSaveButton() {
+	savebtn.setVisible(true);
+    }
 
-	public void setGridDimension(Integer gridDimension) {
-		this.gridDimension = gridDimension;
-		this.dimensiontf.setValue(gridDimension);
-	}
+    public void hideLoadButton() {
+	loadbtn.setVisible(false);
+    }
 
-	public Integer getSimulationRate() {
-		return simulationRate;
-	}
-
-	public void setSimulationRate(Integer simulationRate) {
-		this.simulationRate = simulationRate;
-		this.simulationRatetf.setValue(simulationRate);
-	}
-
-	public void setGreenClass(Class<?> c) {
-		greencombo.setSelectedItem(c);
-	}
-
-	public void setOrangeClass(Class<?> c) {
-		orangecombo.setSelectedItem(c);
-	}
-
-	public void setWhiteClass(Class<?> c) {
-		whitecombo.setSelectedItem(c);
-	}
-
-	public Class<?> getGreenclass() {
-		return (Class<?>) greencombo.getSelectedItem();
-	}
-
-	public Class<?> getOrangeclass() {
-		return (Class<?>) orangecombo.getSelectedItem();
-	}
-
-	public Class<?> getWhiteclass() {
-		return (Class<?>) whitecombo.getSelectedItem();
-	}
-
-	private class SimulationRatePropertyListener implements
-			PropertyChangeListener {
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getNewValue() != null) {
-				simulationRate = Integer.valueOf(evt.getNewValue().toString());
-				if (simulationRate < 0) {
-					simulationRate = 0;
-				}
-			} else {
-				simulationRatetf.setValue(simulationRate);
-			}
-		}
-	}
-
-	private class DimensionPropertyListener implements PropertyChangeListener {
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getNewValue() != null) {
-				gridDimension = Integer.valueOf(evt.getNewValue().toString());
-				if (gridDimension < 1) {
-					gridDimension = 1;
-				}
-				dimensiontf.setValue(gridDimension);
-			} else {
-				dimensiontf.setValue(gridDimension);
-			}
-		}
-	}
-
-	private class SettingsButton extends DefaultButton {
-
-		private static final long serialVersionUID = 5209655783650341511L;
-
-		public SettingsButton(String imgname, OnClick onclick) {
-			super(imgname, onclick);
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			this.setFocusable(true);
-			this.requestFocusInWindow();
-			super.mousePressed(e);
-		}
-	}
-
-	public void hideSaveButton() {
-		savebtn.setVisible(false);
-	}
-
-	public void showSaveButton() {
-		savebtn.setVisible(true);
-	}
-
-	public void hideLoadButton() {
-		loadbtn.setVisible(false);
-	}
-
-	public void showLoadButton() {
-		loadbtn.setVisible(true);
-	}
+    public void showLoadButton() {
+	loadbtn.setVisible(true);
+    }
 }

@@ -19,14 +19,13 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
  */
 public class VacuumWorldAgent extends AbstractAutonomousAgent {
 
-	public VacuumWorldAgent(List<Sensor> sensors, List<Actuator> actuators,
-			AbstractAgentMind mind) {
-		super(null, sensors, actuators, mind);
-		this.setAppearance(new VacuumWorldAgentAppearance(this));
-	}
+    public VacuumWorldAgent(List<Sensor> sensors, List<Actuator> actuators, AbstractAgentMind mind) {
+	super(null, sensors, actuators, mind);
+	this.setAppearance(new VacuumWorldAgentAppearance(this));
+    }
 
-	@Override
-	public VacuumWorldAgentAppearance getAppearance() {
-		return (VacuumWorldAgentAppearance) super.getAppearance();
-	}
+    @Override
+    public VacuumWorldAgentAppearance getAppearance() {
+	return (VacuumWorldAgentAppearance) super.getAppearance();
+    }
 }

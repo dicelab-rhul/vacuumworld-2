@@ -13,10 +13,10 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
  */
 public interface VacuumWorldAction extends Action {
 
-	/**
-	 * Getter for the {@link Actor} who is attempting this {@link Action}. See
-	 * {@link Action#getActor()}. All {@link VacuumWorldAction}s are attempted
-	 * by an {@link Actor} with a {@link VacuumWorldAgentAppearance}.
-	 */
-	public VacuumWorldAgentAppearance getActor();
+    /**
+     * Getter for the {@link Actor} who is attempting this {@link Action}. See
+     * {@link Action#getActor()}. All {@link VacuumWorldAction}s are attempted by an
+     * {@link Actor} with a {@link VacuumWorldAgentAppearance}.
+     */
+    public VacuumWorldAgentAppearance getActor();
 }

@@ -387,7 +387,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
     public class OffOnClick implements OnClick {
 	@Override
 	public void onClick(Clickable arg, MouseEvent e) {
-	    //TODO change this
+	    // TODO change this
 	    System.exit(0);
 	}
     }

@@ -57,10 +57,10 @@ public class DirtAppearance extends PhysicalBodyAppearance
 	    return false;
 	}
 	DirtAppearance other = (DirtAppearance) obj;
-	
-	if(other == null)
+
+	if (other == null)
 	    return false;
-	
+
 	if (color != other.color)
 	    return false;
 	if (position == null) {

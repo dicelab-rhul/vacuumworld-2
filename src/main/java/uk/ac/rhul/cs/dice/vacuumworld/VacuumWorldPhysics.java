@@ -70,7 +70,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
 		this.getEnvironment().setPausedSafe(true);
 		simulateHelper();
 	    }
-	    
+
 	    LogUtils.log("*************CYCLE**************");
 	    cycle();
 	    this.getEnvironment().updateView();
@@ -114,10 +114,10 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(PlaceDirtAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return new ArrayList<>();
     }
 
@@ -138,7 +138,7 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public boolean verify(PlaceDirtAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
 
@@ -154,10 +154,10 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(CleanAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return new ArrayList<>();
     }
 
@@ -176,10 +176,10 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public boolean verify(CleanAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return true;
     }
 
@@ -192,37 +192,37 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(TurnAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return new ArrayList<>();
     }
 
     public boolean isPossible(TurnAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return true;
     }
 
     public boolean perform(TurnAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	VacuumWorldAgentAppearance app = action.getActor();
 	app.setOrientation(action.getDirection().turn(app.getOrientation()));
-	
+
 	return true;
     }
 
     public boolean verify(TurnAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return true;
     }
 
@@ -235,10 +235,10 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public Collection<AbstractPerception<?>> getOtherPerceptions(MoveAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return new ArrayList<>();
     }
 
@@ -260,10 +260,10 @@ public class VacuumWorldPhysics extends AbstractPhysics {
     }
 
     public boolean verify(MoveAction action, Ambient context) {
-	if(action == null || context == null) {
+	if (action == null || context == null) {
 	    throw new IllegalArgumentException();
 	}
-	
+
 	return true;
     }
 

@@ -9,8 +9,9 @@ package uk.ac.rhul.cs.dice.vacuumworld.readonly;
  * that provide a mutable {@link Object} should also be converted to read-only
  * or they should be copied on return so that an alteration has no affect.
  * 
- * </br> As an example we may have:
- * "MyObject implements ReadOnlyInterface<\MyObjectReadOnly\>"
+ * </br>
+ * As an example we may have: "MyObject implements
+ * ReadOnlyInterface<\MyObjectReadOnly\>"
  * 
  * @author Ben Wilkins
  *
@@ -19,5 +20,5 @@ package uk.ac.rhul.cs.dice.vacuumworld.readonly;
  */
 public interface ReadOnlyInterface<A> {
 
-	public Class<A> getReadOnlyClass();
+    public Class<A> getReadOnlyClass();
 }

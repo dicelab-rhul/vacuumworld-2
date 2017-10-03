@@ -13,8 +13,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.RandomUtility;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 
 /**
- * The {@link Action}  that a {@link VacuumWorldAgent} should attempt when it wishes to
- * leave some {@link Dirt}. The {@link Dirt} will be placed under the
+ * The {@link Action} that a {@link VacuumWorldAgent} should attempt when it
+ * wishes to leave some {@link Dirt}. The {@link Dirt} will be placed under the
  * {@link VacuumWorldAgent}. Note that only {@link VacuumWorldAgent}s that have
  * <code>User</code> status can perform this {@link Action}. That is, a
  * {@link VacuumWorldAgent} with a {@link VacuumWorldUserMind} or an
@@ -24,39 +24,38 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  * @author Kostas Stathis
  *
  */
-public class PlaceDirtAction extends PhysicalAction implements
-		VacuumWorldAction {
-	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
+public class PlaceDirtAction extends PhysicalAction implements VacuumWorldAction {
+    @SensiblePerception
+    public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
-	private static final long serialVersionUID = 2069946942493951106L;
+    private static final long serialVersionUID = 2069946942493951106L;
 
-	private BodyColor dirtColor;
+    private BodyColor dirtColor;
 
-	/**
-	 * Constructor. Places a random coloured {@link Dirt}.
-	 */
-	public PlaceDirtAction() {
-		this.dirtColor = RandomUtility.getRandom(BodyColor.getDirtColors());
-	}
+    /**
+     * Constructor. Places a random coloured {@link Dirt}.
+     */
+    public PlaceDirtAction() {
+	this.dirtColor = RandomUtility.getRandom(BodyColor.getDirtColors());
+    }
 
-	/**
-	 * Constructor. Place a {@link Dirt} of the given {@link BodyColor}.
-	 * 
-	 * @param dirtColor
-	 *            : Colour of the dirt
-	 */
-	public PlaceDirtAction(BodyColor dirtColor) {
-		this.dirtColor = (dirtColor == BodyColor.GREEN || dirtColor == BodyColor.ORANGE) ? dirtColor
-				: RandomUtility.getRandom(BodyColor.getDirtColors());
-	}
+    /**
+     * Constructor. Place a {@link Dirt} of the given {@link BodyColor}.
+     * 
+     * @param dirtColor
+     *            : Colour of the dirt
+     */
+    public PlaceDirtAction(BodyColor dirtColor) {
+	this.dirtColor = (dirtColor == BodyColor.GREEN || dirtColor == BodyColor.ORANGE) ? dirtColor
+		: RandomUtility.getRandom(BodyColor.getDirtColors());
+    }
 
-	@Override
-	public VacuumWorldAgentAppearance getActor() {
-		return (VacuumWorldAgentAppearance) super.getActor();
-	}
+    @Override
+    public VacuumWorldAgentAppearance getActor() {
+	return (VacuumWorldAgentAppearance) super.getActor();
+    }
 
-	public BodyColor getDirtColor() {
-		return dirtColor;
-	}
+    public BodyColor getDirtColor() {
+	return dirtColor;
+    }
 }

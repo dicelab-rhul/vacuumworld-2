@@ -25,17 +25,18 @@ public class ClassFinder {
 	Collection<Class<?>> classes = new HashSet<>();
 	ClassLoader loader = ClassLoader.getSystemClassLoader();
 	URL[] urls = ((URLClassLoader) loader).getURLs();
-	
+
 	for (URL u : urls) {
 	    classes = findAllClassesHelper(classes, loader, u);
 	}
-	
+
 	return classes;
     }
 
-    private static Collection<Class<?>> findAllClassesHelper(Collection<Class<?>> c, ClassLoader loader, URL u) throws ClassFinderException {
+    private static Collection<Class<?>> findAllClassesHelper(Collection<Class<?>> c, ClassLoader loader, URL u)
+	    throws ClassFinderException {
 	Collection<Class<?>> classes = c;
-	
+
 	try {
 	    File root = new File(u.toURI());
 	    Collection<String> names;
@@ -54,7 +55,7 @@ public class ClassFinder {
 		}
 		classes.add(loader.loadClass(name));
 	    }
-	    
+
 	    return classes;
 	} catch (ClassNotFoundException | URISyntaxException e) {
 	    throw new ClassFinderException(e);

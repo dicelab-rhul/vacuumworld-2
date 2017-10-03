@@ -8,11 +8,10 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.user.UserMindAnnotation;
 
 @UserMindAnnotation
-public class VacuumWorldSelfishAvatarMind extends
-		AbstractSelfishAvatarMind<VacuumWorldAction> {
+public class VacuumWorldSelfishAvatarMind extends AbstractSelfishAvatarMind<VacuumWorldAction> {
 
-	@Override
-	public void showAvatarView(Collection<Perception<?>> perceptions) {
-		// not implemented yet
-	}
+    @Override
+    public void showAvatarView(Collection<Perception<?>> perceptions) {
+	// not implemented yet
+    }
 }

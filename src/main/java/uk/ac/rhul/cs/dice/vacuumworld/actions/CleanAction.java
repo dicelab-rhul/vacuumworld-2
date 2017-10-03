@@ -17,13 +17,13 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class CleanAction extends PhysicalAction implements VacuumWorldAction {
-	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
+    @SensiblePerception
+    public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
-	private static final long serialVersionUID = 2069946942493951106L;
+    private static final long serialVersionUID = 2069946942493951106L;
 
-	@Override
-	public VacuumWorldAgentAppearance getActor() {
-		return (VacuumWorldAgentAppearance) super.getActor();
-	}
+    @Override
+    public VacuumWorldAgentAppearance getActor() {
+	return (VacuumWorldAgentAppearance) super.getActor();
+    }
 }
