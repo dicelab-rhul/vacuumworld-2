@@ -19,6 +19,7 @@ public class StartParameters implements Serializable {
 	private Map<BodyColor, Class<?>> mindmap;
 
 	public StartParameters() {
+	    //empty for reflection?
 	}
 
 	public StartParameters(Integer dimension, Integer simulationRate,

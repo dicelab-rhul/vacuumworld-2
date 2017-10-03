@@ -50,7 +50,7 @@ public class GridPanel extends JPanel {
 		double y = position.y - position.y % sdy;
 		Position p = new Position((int) (x / sdx), (int) (y / sdy));
 
-		return (positionInBounds(p)) ? p : null;
+		return positionInBounds(p) ? p : null;
 	}
 
 	public boolean positionInBounds(Position position) {
