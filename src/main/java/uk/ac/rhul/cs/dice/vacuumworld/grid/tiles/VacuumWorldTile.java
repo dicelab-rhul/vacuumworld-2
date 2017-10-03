@@ -14,6 +14,7 @@ public class VacuumWorldTile implements Tile, ReadOnlyInterface<VacuumWorldTileR
     private DirtAppearance dirt;
 
     public VacuumWorldTile() {
+	//empty because of reflection?
     }
 
     public VacuumWorldTile(VacuumWorldAgentAppearance agent, DirtAppearance dirt) {
@@ -109,7 +110,7 @@ public class VacuumWorldTile implements Tile, ReadOnlyInterface<VacuumWorldTileR
     }
 
     private String buildAgent() {
-	return ((this.agent != null) ? this.agent.toString() : "");
+	return this.agent != null ? this.agent.toString() : "";
     }
 
     @Override
