@@ -47,10 +47,11 @@ public class Position implements ReadOnlyInterface<PositionReadOnly>, Serializab
 
     @Override
     public boolean equals(Object obj) {
-	if (!Utils.equalsHelper(this, obj)) {
+	if (obj == null) {
 	    return false;
 	}
-	if (obj == null) {
+	
+	if (!Utils.equalsHelper(this, obj) && !Position.class.isAssignableFrom(obj.getClass())) {
 	    return false;
 	}
 
