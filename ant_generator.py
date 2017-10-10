@@ -5,11 +5,18 @@ from argparse import ArgumentParser
 
 lines = [
     '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
-    '<project default="create_run_jar" name="Create Runnable Jar for Project vacuumworld-2.0">',
+    '<project default="build-vacuumworld-task" name="Create Runnable Jar for Project vacuumworld-2.0">',
     "\t" + '<property name="dir.buildfile" value="."/>',
     "\t" + '<property name="dir.workspace" value="${dir.buildfile}/.."/>',
     "\t" + '<property name="dir.jarfile" value="~"/>',
-    "\t" + '<target name="create_run_jar">',
+    "\t" + '<target name="build-vacuumworld-task">',
+    "\t\t" + '<mkdir dir="${dir.buildfile}/target/classes/imgs"/>',
+    "\t\t" + '<mkdir dir="${dir.buildfile}/target/classes/META-INF/maven/uk.ac.rhul.dice/vacuumworld-2.0"/>',
+    "\t\t" + '<javac srcdir="${dir.buildfile}/src/main/java" classpath="${dir.jarfile}/.m2/repository/uk/ac/rhul/dice/starworlds-lite/1.0.1-SNAPSHOT/starworlds-lite-1.0.1-SNAPSHOT.jar" destdir="${dir.buildfile}/target/classes"/>',
+    "\t\t" + '<copy todir="${dir.buildfile}/target/classes/imgs">',
+    "\t\t\t" + '<fileset dir="${dir.buildfile}/res/imgs"/>',
+    "\t\t" + '</copy>',
+    "\t\t" + '<copy file="${dir.buildfile}/pom.xml" tofile="${dir.buildfile}/target/classes/META-INF/maven/uk.ac.rhul.dice/vacuumworld-2.0/pom.xml"/>',
     "\t\t" + '<jar destfile="${dir.jarfile}/~" filesetmanifest="mergewithoutmain">',
     "\t\t\t" + '<manifest>',
     "\t\t\t\t" + '<attribute name="Main-Class" value="uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld"/>',
@@ -24,7 +31,7 @@ lines = [
     "\t\t\t" + '<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/.m2/repository/org/junit/vintage/junit-vintage-engine/4.12.0/junit-vintage-engine-4.12.0.jar"/>',
     "\t\t\t" + '<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/.m2/repository/junit/junit/4.12/junit-4.12.jar"/>',
     "\t\t\t" + '<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>',
-    "\t\t\t" + '<fileset dir="${dir.workspace}/starworlds-lite/target/classes"/>',
+    "\t\t\t" + '<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/.m2/repository/uk/ac/rhul/dice/starworlds-lite/1.0.1-SNAPSHOT/starworlds-lite-1.0.1-SNAPSHOT.jar"/>',
     "\t\t" + '</jar>',
     "\t" + '</target>',
     '</project>'
@@ -49,8 +56,8 @@ def build_ant_script():
     home_path, ant_path, jar_name = __parse_args()
     tokens = lines[4].split("~")
     lines[4] = tokens[0] + home_path + tokens[1]
-    tokens = lines[6].split("~")
-    lines[6] = tokens[0] + jar_name + tokens[1]
+    tokens = lines[13].split("~")
+    lines[13] = tokens[0] + jar_name + tokens[1]
 
     with open(ant_path, "w") as dst:
         for line in lines:
