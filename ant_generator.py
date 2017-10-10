@@ -12,7 +12,7 @@ lines = [
     "\t" + '<target name="build-vacuumworld-task">',
     "\t\t" + '<mkdir dir="${dir.buildfile}/target/classes/imgs"/>',
     "\t\t" + '<mkdir dir="${dir.buildfile}/target/classes/META-INF/maven/uk.ac.rhul.dice/vacuumworld-2.0"/>',
-    "\t\t" + '<javac srcdir="${dir.buildfile}/src/main/java" classpath="${dir.jarfile}/.m2/repository/uk/ac/rhul/dice/starworlds-lite/1.0.1-SNAPSHOT/starworlds-lite-1.0.1-SNAPSHOT.jar" destdir="${dir.buildfile}/target/classes"/>',
+    "\t\t" + '<javac includeantruntime="false" srcdir="${dir.buildfile}/src/main/java" classpath="${dir.jarfile}/.m2/repository/uk/ac/rhul/dice/starworlds-lite/1.0.1-SNAPSHOT/starworlds-lite-1.0.1-SNAPSHOT.jar" destdir="${dir.buildfile}/target/classes"/>',
     "\t\t" + '<copy todir="${dir.buildfile}/target/classes/imgs">',
     "\t\t\t" + '<fileset dir="${dir.buildfile}/res/imgs"/>',
     "\t\t" + '</copy>',
