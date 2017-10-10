@@ -35,27 +35,27 @@ def __parse_args():
     parser = ArgumentParser(description="Nmap-output-to-json parser")
     parser.add_argument('-H', '--home', required=True, metavar='<home-path>', type=str, action='store',
                         help='Home path')
+    parser.add_argument('-a', '--ant', required=True, metavar='<ant-script-path>', type=str, action='store',
+                        help='ANT script path')
     parser.add_argument('-j', '--jar', required=True, metavar='<jar-name>', type=str, action='store',
                         help='JAR name')
 
     args = parser.parse_args()
 
-    return args.home, args.jar
+    return args.home, args.ant, args.jar
 
 
 def build_ant_script():
-    home_path, jar_name = __parse_args()
+    home_path, ant_path, jar_name = __parse_args()
     tokens = lines[4].split("~")
     lines[4] = tokens[0] + home_path + tokens[1]
     tokens = lines[6].split("~")
     lines[6] = tokens[0] + jar_name + tokens[1]
-    
-    with open("ant.xml", "w") as dst:
+
+    with open(ant_path, "w") as dst:
         for line in lines:
             dst.write(line + "\n")
 
 
 if __name__ == "__main__":
-    print("Generating ANT script...")
     build_ant_script()
-    print("Done.")
