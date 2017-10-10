@@ -6,7 +6,6 @@ bin/**
 *.jar
 *.class
 *.psd
-*.vwc
 ant.xml
 
 /target/
