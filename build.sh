@@ -68,6 +68,21 @@ else
   echo "Junit Vintage Engine 4.12.0 is already installed."
 fi
 
+if [ ! -f "$MY_HOME/.m2/repository/junit/junit/4.12/junit-4.12.jar" ]; then
+  curl -L http://central.maven.org/maven2/junit/junit/4.12/junit-4.12.jar -o junit-4.12.jar
+  mvn install:install-file -Dfile=junit-4.12.jar -DgroupId=junit -DartifactId=junit -Dversion=4.12 -Dpackaging=jar
+  rm -rf junit-4.12.jar
+else
+  echo "Junit 4.12 is already installed."
+fi
+
+if [ ! -f "$MY_HOME/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar -o hamcrest-core-1.3.jar
+  mvn install:install-file -Dfile=hamcrest-core-1.3.jar -DgroupId=org.hamcrest -DartifactId=hamcrest-core -Dversion=1.3 -Dpackaging=jar
+  rm -rf hamcrest-core-1.3.jar
+else
+  echo "Hamcrest Core 1.3 is already installed."
+fi
 
 echo ""
 
