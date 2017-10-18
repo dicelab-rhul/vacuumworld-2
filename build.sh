@@ -44,6 +44,30 @@ else
   echo "Opentest4j 1.0.0 is already installed."
 fi
 
+if [ ! -f "$MY_HOME/.m2/repository/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar -o junit-platform-commons-1.0.0.jar
+  mvn install:install-file -Dfile=junit-platform-commons-1.0.0.jar -DgroupId=org.junit.platform -DartifactId=junit-platform-commons -Dversion=1.0.0 -Dpackaging=jar
+  rm -rf junit-platform-commons-1.0.0.jar
+else
+  echo "Junit Platform Common 1.0.0 is already installed."
+fi
+
+if [ ! -f "$MY_HOME/.m2/repository/org/junit/platform/junit-platform-engine/1.0.0-M5/junit-platform-engine-1.0.0-M5.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/junit/platform/junit-platform-engine/1.0.0-M5/junit-platform-engine-1.0.0-M5.jar -o junit-platform-engine-1.0.0-M5.jar
+  mvn install:install-file -Dfile=junit-platform-engine-1.0.0-M5.jar -DgroupId=org.junit.platform -DartifactId=junit-platform-engine -Dversion=1.0.0-M5 -Dpackaging=jar
+  rm -rf junit-platform-engine-1.0.0-M5.jar
+else
+  echo "Junit Platform Engine 1.0.0-M5 is already installed."
+fi
+
+if [ ! -f "$MY_HOME/.m2/repository/org/junit/vintage/junit-vintage-engine/4.12.0/junit-vintage-engine-4.12.0.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/junit/vintage/junit-vintage-engine/4.12.0/junit-vintage-engine-4.12.0.jar -o junit-vintage-engine-4.12.0.jar
+  mvn install:install-file -Dfile=junit-vintage-engine-4.12.0.jar -DgroupId=org.junit.vintage -DartifactId=junit-vintage-engine -Dversion=4.12.0 -Dpackaging=jar
+  rm -rf junit-vintage-engine-4.12.0.jar
+else
+  echo "Junit Vintage Engine 4.12.0 is already installed."
+fi
+
 
 echo ""
 
