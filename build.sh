@@ -18,6 +18,16 @@ if [ "" == "$PKG_OK" ]; then
   exit -1
 fi
 
+MY_HOME=$(eval echo ~$(whoami))
+
+if [ ! -f "$MY_HOME/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.0.0/junit-jupiter-api-5.0.0.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.0.0/junit-jupiter-api-5.0.0.jar -o junit-jupiter-api-5.0.0.jar
+  mvn install:install-file -Dfile=junit-jupiter-api-5.0.0.jar -DgroupId=org.junit.jupiter -DartifactId=junit-jupiter-api -Dversion=5.0.0 -Dpackaging=jar
+  rm -rf junit-jupiter-api-5.0.0.jar
+else
+  echo "Junit Jupiter API 5.0.0 is already installed."
+fi
+
 echo ""
 
 JAR_NAME="vw.jar"

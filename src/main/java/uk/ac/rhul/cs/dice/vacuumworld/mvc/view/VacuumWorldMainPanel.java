@@ -431,7 +431,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
     public class PlayOnClick implements OnClick {
 	@Override
-	public void onClick(Clickable arg, MouseEvent e) {
+	public void onClick(Clickable arg, MouseEvent e) {	    
 	    requestFocusInWindow(); // to get user input
 	    if (!simulating) {
 		simulating = true;
@@ -450,7 +450,7 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	    }
 	}
 
-	private void switchToSimulationPanel() {
+	private void switchToSimulationPanel() {	    
 	    simulationgrid.start();
 	    content.remove(selectiongrid);
 	    content.add(simulationgrid, BorderLayout.CENTER);

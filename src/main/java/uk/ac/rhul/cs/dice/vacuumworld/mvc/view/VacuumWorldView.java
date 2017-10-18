@@ -16,8 +16,12 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.imageio.ImageIO;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
 
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld;
 import uk.ac.rhul.cs.dice.vacuumworld.VacuumWorldAmbient;
@@ -136,7 +140,29 @@ public class VacuumWorldView extends JFrame implements Observer {
     public class StartMenuOnClick implements OnClick {
 	@Override
 	public void onClick(Clickable arg, MouseEvent e) {
+	    loadWaitingDialog();
 	    start();
+	}
+
+	private void loadWaitingDialog() {
+	    final JDialog dialog = new JDialog((JFrame) startmenu.getParent().getParent().getParent().getParent(),
+		    "Please wait a few seconds...", true);
+	    dialog.add(new JLabel("Please wait a few seconds, VacuumWorld is loading its components...",
+		    SwingConstants.CENTER));
+	    dialog.setMinimumSize(new Dimension(500, 100));
+	    dialog.setLocationRelativeTo(dialog.getParent());
+	    dialog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+	    dialog.setResizable(false);
+
+	    Timer timer = new Timer(2500, e -> {
+		dialog.setVisible(false);
+		dialog.dispose();
+	    });
+
+	    timer.setRepeats(false);
+	    timer.start();
+
+	    dialog.setVisible(true);
 	}
 
 	private void start() {

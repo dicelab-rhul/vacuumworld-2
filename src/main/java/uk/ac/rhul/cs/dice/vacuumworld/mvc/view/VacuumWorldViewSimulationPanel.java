@@ -25,8 +25,12 @@ public class VacuumWorldViewSimulationPanel extends GridPanel {
 	this.setBackground(Color.WHITE);
     }
 
-    public void start() {
+    public void start() {	
 	this.setGridDimension(model.getDimension());
+    }
+    
+    public VacuumWorldAmbient getModel() {
+	return this.model;
     }
 
     @Override
