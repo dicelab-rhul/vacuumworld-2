@@ -28,6 +28,15 @@ else
   echo "Junit Jupiter API 5.0.0 is already installed."
 fi
 
+if [ ! -f "$MY_HOME/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar -o apiguardian-api-1.0.0.jar
+  mvn install:install-file -Dfile=apiguardian-api-1.0.0.jar -DgroupId=org.apiguardian -DartifactId=apiguardian-api -Dversion=1.0.0 -Dpackaging=jar
+  rm -rf apiguardian-api-1.0.0.jar
+else
+  echo "APIGuardian API 1.0.0 is already installed."
+fi
+
+
 echo ""
 
 JAR_NAME="vw.jar"
