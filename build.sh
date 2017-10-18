@@ -36,6 +36,14 @@ else
   echo "APIGuardian API 1.0.0 is already installed."
 fi
 
+if [ ! -f "$MY_HOME/.m2/repository/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar" ]; then
+  curl -L http://central.maven.org/maven2/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar -o opentest4j-1.0.0.jar
+  mvn install:install-file -Dfile=opentest4j-1.0.0.jar -DgroupId=org.opentest4j -DartifactId=opentest4j -Dversion=1.0.0 -Dpackaging=jar
+  rm -rf opentest4j-1.0.0.jar
+else
+  echo "Opentest4j 1.0.0 is already installed."
+fi
+
 
 echo ""
 
