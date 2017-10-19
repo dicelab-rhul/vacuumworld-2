@@ -8,7 +8,7 @@ lines = [
     '<project default="build-vacuumworld-task" name="Create Runnable Jar for Project vacuumworld-2.0">',
     "\t" + '<property name="dir.buildfile" value="."/>',
     "\t" + '<property name="dir.workspace" value="${dir.buildfile}/.."/>',
-    "\t" + '<property name="dir.jarfile" value="~"/>',
+    "\t" + '<property name="dir.jarfile" value="[HOME_PATH_HERE]"/>',
     "\t" + '<target name="build-vacuumworld-task">',
     "\t\t" + '<mkdir dir="${dir.buildfile}/target/classes/imgs"/>',
     "\t\t" + '<mkdir dir="${dir.buildfile}/target/classes/META-INF/maven/uk.ac.rhul.dice/vacuumworld-2.0"/>',
@@ -17,7 +17,7 @@ lines = [
     "\t\t\t" + '<fileset dir="${dir.buildfile}/res/imgs"/>',
     "\t\t" + '</copy>',
     "\t\t" + '<copy file="${dir.buildfile}/pom.xml" tofile="${dir.buildfile}/target/classes/META-INF/maven/uk.ac.rhul.dice/vacuumworld-2.0/pom.xml"/>',
-    "\t\t" + '<jar destfile="${dir.jarfile}/~" filesetmanifest="mergewithoutmain">',
+    "\t\t" + '<jar destfile="${dir.jarfile}/[JAR_NAME_HERE]" filesetmanifest="mergewithoutmain">',
     "\t\t\t" + '<manifest>',
     "\t\t\t\t" + '<attribute name="Main-Class" value="uk.ac.rhul.cs.dice.vacuumworld.VacuumWorld"/>',
     "\t\t\t\t" + '<attribute name="Class-Path" value="."/>',
@@ -39,7 +39,7 @@ lines = [
 
 
 def __parse_args():
-    parser = ArgumentParser(description="Nmap-output-to-json parser")
+    parser = ArgumentParser(description="ANT script generator for VacuumWorld")
     parser.add_argument('-H', '--home', required=True, metavar='<home-path>', type=str, action='store',
                         help='Home path')
     parser.add_argument('-a', '--ant', required=True, metavar='<ant-script-path>', type=str, action='store',
@@ -54,9 +54,14 @@ def __parse_args():
 
 def build_ant_script():
     home_path, ant_path, jar_name = __parse_args()
-    tokens = lines[4].split("~")
+    
+    print("ANT script generator: using %s as home path." % home_path)
+    print("ANT script generator: using %s as ANT script path." % ant_path)
+    print("ANT script generator: using %s as JAR name." % jar_name)
+    
+    tokens = lines[4].split("[HOME_PATH_HERE]")
     lines[4] = tokens[0] + home_path + tokens[1]
-    tokens = lines[13].split("~")
+    tokens = lines[13].split("[JAR_NAME_HERE]")
     lines[13] = tokens[0] + jar_name + tokens[1]
 
     with open(ant_path, "w") as dst:

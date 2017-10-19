@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "[MANDATORY SOFTWARE SECTION]"
+
 PKG="ant"
 PKG_OK=$(which "$PKG")
 echo Checking for "$PKG"... $PKG_OK
@@ -18,73 +20,109 @@ if [ "" == "$PKG_OK" ]; then
   exit -1
 fi
 
+echo ""
+echo "[MAVEN DEPENDENCIES SECTION]"
+
 MY_HOME=$(eval echo ~$(whoami))
 
+MAVEN_DEP="junit-jupiter-api-5.0.0"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.0.0/junit-jupiter-api-5.0.0.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.0.0/junit-jupiter-api-5.0.0.jar -o junit-jupiter-api-5.0.0.jar
   mvn install:install-file -Dfile=junit-jupiter-api-5.0.0.jar -DgroupId=org.junit.jupiter -DartifactId=junit-jupiter-api -Dversion=5.0.0 -Dpackaging=jar
   rm -rf junit-jupiter-api-5.0.0.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Junit Jupiter API 5.0.0 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="apiguardian-api-1.0.0"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar -o apiguardian-api-1.0.0.jar
   mvn install:install-file -Dfile=apiguardian-api-1.0.0.jar -DgroupId=org.apiguardian -DartifactId=apiguardian-api -Dversion=1.0.0 -Dpackaging=jar
   rm -rf apiguardian-api-1.0.0.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "APIGuardian API 1.0.0 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="opentest4j-1.0.0"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar -o opentest4j-1.0.0.jar
   mvn install:install-file -Dfile=opentest4j-1.0.0.jar -DgroupId=org.opentest4j -DartifactId=opentest4j -Dversion=1.0.0 -Dpackaging=jar
   rm -rf opentest4j-1.0.0.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Opentest4j 1.0.0 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="junit-platform-commons-1.0.0"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar -o junit-platform-commons-1.0.0.jar
   mvn install:install-file -Dfile=junit-platform-commons-1.0.0.jar -DgroupId=org.junit.platform -DartifactId=junit-platform-commons -Dversion=1.0.0 -Dpackaging=jar
   rm -rf junit-platform-commons-1.0.0.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Junit Platform Common 1.0.0 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="junit-platform-engine-1.0.0-M5"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/junit/platform/junit-platform-engine/1.0.0-M5/junit-platform-engine-1.0.0-M5.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/junit/platform/junit-platform-engine/1.0.0-M5/junit-platform-engine-1.0.0-M5.jar -o junit-platform-engine-1.0.0-M5.jar
   mvn install:install-file -Dfile=junit-platform-engine-1.0.0-M5.jar -DgroupId=org.junit.platform -DartifactId=junit-platform-engine -Dversion=1.0.0-M5 -Dpackaging=jar
   rm -rf junit-platform-engine-1.0.0-M5.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Junit Platform Engine 1.0.0-M5 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="junit-vintage-engine-4.12.0"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/junit/vintage/junit-vintage-engine/4.12.0/junit-vintage-engine-4.12.0.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/junit/vintage/junit-vintage-engine/4.12.0/junit-vintage-engine-4.12.0.jar -o junit-vintage-engine-4.12.0.jar
   mvn install:install-file -Dfile=junit-vintage-engine-4.12.0.jar -DgroupId=org.junit.vintage -DartifactId=junit-vintage-engine -Dversion=4.12.0 -Dpackaging=jar
   rm -rf junit-vintage-engine-4.12.0.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Junit Vintage Engine 4.12.0 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="junit-4.12"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/junit/junit/4.12/junit-4.12.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/junit/junit/4.12/junit-4.12.jar -o junit-4.12.jar
   mvn install:install-file -Dfile=junit-4.12.jar -DgroupId=junit -DartifactId=junit -Dversion=4.12 -Dpackaging=jar
   rm -rf junit-4.12.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Junit 4.12 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
+MAVEN_DEP="hamcrest-core-1.3"
+echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" ]; then
+  echo "$MAVEN_DEP is not installed. Installing it now..."
   curl -L http://central.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar -o hamcrest-core-1.3.jar
   mvn install:install-file -Dfile=hamcrest-core-1.3.jar -DgroupId=org.hamcrest -DartifactId=hamcrest-core -Dversion=1.3 -Dpackaging=jar
   rm -rf hamcrest-core-1.3.jar
+  echo "$MAVEN_DEP has been installed."
 else
-  echo "Hamcrest Core 1.3 is already installed."
+  echo "$MAVEN_DEP is already installed."
 fi
 
 echo ""
+echo "[ANT SCRIPT GENERATION SECTION]"
 
 JAR_NAME="vw.jar"
 ANT_PATH="$(pwd)/ant.xml"
@@ -149,6 +187,8 @@ else
   exit -1
 fi
 
+echo ""
+echo "[BUILD SECTION]"
 echo "Looking for an old version of $HOME/$JAR_NAME..."
 
 if [ -f "$HOME/$JAR_NAME" ]; then
