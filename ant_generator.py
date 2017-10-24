@@ -54,11 +54,11 @@ def __parse_args():
 
 def build_ant_script():
     home_path, ant_path, jar_name = __parse_args()
-    
+
     print("ANT script generator: using %s as home path." % home_path)
     print("ANT script generator: using %s as ANT script path." % ant_path)
     print("ANT script generator: using %s as JAR name." % jar_name)
-    
+
     tokens = lines[4].split("[HOME_PATH_HERE]")
     lines[4] = tokens[0] + home_path + tokens[1]
     tokens = lines[13].split("[JAR_NAME_HERE]")
