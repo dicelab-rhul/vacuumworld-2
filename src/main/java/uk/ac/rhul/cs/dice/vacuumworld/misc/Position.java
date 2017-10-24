@@ -19,6 +19,81 @@ public class Position implements ReadOnlyInterface<PositionReadOnly>, Serializab
 	this.x = x;
 	this.y = y;
     }
+    
+    public Position getForward(Orientation orientation) {
+	switch(orientation) {
+	case NORTH:
+	    return new Position(this.x, this.y - 1);
+	case SOUTH:
+	    return new Position(this.x, this.y + 1);
+	case WEST:
+	    return new Position(this.x - 1, this.y);
+	case EAST:
+	    return new Position(this.x + 1, this.y);
+	default:
+	    throw new IllegalArgumentException();
+	}
+    }
+    
+    public Position getLeft(Orientation orientation) {
+	switch(orientation) {
+	case NORTH:
+	    return new Position(this.x - 1, this.y);
+	case SOUTH:
+	    return new Position(this.x + 1, this.y);
+	case WEST:
+	    return new Position(this.x, this.y + 1);
+	case EAST:
+	    return new Position(this.x, this.y - 1);
+	default:
+	    throw new IllegalArgumentException();
+	}
+    }
+    
+    public Position getRight(Orientation orientation) {
+	switch(orientation) {
+	case NORTH:
+	    return new Position(this.x + 1, this.y);
+	case SOUTH:
+	    return new Position(this.x - 1, this.y);
+	case WEST:
+	    return new Position(this.x, this.y - 1);
+	case EAST:
+	    return new Position(this.x, this.y + 1);
+	default:
+	    throw new IllegalArgumentException();
+	}
+    }
+    
+    public Position getForwardLeft(Orientation orientation) {
+	switch(orientation) {
+	case NORTH:
+	    return new Position(this.x - 1, this.y - 1);
+	case SOUTH:
+	    return new Position(this.x + 1, this.y + 1);
+	case WEST:
+	    return new Position(this.x - 1, this.y + 1);
+	case EAST:
+	    return new Position(this.x + 1, this.y - 1);
+	default:
+	    throw new IllegalArgumentException();
+	}
+    }
+    
+    public Position getForwardRight(Orientation orientation) {
+	switch(orientation) {
+	case NORTH:
+	    return new Position(this.x + 1, this.y - 1);
+	case SOUTH:
+	    return new Position(this.x - 1, this.y + 1);
+	case WEST:
+	    return new Position(this.x - 1, this.y - 1);
+	case EAST:
+	    return new Position(this.x + 1, this.y + 1);
+	default:
+	    throw new IllegalArgumentException();
+	}
+    }
 
     public Integer getX() {
 	return x;
