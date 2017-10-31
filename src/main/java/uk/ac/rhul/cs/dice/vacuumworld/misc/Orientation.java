@@ -1,8 +1,9 @@
 package uk.ac.rhul.cs.dice.vacuumworld.misc;
 
 public enum Orientation {
-
     NORTH, EAST, SOUTH, WEST;
+    
+    //TODO remove this --> use the API in its place
     static {
 	NORTH.setNeighbours(0, -1, WEST, EAST);
 	EAST.setNeighbours(1, 0, NORTH, SOUTH);
@@ -12,8 +13,8 @@ public enum Orientation {
 
     private Orientation left;
     private Orientation right;
-    private int i;
-    private int j;
+    private int i; //TODO remove this --> use the API in its place
+    private int j; //TODO remove this --> use the API in its place
 
     private void setNeighbours(int i, int j, Orientation left, Orientation right) {
 	this.left = left;
@@ -31,18 +32,10 @@ public enum Orientation {
     }
 
     public Integer getI() {
-	return i;
+	return this.i;
     }
 
     public Integer getJ() {
-	return j;
-    }
-
-    public static Orientation getLeft(Orientation orientation) {
-	return orientation.left;
-    }
-
-    public static Orientation getRight(Orientation orientation) {
-	return orientation.right;
+	return this.j;
     }
 }

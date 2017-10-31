@@ -51,9 +51,9 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
 	if (currentpercept == null) {
 	    return new VacuumWorldSensingAction();
 	}
-	filledForward = isFilledForward(currentpercept);
-	filledLeft = isFilledLeft(currentpercept);
-	filledRight = isFilledRight(currentpercept);
+	filledForward = !this.currentpercept.isForwardAccessible();
+	filledLeft = !this.currentpercept.isLeftAccessible();
+	filledRight = !this.currentpercept.isRightAccessible();
 	VacuumWorldAction action;
 	if ((action = doMessAction()) != null) {
 	    return action;
@@ -86,7 +86,7 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
     private VacuumWorldAction doMessAction() {
 	if (actioncounter % messiness == 0) {
 	    actioncounter++;
-	    if (!isDirtOn(currentpercept)) {
+	    if (!this.currentpercept.isDirtOnAgentPosition()) {
 		return new PlaceDirtAction(null);
 	    }
 	}

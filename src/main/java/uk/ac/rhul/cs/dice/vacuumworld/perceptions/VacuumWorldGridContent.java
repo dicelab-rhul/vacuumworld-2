@@ -1,9 +1,9 @@
 package uk.ac.rhul.cs.dice.vacuumworld.perceptions;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
@@ -12,18 +12,140 @@ import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.grid.tiles.Tile;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
 
 public class VacuumWorldGridContent {
-
     private Map<Position, Tile> view;
     private Position selfposition;
+    private Orientation selfOrientation;
 
     public VacuumWorldGridContent(Map<Position, Tile> view, Position selfposition) {
 	this.selfposition = selfposition;
 	this.view = view;
+	this.selfOrientation = getSelf().getOrientation();
     }
 
+    public boolean isAgentForward() {
+	return isAgentOnPosition(this.selfposition.getForward(this.selfOrientation));
+    }
+    
+    public boolean isAgentOnTheLeft() {
+	return isAgentOnPosition(this.selfposition.getLeft(this.selfOrientation));
+    }
+    
+    public boolean isAgentOnTheRight() {
+	return isAgentOnPosition(this.selfposition.getRight(this.selfOrientation));
+    }
+    
+    public boolean isAgentForwardLeft() {
+	return isAgentOnPosition(this.selfposition.getForwardLeft(this.selfOrientation));
+    }
+    
+    public boolean isAgentForwardRight() {
+	return isAgentOnPosition(this.selfposition.getForwardRight(this.selfOrientation));
+    }
+    
+    private boolean isAgentOnPosition(Position position) {
+	Tile t = this.view.get(position);
+	
+	return t == null ? false : t.containsAgent();
+    }
+    
+    public boolean isDirtOnAgentPosition() {
+	return isDirtOnPosition(this.selfposition);
+    }
+    
+    public boolean isDirtForward() {
+	return isDirtOnPosition(this.selfposition.getForward(this.selfOrientation));
+    }
+    
+    public boolean isDirtOnTheLeft() {
+	return isDirtOnPosition(this.selfposition.getLeft(this.selfOrientation));
+    }
+    
+    public boolean isDirtOnTheRight() {
+	return isDirtOnPosition(this.selfposition.getRight(this.selfOrientation));
+    }
+    
+    public boolean isDirtForwardLeft() {
+	return isDirtOnPosition(this.selfposition.getForwardLeft(this.selfOrientation));
+    }
+    
+    public boolean isDirtForwardRight() {
+	return isDirtOnPosition(this.selfposition.getForwardRight(this.selfOrientation));
+    }
+    
+    private boolean isDirtOnPosition(Position position) {
+	Tile t = this.view.get(position);
+	
+	return t == null ? false : t.containsDirt();
+    }
+    
+    public boolean isWallForward() {
+	return isWallOnPosition(this.selfposition.getForward(this.selfOrientation));
+    }
+    
+    public boolean isWallOnTheLeft() {
+	return isWallOnPosition(this.selfposition.getLeft(this.selfOrientation));
+    }
+    
+    public boolean isWallOnTheRight() {
+	return isWallOnPosition(this.selfposition.getRight(this.selfOrientation));
+    }
+    
+    public boolean isWallForwardLeft() {
+	return isWallOnPosition(this.selfposition.getForwardLeft(this.selfOrientation));
+    }
+    
+    public boolean isWallForwardRight() {
+	return isWallOnPosition(this.selfposition.getForwardRight(this.selfOrientation));
+    }
+    
+    private boolean isWallOnPosition(Position position) {
+	Tile t = this.view.get(position);
+	
+	return t == null || t.isWall();
+    }
+    
+    private boolean isWallNotOnPosition(Position position) {
+	Tile t = this.view.get(position);
+	
+	return t != null && !t.isWall();
+    }
+    
+    public boolean isForwardAccessible() {
+	return isPositionAccessible(this.selfposition.getForward(this.selfOrientation));
+    }
+    
+    public boolean isLeftAccessible() {
+	return isPositionAccessible(this.selfposition.getLeft(this.selfOrientation));
+    }
+    
+    public boolean isRightAccessible() {
+	return isPositionAccessible(this.selfposition.getRight(this.selfOrientation));
+    }
+    
+    public boolean isForwardLeftAccessible() {
+	return isPositionAccessible(this.selfposition.getForwardLeft(this.selfOrientation));
+    }
+    
+    public boolean isForwardRightAccessible() {
+	return isPositionAccessible(this.selfposition.getForwardRight(this.selfOrientation));
+    }
+    
+    private boolean isPositionAccessible(Position position) {
+	Tile t = this.view.get(position);
+	
+	return !(t == null || t.isWall() || t.containsAgent());
+    }
+    
+    private boolean isPositionInaccessible(Position position) {
+	Tile t = this.view.get(position);
+	
+	return t == null || t.isWall() || t.containsAgent();
+    }
+    
     /**
      * Gets the {@link Agent} at the given {@link Position} is it exists.
      * 
@@ -33,12 +155,28 @@ public class VacuumWorldGridContent {
      *         given {@link Position}, null if there is no {@link Agent} at the
      *         given {@link Position}.
      */
-    public VacuumWorldAgentAppearance getAgent(Position position) {
-	Tile t = view.get(position);
-	if (t != null && t.containsAgent()) {
-	    return t.getAgent();
-	}
-	return null;
+    private VacuumWorldAgentAppearance getAgent(Position position) {
+	return isAgentOnPosition(position) ? this.view.get(position).getAgent() : null;
+    }
+    
+    public VacuumWorldAgentAppearance getAgentForwardIfAny() {
+	return getAgent(this.selfposition.getForward(this.selfOrientation));
+    }
+    
+    public VacuumWorldAgentAppearance getAgentOnTheLeftIfAny() {
+	return getAgent(this.selfposition.getLeft(this.selfOrientation));
+    }
+    
+    public VacuumWorldAgentAppearance getAgentOnTheRightIfAny() {
+	return getAgent(this.selfposition.getRight(this.selfOrientation));
+    }
+    
+    public VacuumWorldAgentAppearance getAgentOnForwardLeftIfAny() {
+	return getAgent(this.selfposition.getForwardLeft(this.selfOrientation));
+    }
+    
+    public VacuumWorldAgentAppearance getAgentOnForwardRightIfAny() {
+	return getAgent(this.selfposition.getForwardRight(this.selfOrientation));
     }
 
     /**
@@ -50,12 +188,32 @@ public class VacuumWorldGridContent {
      *         {@link Position}, null if there is no {@link Dirt} at the given
      *         {@link Position}.
      */
-    public DirtAppearance getDirt(Position position) {
-	Tile t = view.get(position);
-	if (t != null && t.containsDirt()) {
-	    return t.getDirt();
-	}
-	return null;
+    private DirtAppearance getDirt(Position position) {
+	return isDirtOnPosition(position) ? this.view.get(position).getDirt() : null;
+    }
+    
+    public DirtAppearance getDirtOnCurrentPositionIfAny() {
+	return getDirt(this.selfposition);
+    }
+    
+    public DirtAppearance getDirtForwardIfAny() {
+	return getDirt(this.selfposition.getForward(this.selfOrientation));
+    }
+    
+    public DirtAppearance getDirtOnTheLeftIfAny() {
+	return getDirt(this.selfposition.getLeft(this.selfOrientation));
+    }
+    
+    public DirtAppearance getDirtOnTheRightIfAny() {
+	return getDirt(this.selfposition.getRight(this.selfOrientation));
+    }
+    
+    public DirtAppearance getDirtOnForwardLeftIfAny() {
+	return getDirt(this.selfposition.getForwardLeft(this.selfOrientation));
+    }
+    
+    public DirtAppearance getDirtOnForwardRightIfAny() {
+	return getDirt(this.selfposition.getForwardRight(this.selfOrientation));
     }
 
     /**
@@ -66,7 +224,7 @@ public class VacuumWorldGridContent {
      * @return self {@link Appearance}
      */
     public VacuumWorldAgentAppearance getSelf() {
-	return view.get(selfposition).getAgent();
+	return getAgent(this.selfposition);
     }
 
     /**
@@ -77,13 +235,7 @@ public class VacuumWorldGridContent {
      * @return all {@link Position}s
      */
     public Collection<Position> getAllPositions() {
-	Collection<Position> all = new ArrayList<>();
-	view.forEach((p, t) -> {
-	    if (!t.isWall()) {
-		all.add(p);
-	    }
-	});
-	return all;
+	return this.view.entrySet().stream().map(Entry::getKey).filter(this::isWallNotOnPosition).collect(Collectors.toSet());
     }
 
     /**
@@ -94,13 +246,7 @@ public class VacuumWorldGridContent {
      * @return the free {@link Position}s
      */
     public Collection<Position> getFreePositions() {
-	Collection<Position> free = new ArrayList<>();
-	view.forEach((p, t) -> {
-	    if (!(t.containsAgent() || t.isWall())) {
-		free.add(p);
-	    }
-	});
-	return free;
+	return this.view.entrySet().stream().map(Entry::getKey).filter(this::isPositionAccessible).collect(Collectors.toSet());
     }
 
     /**
@@ -112,13 +258,7 @@ public class VacuumWorldGridContent {
      * @return the filled {@link Position}s
      */
     public Collection<Position> getFilledPositions() {
-	Collection<Position> filled = new ArrayList<>();
-	view.forEach((p, t) -> {
-	    if (t.containsAgent() || t.isWall()) {
-		filled.add(p);
-	    }
-	});
-	return filled;
+	return this.view.entrySet().stream().map(Entry::getKey).filter(this::isPositionInaccessible).collect(Collectors.toSet());
     }
 
     /**
@@ -128,29 +268,17 @@ public class VacuumWorldGridContent {
      * @return wall {@link Position}s
      */
     public Collection<Position> getWallPositions() {
-	Collection<Position> walls = new ArrayList<>();
-	view.forEach((p, t) -> {
-	    if (t.isWall()) {
-		walls.add(p);
-	    }
-	});
-	return walls;
+	return this.view.entrySet().stream().map(Entry::getKey).filter(this::isWallOnPosition).collect(Collectors.toSet());
     }
 
     /**
      * Gets the {@link Position}s of all the {@link Dirt}s that this {@link Dirt}
      * can currently see.
      * 
-     * @return {@link Dirt} {@link Position}sget
+     * @return {@link Dirt} {@link Position}s
      */
     public Collection<Position> getDirtPositions() {
-	Collection<Position> dirts = new HashSet<>();
-	view.forEach((p, t) -> {
-	    if (t.containsDirt()) {
-		dirts.add(p);
-	    }
-	});
-	return dirts;
+	return this.view.entrySet().stream().map(Entry::getKey).filter(this::isWallOnPosition).collect(Collectors.toSet());
     }
 
     /**
@@ -160,13 +288,7 @@ public class VacuumWorldGridContent {
      * @return {@link Agent} {@link Position}s
      */
     public Collection<Position> getAgentPositions() {
-	Collection<Position> agents = new HashSet<>();
-	view.forEach((p, t) -> {
-	    if (t.containsAgent()) {
-		agents.add(p);
-	    }
-	});
-	return agents;
+	return this.view.entrySet().stream().map(Entry::getKey).filter(this::isAgentOnPosition).collect(Collectors.toSet());
     }
 
     /**
@@ -176,13 +298,7 @@ public class VacuumWorldGridContent {
      * @return {@link Dirt} {@link Appearance}s
      */
     public Collection<DirtAppearance> getDirts() {
-	Collection<DirtAppearance> dirts = new ArrayList<>();
-	view.values().forEach(t -> {
-	    if (t.containsDirt()) {
-		dirts.add(t.getDirt());
-	    }
-	});
-	return dirts;
+	return this.view.entrySet().stream().filter(e -> isDirtOnPosition(e.getKey())).map(e -> e.getValue().getDirt()).collect(Collectors.toSet());
     }
 
     /**
@@ -192,13 +308,7 @@ public class VacuumWorldGridContent {
      * @return other {@link Agent} {@link Appearance}s
      */
     public Collection<VacuumWorldAgentAppearance> getAgents() {
-	Collection<VacuumWorldAgentAppearance> agents = new ArrayList<>();
-	view.values().forEach(t -> {
-	    if (t.containsAgent()) {
-		agents.add(t.getAgent());
-	    }
-	});
-	return agents;
+	return this.view.entrySet().stream().filter(e -> isAgentOnPosition(e.getKey())).map(e -> e.getValue().getAgent()).collect(Collectors.toSet());
     }
 
     @Override

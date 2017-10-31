@@ -10,7 +10,6 @@ import uk.ac.rhul.cs.dice.vacuumworld.actions.CleanAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
-import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldCommunicationAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
 import uk.ac.rhul.cs.dice.vacuumworld.agent.VacuumWorldMind;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
@@ -18,6 +17,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.misc.TurnDirection;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.LogUtils;
 
 /**
  * This class is an example of the {@link Mind} of an {@link Agent} in
@@ -44,10 +44,9 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
     private VacuumWorldGridContent currentpercept;
 
     @Override
-    public void perceive(VacuumWorldGridPerception perception,
-	    Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
+    public void perceive(VacuumWorldGridPerception perception, Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
 	if (perception != null) {
-	    currentpercept = perception.getPerception();
+	    this.currentpercept = perception.getPerception();
 	}
     }
 
@@ -56,7 +55,7 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
     // and the number of nested conditional statements.
     @Override
     public VacuumWorldAction decide() {
-	if (currentpercept == null) {
+	if (this.currentpercept == null) {
 	    /*
 	     * the last action failed or the agent is on the first cycle. The agent should
 	     * get its first perception.\gd
@@ -70,15 +69,15 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 	 */
 
 	// check if on some dirt
-	if (isDirtOn(currentpercept)) {
+	if (this.currentpercept.isDirtOnAgentPosition()) {
 	    // the agent is on some dirt
-	    DirtAppearance dirt = getDirtOn(currentpercept); // get the
+	    DirtAppearance dirt = this.currentpercept.getDirtOnCurrentPositionIfAny(); // get the
 	    // dirt
-	    LOGGER.info(this.getId() + " is on some dirt!");
+	    LogUtils.log(this.getId() + " is on some dirt!");
 	    // check if the agent can clean the dirt
 	    if (canCleanDirt(dirt)) {
 		// the agent is on some dirt and can clean it!
-		LOGGER.info(this.getId() + " can clean the dirt!");
+		LogUtils.log(this.getId() + " can clean the dirt!");
 		// decide on a clean action!
 		return new CleanAction();
 	    }
@@ -90,25 +89,25 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 	 * is at the other two positions in the perception. i.e.
 	 * dirtForwardRight(Perception) dirtFowardRight(Perception)
 	 */
-	if (isDirtFoward(currentpercept)) {
+	if (this.currentpercept.isDirtForward()) {
 	    // there is dirt in front of the agent!
-	    DirtAppearance dirt = getDirtFoward(currentpercept);
+	    DirtAppearance dirt = this.currentpercept.getDirtForwardIfAny();
 	    if (super.canCleanDirt(dirt)) {
-		LOGGER.info(this.getId() + " see's cleanable dirt in front!");
+		LogUtils.log(this.getId() + " see's cleanable dirt in front!");
 		return new MoveAction();
 	    }
 	}
 	// there is no dirt forward, what about to the left or right?
 	DirtAppearance leftdirt = null;
 	DirtAppearance rightdirt = null;
-	if (isDirtLeft(currentpercept)) {
-	    leftdirt = getDirtLeft(currentpercept);
+	if (this.currentpercept.isDirtOnTheLeft()) {
+	    leftdirt = this.currentpercept.getDirtOnTheLeftIfAny();
 	    if (!canCleanDirt(leftdirt)) {
 		leftdirt = null;
 	    }
 	}
-	if (isDirtRight(currentpercept)) {
-	    rightdirt = getDirtRight(currentpercept);
+	if (this.currentpercept.isDirtOnTheRight()) {
+	    rightdirt = this.currentpercept.getDirtOnTheRightIfAny();
 	    if (!canCleanDirt(rightdirt)) {
 		rightdirt = null;
 	    }
@@ -121,12 +120,12 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 	}
 	// there is dirt to the left
 	if (leftdirt != null) {
-	    LOGGER.info(this.getId() + " see's cleanable dirt on its left!");
+	    LogUtils.log(this.getId() + " see's cleanable dirt on its left!");
 	    return new TurnAction(TurnDirection.LEFT); // turn left
 	}
 	// there is dirt to the right
 	if (rightdirt != null) {
-	    LOGGER.info(this.getId() + " see's cleanable dirt on its right!");
+	    LogUtils.log(this.getId() + " see's cleanable dirt on its right!");
 	    return new TurnAction(TurnDirection.RIGHT); // turn right
 	}
 
@@ -134,44 +133,38 @@ public class VacuumWorldExampleMind extends VacuumWorldMind {
 	boolean filledRight;
 	// there is no cleanable dirt to the left or right
 	// check if the forward location is filled with an agent or a wall
-	if (isFilledForward(currentpercept)) {
+	if (!this.currentpercept.isForwardAccessible()) {
 	    // the agent should turn to avoid moving into the wall
-	    filledLeft = isFilledLeft(currentpercept);
-	    filledRight = isFilledRight(currentpercept);
+	    filledLeft = !this.currentpercept.isLeftAccessible();
+	    filledRight = !this.currentpercept.isRightAccessible();
 
 	    if (filledLeft && filledRight) {
 		// the agent is blocked in! turn to try and escape
-		LOGGER.info(this.getId() + " is blocked in!");
+		LogUtils.log(this.getId() + " is blocked in!");
 		return new TurnAction(null);
 	    }
 	    if (filledLeft) {
 		// left is blocked so turn right
-		LOGGER.info(this.getId() + " is blocked forward and left!");
+		LogUtils.log(this.getId() + " is blocked forward and left!");
 		return new TurnAction(TurnDirection.RIGHT);
 	    }
 	    if (filledRight) {
 		// right is blocked so turn left
-		LOGGER.info(this.getId() + " is blocked forward and right!");
+		LogUtils.log(this.getId() + " is blocked forward and right!");
 		return new TurnAction(TurnDirection.LEFT);
 	    }
 	    // the agent should turn left or right as it cannot move forward
-	    LOGGER.info(this.getId() + " is blocked in front!");
+	    LogUtils.log(this.getId() + " is blocked in front!");
 	    return new TurnAction(null);
 	}
 
 	// this agent is not very smart, so it just decides randomly!
-	if (Math.random() > 0.3) {
-	    return new MoveAction();
-	} else if (Math.random() > 0.4) {
-	    return new TurnAction(null);
-	} else {
-	    return new VacuumWorldCommunicationAction("Hello, my id is: " + this.getId());
-	}
+	return decideRandomAction();
     }
 
     @Override
     public VacuumWorldAction execute(VacuumWorldAction action) {
-	currentpercept = null;
+	this.currentpercept = null;
 	// returning the action will execute it in the next cycle
 	return action;
     }

@@ -2,9 +2,8 @@ package uk.ac.rhul.cs.dice.vacuumworld.agent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
@@ -12,35 +11,26 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldCommunicationAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldSensingAction;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.DirtAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.appearances.VacuumWorldAgentAppearance;
 import uk.ac.rhul.cs.dice.vacuumworld.bodies.Dirt;
 import uk.ac.rhul.cs.dice.vacuumworld.grid.Grid;
 import uk.ac.rhul.cs.dice.vacuumworld.misc.BodyColor;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.Orientation;
-import uk.ac.rhul.cs.dice.vacuumworld.misc.Position;
+import uk.ac.rhul.cs.dice.vacuumworld.misc.TurnDirection;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
-import uk.ac.rhul.cs.dice.vacuumworld.utilities.SuperSimpleFormatter;
 
 public abstract class VacuumWorldMind extends AbstractAgentMind {
-
-    public static final Logger LOGGER = Logger.getLogger("MindLogger");
-    static {
-	// set up logger
-	for (Handler handler : LOGGER.getParent().getHandlers()) {
-	    LOGGER.getParent().removeHandler(handler);
-	}
-	ConsoleHandler handler = new ConsoleHandler();
-	LOGGER.addHandler(handler);
-	SuperSimpleFormatter formatter = new SuperSimpleFormatter();
-	handler.setFormatter(formatter);
-    }
-
+    private Random rng;
+    private static final int BASIC_ACTIONS_NUMBER = 5; //sense, turnL, turnR, move, speak. Clean is not included. This is for acting randomly.
+    
     // **************************************************************** //
     // ************** DELEGATED PERCEIVE DECIDE EXECUTE *************** //
     // **************************************************************** //
@@ -49,6 +39,10 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
      * these are the methods that you should override.
      */
 
+    public VacuumWorldMind() {
+	this.rng = new Random();
+    }
+    
     /**
      * The perceive method.
      * 
@@ -62,8 +56,7 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
      *            : a {@link Collection} of messages that this {@link Agent} has
      *            received in the most recent cycle.
      */
-    public abstract void perceive(VacuumWorldGridPerception perception,
-	    Collection<CommunicationPerception<VacuumWorldMessageContent>> messages);
+    public abstract void perceive(VacuumWorldGridPerception perception, Collection<CommunicationPerception<VacuumWorldMessageContent>> messages);
 
     /**
      * The decide method. This method should use any relevant {@link Perception} s
@@ -90,211 +83,21 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
      */
     public abstract VacuumWorldAction execute(VacuumWorldAction action);
 
-    public static DirtAppearance getDirtOn(VacuumWorldGridContent perception) {
-	return perception.getDirt(perception.getSelf().getPosition());
-    }
-
-    public static DirtAppearance getDirtFoward(VacuumWorldGridContent perception) {
-	Position current = perception.getSelf().getPosition();
-	Orientation orientation = perception.getSelf().getOrientation();
-	return perception
-		.getDirt(new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ()));
-    }
-
-    public static DirtAppearance getDirtLeft(VacuumWorldGridContent perception) {
-	Position current = perception.getSelf().getPosition();
-	Orientation orientation = perception.getSelf().getOrientation().getLeft();
-	return perception
-		.getDirt(new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ()));
-    }
-
-    public static DirtAppearance getDirtRight(VacuumWorldGridContent perception) {
-	Position current = perception.getSelf().getPosition();
-	Orientation orientation = perception.getSelf().getOrientation().getRight();
-	return perception
-		.getDirt(new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ()));
-    }
-
-    public static VacuumWorldAgentAppearance getAgentFoward(VacuumWorldGridContent perception) {
-	Position current = perception.getSelf().getPosition();
-	Orientation orientation = perception.getSelf().getOrientation();
-	return perception
-		.getAgent(new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ()));
-    }
-
-    public static VacuumWorldAgentAppearance getAgentLeft(VacuumWorldGridContent perception) {
-	Position current = perception.getSelf().getPosition();
-	Orientation orientation = perception.getSelf().getOrientation().getLeft();
-	return perception
-		.getAgent(new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ()));
-    }
-
-    public static VacuumWorldAgentAppearance getAgentRight(VacuumWorldGridContent perception) {
-	Position current = perception.getSelf().getPosition();
-	Orientation orientation = perception.getSelf().getOrientation().getRight();
-	return perception
-		.getAgent(new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ()));
-    }
-
-    /**
-     * Check if the perceiving {@link Agent} is currently facing another
-     * {@link Agent} or a Wall.
-     * 
-     * @param perception
-     *            to check
-     * @return true if the {@link Agent} is currently facing a Wall, false otherwise
-     */
-    public static boolean isFilledForward(VacuumWorldGridContent perception) {
-	return checkFilled(perception, perception.getSelf().getOrientation());
-    }
-
-    /**
-     * Check if there is a {@link Agent} or a Wall immediately to the right of the
-     * perceiving {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a {@link Agent} or a Wall immediately to the right,
-     *         false otherwise
-     */
-    public static boolean isFilledRight(VacuumWorldGridContent perception) {
-	return checkFilled(perception, perception.getSelf().getOrientation().getRight());
-    }
-
-    /**
-     * Check if there is a {@link Agent} or a Wall immediately to the left of the
-     * perceiving {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a {@link Agent} or a Wall immediately to the left,
-     *         false otherwise
-     */
-    public static boolean isFilledLeft(VacuumWorldGridContent perception) {
-	return checkFilled(perception, perception.getSelf().getOrientation().getLeft());
-    }
-
-    /**
-     * Check if the perceiving {@link Agent} is currently facing another
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if the {@link Agent} is currently another {@link Agent}, false
-     *         otherwise
-     */
-    public static boolean isAgentForward(VacuumWorldGridContent perception) {
-	return checkAgent(perception, perception.getSelf().getOrientation());
-    }
-
-    /**
-     * Check if there is a {@link Agent} immediately to the right of the perceiving
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a {@link Agent} immediately to the right, false
-     *         otherwise
-     */
-    public static boolean isAgentRight(VacuumWorldGridContent perception) {
-	return checkAgent(perception, perception.getSelf().getOrientation().getRight());
-    }
-
-    /**
-     * Check if there is a {@link Agent} immediately to the left of the perceiving
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a {@link Agent} immediately to the left, false
-     *         otherwise
-     */
-    public static boolean isAgentLeft(VacuumWorldGridContent perception) {
-	return checkAgent(perception, perception.getSelf().getOrientation().getLeft());
-    }
-
-    /**
-     * Check if the perceiving {@link Agent} is currently facing a Wall.
-     * 
-     * @param perception
-     *            to check
-     * @return true if the {@link Agent} is currently facing a Wall, false otherwise
-     */
-    public static boolean isWallFoward(VacuumWorldGridContent perception) {
-	return checkWall(perception, perception.getSelf().getOrientation());
-    }
-
-    /**
-     * Check if there is a Wall immediately to the right of the perceiving
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a Wall immediately to the right, false otherwise
-     */
-    public static boolean isWallRight(VacuumWorldGridContent perception) {
-	return checkWall(perception, perception.getSelf().getOrientation().getRight());
-    }
-
-    /**
-     * Check if there is a Wall immediately to the left of the perceiving
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a Wall immediately to the left, false otherwise
-     */
-    public static boolean isWallLeft(VacuumWorldGridContent perception) {
-	return checkWall(perception, perception.getSelf().getOrientation().getLeft());
-    }
-
-    /**
-     * Checks if the perceiving {@link Agent} is currently on top of some
-     * {@link Dirt}.
-     * 
-     * @return true if this {@link Agent} is currently on top of some {@link Dirt},
-     *         false otherwise
-     */
-    public static boolean isDirtOn(VacuumWorldGridContent perception) {
-	return check(perception.getDirtPositions(), perception.getSelf().getPosition());
-    }
-
-    /**
-     * Check if the perceiving {@link Agent} is currently facing some {@link Dirt}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if the {@link Agent} is currently facing a {@link Dirt}, false
-     *         otherwise
-     */
-    public static boolean isDirtFoward(VacuumWorldGridContent perception) {
-	return checkDirt(perception, perception.getSelf().getOrientation());
-    }
-
-    /**
-     * Check if there is a {@link Dirt} immediately to the right of the perceiving
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a {@link Dirt} immediately to the right, false
-     *         otherwise
-     */
-    public static boolean isDirtRight(VacuumWorldGridContent perception) {
-	return checkDirt(perception, perception.getSelf().getOrientation().getRight());
-    }
-
-    /**
-     * Check if there is a {@link Dirt} immediately to the left of the perceiving
-     * {@link Agent}.
-     * 
-     * @param perception
-     *            to check
-     * @return true if there is a {@link Dirt} immediately to the left, false
-     *         otherwise
-     */
-    public static boolean isDirtLeft(VacuumWorldGridContent perception) {
-	return checkDirt(perception, perception.getSelf().getOrientation().getLeft());
+    public VacuumWorldAction decideRandomAction() {
+	switch(this.rng.nextInt(VacuumWorldMind.BASIC_ACTIONS_NUMBER)) {
+	case 0:
+	    return new VacuumWorldSensingAction();
+	case 1:
+	    return new MoveAction();
+	case 2:
+	    return new TurnAction(TurnDirection.LEFT);
+	case 3:
+	    return new TurnAction(TurnDirection.RIGHT);
+	case 4:
+	    return new VacuumWorldCommunicationAction("Hello, my id is: " + getId());
+	default:
+	    throw new UnsupportedOperationException();
+	}
     }
 
     /**
@@ -327,32 +130,43 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
     @Override
     protected final VacuumWorldAgent getBody() {
 	ReadOnlyWrap.nicetry();
+	
 	return null;
     }
 
     // **************************************************************** //
     // ***************** REAL PERCEIVE DECIDE EXECUTE ***************** //
     // **************************************************************** //
-    @SuppressWarnings("unchecked")
-    // TODO this is a bad practice and can lead to bugs. I.e., solve the "unchecked"
-    // part.
-    @Override
+
     public final Perception<?> perceive(Collection<Perception<?>> perceptions) {
 	VacuumWorldGridPerception vwpercepts = null;
-	Collection<CommunicationPerception<VacuumWorldMessageContent>> messages = new ArrayList<>();
+	List<CommunicationPerception<VacuumWorldMessageContent>> messages = new ArrayList<>();
+	
 	for (Perception<?> p : perceptions) {
 	    if (VacuumWorldGridPerception.class.isAssignableFrom(p.getClass())) {
 		vwpercepts = (VacuumWorldGridPerception) p;
-	    } else if (CommunicationPerception.class.isAssignableFrom(p.getClass())) {
+	    }
+	    else if (CommunicationPerception.class.isAssignableFrom(p.getClass())) {
 		// this will always be the case
-		messages.add((CommunicationPerception<VacuumWorldMessageContent>) p);
-	    } else {
-		vwpercepts = new VacuumWorldGridPerception(
-			(VacuumWorldGridContent) ((ActivePerception) p).get(VacuumWorldSensingAction.KEY));
+		messages.add(validate((CommunicationPerception<?>) p));
+	    }
+	    else {
+		vwpercepts = new VacuumWorldGridPerception((VacuumWorldGridContent) ((ActivePerception) p).get(VacuumWorldSensingAction.KEY));
 	    }
 	}
+	
 	perceive(vwpercepts, messages);
+	
 	return null;
+    }
+
+    private CommunicationPerception<VacuumWorldMessageContent> validate(CommunicationPerception<?> p) {
+	if(p.getPerception() instanceof VacuumWorldMessageContent) {
+	    return new CommunicationPerception<>((VacuumWorldMessageContent) p.getPerception());
+	}
+	else {
+	    throw new IllegalArgumentException();
+	}
     }
 
     @Override
@@ -363,36 +177,5 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
     @Override
     public final Action execute(Action action) {
 	return execute((VacuumWorldAction) action);
-    }
-
-    private static boolean check(Collection<Position> positions, Position current) {
-	if (!positions.isEmpty()) {
-	    return positions.contains(current);
-	}
-	return false;
-    }
-
-    private static boolean check(Collection<Position> positions, Orientation orientation, Position current) {
-	if (!positions.isEmpty()) {
-	    Position search = new Position(current.getX() + orientation.getI(), current.getY() + orientation.getJ());
-	    return positions.contains(search);
-	}
-	return false;
-    }
-
-    private static boolean checkDirt(VacuumWorldGridContent perception, Orientation orientation) {
-	return check(perception.getDirtPositions(), orientation, perception.getSelf().getPosition());
-    }
-
-    private static boolean checkWall(VacuumWorldGridContent perception, Orientation orientation) {
-	return check(perception.getWallPositions(), orientation, perception.getSelf().getPosition());
-    }
-
-    private static boolean checkAgent(VacuumWorldGridContent perception, Orientation orientation) {
-	return check(perception.getAgentPositions(), orientation, perception.getSelf().getPosition());
-    }
-
-    private static boolean checkFilled(VacuumWorldGridContent perception, Orientation orientation) {
-	return check(perception.getFilledPositions(), orientation, perception.getSelf().getPosition());
     }
 }
