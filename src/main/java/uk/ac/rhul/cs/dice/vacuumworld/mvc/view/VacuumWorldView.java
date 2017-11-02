@@ -149,7 +149,7 @@ public class VacuumWorldView extends JFrame implements Observer {
 		    "Please wait a few seconds...", true);
 	    dialog.add(new JLabel("Please wait a few seconds, VacuumWorld is loading its components...",
 		    SwingConstants.CENTER));
-	    dialog.setMinimumSize(new Dimension(500, 100));
+	    dialog.setMinimumSize(new Dimension(510, 100));
 	    dialog.setLocationRelativeTo(dialog.getParent());
 	    dialog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	    dialog.setResizable(false);
