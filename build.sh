@@ -39,6 +39,8 @@ else
   echo "$MAVEN_DEP is already installed."
 fi
 
+echo ""
+
 MAVEN_DEP="apiguardian-api-1.0.0"
 echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" ]; then
@@ -50,6 +52,8 @@ if [ ! -f "$MY_HOME/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguar
 else
   echo "$MAVEN_DEP is already installed."
 fi
+
+echo ""
 
 MAVEN_DEP="opentest4j-1.0.0"
 echo Checking for "$MAVEN_DEP"...
@@ -63,6 +67,8 @@ else
   echo "$MAVEN_DEP is already installed."
 fi
 
+echo ""
+
 MAVEN_DEP="junit-platform-commons-1.0.0"
 echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar" ]; then
@@ -74,6 +80,8 @@ if [ ! -f "$MY_HOME/.m2/repository/org/junit/platform/junit-platform-commons/1.0
 else
   echo "$MAVEN_DEP is already installed."
 fi
+
+echo ""
 
 MAVEN_DEP="junit-platform-engine-1.0.0-M5"
 echo Checking for "$MAVEN_DEP"...
@@ -87,6 +95,8 @@ else
   echo "$MAVEN_DEP is already installed."
 fi
 
+echo ""
+
 MAVEN_DEP="junit-vintage-engine-4.12.0"
 echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/org/junit/vintage/junit-vintage-engine/4.12.0/junit-vintage-engine-4.12.0.jar" ]; then
@@ -99,6 +109,8 @@ else
   echo "$MAVEN_DEP is already installed."
 fi
 
+echo ""
+
 MAVEN_DEP="junit-4.12"
 echo Checking for "$MAVEN_DEP"...
 if [ ! -f "$MY_HOME/.m2/repository/junit/junit/4.12/junit-4.12.jar" ]; then
@@ -110,6 +122,8 @@ if [ ! -f "$MY_HOME/.m2/repository/junit/junit/4.12/junit-4.12.jar" ]; then
 else
   echo "$MAVEN_DEP is already installed."
 fi
+
+echo ""
 
 MAVEN_DEP="hamcrest-core-1.3"
 echo Checking for "$MAVEN_DEP"...
