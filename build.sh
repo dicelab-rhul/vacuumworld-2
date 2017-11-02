@@ -151,7 +151,7 @@ echo "Generating ANT script: $ANT_PATH..."
 ./ant_generator.py -H $HOME -a $ANT_PATH -j $JAR_NAME
 
 if [ -f "$ANT_PATH" ]; then
-  echo "Succesfully created $ANT_PATH"
+  echo "Successfully created $ANT_PATH"
   echo "Removing backup, if any..."
 
   if [ -f "$ANT_PATH.vwbak" ]; then
@@ -213,7 +213,7 @@ echo "Generating $HOME/$JAR_NAME"
 ant -f ant.xml
 
 if [ -f "$HOME/$JAR_NAME" ]; then
-  echo "Succesfully created $HOME/$JAR_NAME"
+  echo "Successfully created $HOME/$JAR_NAME"
   echo "Removing backup, if any..."
 
   if [ -f "$HOME/$JAR_NAME.vwbak" ]; then
