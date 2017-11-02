@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "[MANDATORY SOFTWARE SECTION]"
+echo ""
 
 PKG="ant"
 PKG_OK=$(which "$PKG")
@@ -22,6 +23,7 @@ fi
 
 echo ""
 echo "[MAVEN DEPENDENCIES SECTION]"
+echo ""
 
 MY_HOME=$(eval echo ~$(whoami))
 
@@ -123,6 +125,7 @@ fi
 
 echo ""
 echo "[ANT SCRIPT GENERATION SECTION]"
+echo ""
 
 JAR_NAME="vw.jar"
 ANT_PATH="$(pwd)/ant.xml"
@@ -189,6 +192,7 @@ fi
 
 echo ""
 echo "[BUILD SECTION]"
+echo ""
 echo "Looking for an old version of $HOME/$JAR_NAME..."
 
 if [ -f "$HOME/$JAR_NAME" ]; then
