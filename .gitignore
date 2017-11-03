@@ -15,3 +15,4 @@ ant.xml
 
 *.donotpush
 src/main/java/uk/ac/rhul/cs/dice/vacuumworld/test/**
+org.sonarlint.eclipse.core.prefs
