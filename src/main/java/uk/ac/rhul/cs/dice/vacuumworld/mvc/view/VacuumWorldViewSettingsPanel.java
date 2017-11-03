@@ -164,27 +164,27 @@ public class VacuumWorldViewSettingsPanel extends JPanel implements MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-	// unused
+	return;
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-	// unused
+	return;
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-	// unused
+	return;
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-	// unused
+	return;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-	// unused
+	return;
     }
 
     public Integer getGridDimension() {

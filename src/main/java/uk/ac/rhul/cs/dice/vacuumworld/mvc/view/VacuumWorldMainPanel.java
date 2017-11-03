@@ -535,17 +535,17 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
-	    // unused
+	    return;
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-	    // unused
+	    return;
 	}
 
 	@Override
 	public void componentShown(ComponentEvent e) {
-	    // unused
+	    return;
 	}
     }
 
