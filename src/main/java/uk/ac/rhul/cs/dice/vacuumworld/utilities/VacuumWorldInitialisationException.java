@@ -8,7 +8,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.utilities;
  *
  */
 public class VacuumWorldInitialisationException extends RuntimeException {
-
+    private static final long serialVersionUID = 2866986549324463147L;
     private static final String DEFAULTMESSAGE = "Failed to initialise VacuumWorld";
 
     public VacuumWorldInitialisationException(String message, Throwable cause) {
@@ -22,7 +22,4 @@ public class VacuumWorldInitialisationException extends RuntimeException {
     public VacuumWorldInitialisationException(Throwable cause) {
 	super(DEFAULTMESSAGE, cause);
     }
-
-    private static final long serialVersionUID = 2866986549324463147L;
-
 }

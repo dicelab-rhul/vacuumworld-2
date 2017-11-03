@@ -22,8 +22,9 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
  *
  */
 public class VacuumWorldCommunicationAction extends CommunicationAction<String> implements VacuumWorldAction {
-
     private static final long serialVersionUID = 641986939290090117L;
+    private static final ActionEnum code = ActionEnum.SPEECH_ACTION;
+    
     @SensiblePerception
     public static final Class<?> COMMUNICATIONPERCEPTION = CommunicationPerception.class;
     /*
@@ -61,5 +62,8 @@ public class VacuumWorldCommunicationAction extends CommunicationAction<String> 
     public VacuumWorldAgentAppearance getActor() {
 	return (VacuumWorldAgentAppearance) super.getActor();
     }
-
+    
+    public static ActionEnum getCode() {
+	return VacuumWorldCommunicationAction.code;
+    }
 }

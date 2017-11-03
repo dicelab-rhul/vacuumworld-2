@@ -25,6 +25,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class PlaceDirtAction extends PhysicalAction implements VacuumWorldAction {
+    private static final ActionEnum code = ActionEnum.DROP_DIRT_ACTION;
+    
     @SensiblePerception
     public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
@@ -56,6 +58,10 @@ public class PlaceDirtAction extends PhysicalAction implements VacuumWorldAction
     }
 
     public BodyColor getDirtColor() {
-	return dirtColor;
+	return this.dirtColor;
+    }
+    
+    public ActionEnum getCode() {
+	return PlaceDirtAction.code;
     }
 }

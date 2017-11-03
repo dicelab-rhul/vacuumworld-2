@@ -14,12 +14,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ClassFinder {
-
-    private ClassFinder() {
-    }
-
     private static final String CLASSEXTENSION = ".class";
     private static final String JAR = ".jar";
+    
+    private ClassFinder() {}
 
     public static Collection<Class<?>> findAllClasses() throws ClassFinderException {
 	Collection<Class<?>> classes = new HashSet<>();
@@ -33,6 +31,7 @@ public class ClassFinder {
 	return classes;
     }
 
+    //TODO refactor this and make this platform-independent
     private static Collection<Class<?>> findAllClassesHelper(Collection<Class<?>> c, ClassLoader loader, URL u)
 	    throws ClassFinderException {
 	Collection<Class<?>> classes = c;
@@ -153,7 +152,6 @@ public class ClassFinder {
      *
      */
     public static class ClassFinderException extends Exception {
-
 	private static final long serialVersionUID = 5574666660440435064L;
 	private static final String MESSAGE = "Failed to find class.";
 

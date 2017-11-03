@@ -127,12 +127,12 @@ public class VacuumWorldMainPanel extends JLayeredPane implements KeyListener {
 	for (int i = 0; i < gs; i++) {
 	    addFilledPanel(selectionButtonPanel);
 	}
-	agentbuttons.forEach(b -> selectionButtonPanel.add(b));
+	agentbuttons.forEach(selectionButtonPanel::add);
 	addFilledPanel(selectionButtonPanel);
-	userbuttons.forEach(b -> selectionButtonPanel.add(b));
+	userbuttons.forEach(selectionButtonPanel::add);
 	addFilledPanel(selectionButtonPanel);
 	addFilledPanel(selectionButtonPanel);
-	dirtbuttons.forEach(b -> selectionButtonPanel.add(b));
+	dirtbuttons.forEach(selectionButtonPanel::add);
 	for (int i = 0; i < 13; i++) {
 	    addFilledPanel(selectionButtonPanel);
 	}

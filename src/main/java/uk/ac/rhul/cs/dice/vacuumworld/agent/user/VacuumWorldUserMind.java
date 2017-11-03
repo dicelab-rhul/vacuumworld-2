@@ -23,93 +23,108 @@ public class VacuumWorldUserMind extends VacuumWorldMind {
     private Class<?> lastaction = VacuumWorldSensingAction.class;
     private VacuumWorldGridContent currentpercept;
     private boolean justTurned = false;
-
-    @Override
-    public void perceive(VacuumWorldGridPerception gridperception,
-	    Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
-	if (gridperception != null) {
-	    actionfailed = false;
-	    currentpercept = gridperception.getPerception();
-	} else {
-	    actionfailed = true;
-	}
-    }
-
     private boolean filledForward;
     private boolean filledLeft;
     private boolean filledRight;
 
     @Override
+    public void perceive(VacuumWorldGridPerception gridperception, Collection<CommunicationPerception<VacuumWorldMessageContent>> messages) {
+	if (gridperception != null) {
+	    this.actionfailed = false;
+	    this.currentpercept = gridperception.getPerception();
+	}
+	else {
+	    this.actionfailed = true;
+	}
+    }
+
+    @Override
     public VacuumWorldAction decide() {
-	if (!actionfailed) {
-	    if (MoveAction.class.isAssignableFrom(lastaction)) {
-		actioncounter++;
-	    } else if (TurnAction.class.isAssignableFrom(lastaction)) {
-		justTurned = true;
+	if (!this.actionfailed) {
+	    if (MoveAction.class.isAssignableFrom(this.lastaction)) {
+		this.actioncounter++;
+	    }
+	    else if (TurnAction.class.isAssignableFrom(this.lastaction)) {
+		this.justTurned = true;
 	    }
 	}
-	if (currentpercept == null) {
+	
+	if (this.currentpercept == null) {
 	    return new VacuumWorldSensingAction();
 	}
-	filledForward = !this.currentpercept.isForwardAccessible();
-	filledLeft = !this.currentpercept.isLeftAccessible();
-	filledRight = !this.currentpercept.isRightAccessible();
+	
+	this.filledForward = !this.currentpercept.isForwardAccessible();
+	this.filledLeft = !this.currentpercept.isLeftAccessible();
+	this.filledRight = !this.currentpercept.isRightAccessible();
+	
 	VacuumWorldAction action;
+	
 	if ((action = doMessAction()) != null) {
 	    return action;
 	}
 	if ((action = doWallAction()) != null) {
 	    return action;
 	}
+	
 	return doRandomAction();
     }
 
     private VacuumWorldAction doRandomAction() {
-	if (Math.random() <= mobility || justTurned) {
-	    justTurned = false;
+	if (Math.random() <= VacuumWorldUserMind.mobility || this.justTurned) {
+	    this.justTurned = false;
+	    
 	    return new MoveAction();
-	} else {
+	}
+	else {
 	    return performRandomAction();
 	}
     }
 
     private VacuumWorldAction performRandomAction() {
-	if (filledLeft && filledRight || !filledLeft && !filledRight) {
+	if (this.filledLeft && this.filledRight || !this.filledLeft && !this.filledRight) {
 	    return new TurnAction(null);
-	} else if (filledLeft) {
+	}
+	else if (this.filledLeft) {
 	    return new TurnAction(TurnDirection.RIGHT);
-	} else {
+	}
+	else {
 	    return new TurnAction(TurnDirection.LEFT);
 	}
     }
 
     private VacuumWorldAction doMessAction() {
-	if (actioncounter % messiness == 0) {
-	    actioncounter++;
+	if (this.actioncounter % VacuumWorldUserMind.messiness == 0) {
+	    this.actioncounter++;
+	    
 	    if (!this.currentpercept.isDirtOnAgentPosition()) {
 		return new PlaceDirtAction(null);
 	    }
 	}
-	return null;
+	
+	return null; //TODO change this
     }
 
     private VacuumWorldAction doWallAction() {
-	if (filledForward) {
-	    if (filledLeft) {
+	if (this.filledForward) {
+	    if (this.filledLeft) {
 		return new TurnAction(TurnDirection.RIGHT);
-	    } else if (filledRight) {
+	    }
+	    else if (this.filledRight) {
 		return new TurnAction(TurnDirection.LEFT);
-	    } else {
+	    }
+	    else {
 		return new TurnAction(null);
 	    }
 	}
-	return null;
+	
+	return null; //TODO change this
     }
 
     @Override
     public VacuumWorldAction execute(VacuumWorldAction action) {
-	lastaction = action.getClass();
-	currentpercept = null;
+	this.lastaction = action.getClass();
+	this.currentpercept = null;
+	
 	return action;
     }
 }

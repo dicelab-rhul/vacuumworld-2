@@ -18,7 +18,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class MoveAction extends PhysicalAction implements VacuumWorldAction {
-
+    private static final ActionEnum code = ActionEnum.MOVE_ACTION;
     private static final long serialVersionUID = -541182028589848248L;
 
     @SensiblePerception
@@ -29,4 +29,7 @@ public class MoveAction extends PhysicalAction implements VacuumWorldAction {
 	return (VacuumWorldAgentAppearance) super.getActor();
     }
 
+    public static ActionEnum getCode() {
+	return MoveAction.code;
+    }
 }

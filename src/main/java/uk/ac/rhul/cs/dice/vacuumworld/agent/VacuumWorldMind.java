@@ -2,7 +2,9 @@ package uk.ac.rhul.cs.dice.vacuumworld.agent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
@@ -11,6 +13,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.ActionEnum;
+import uk.ac.rhul.cs.dice.vacuumworld.actions.CleanAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.MoveAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.TurnAction;
 import uk.ac.rhul.cs.dice.vacuumworld.actions.VacuumWorldAction;
@@ -29,7 +33,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
 
 public abstract class VacuumWorldMind extends AbstractAgentMind {
     private Random rng;
-    private static final int BASIC_ACTIONS_NUMBER = 5; //sense, turnL, turnR, move, speak. Clean is not included. This is for acting randomly.
+    private static final Map<ActionEnum, Class<? extends VacuumWorldAction>> actions = initActions();
     
     // **************************************************************** //
     // ************** DELEGATED PERCEIVE DECIDE EXECUTE *************** //
@@ -43,6 +47,19 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	this.rng = new Random();
     }
     
+    private static Map<ActionEnum, Class<? extends VacuumWorldAction>> initActions() {
+	Map<ActionEnum, Class<? extends VacuumWorldAction>> actions = new EnumMap<>(ActionEnum.class);
+	
+	actions.put(VacuumWorldSensingAction.getCode(), VacuumWorldSensingAction.class);
+	actions.put(MoveAction.getCode(), MoveAction.class);
+	actions.put(TurnAction.getCode(TurnDirection.LEFT), TurnAction.class); //it is needed to have two of them...
+	actions.put(TurnAction.getCode(TurnDirection.RIGHT), TurnAction.class); //...for the probability distribution to be uniform.
+	actions.put(CleanAction.getCode(), CleanAction.class);
+	actions.put(VacuumWorldCommunicationAction.getCode(), VacuumWorldCommunicationAction.class);
+	
+	return actions;
+    }
+
     /**
      * The perceive method.
      * 
@@ -84,19 +101,36 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
     public abstract VacuumWorldAction execute(VacuumWorldAction action);
 
     public VacuumWorldAction decideRandomAction() {
-	switch(this.rng.nextInt(VacuumWorldMind.BASIC_ACTIONS_NUMBER)) {
-	case 0:
+	int random = this.rng.nextInt(VacuumWorldMind.actions.size());
+	Class<? extends VacuumWorldAction> actionPrototype = VacuumWorldMind.actions.get(ActionEnum.fromCode(random));
+	
+	return instantiateAction(ActionEnum.fromCode(random), actionPrototype);
+    }
+
+    private VacuumWorldAction instantiateAction(ActionEnum code, Class<? extends VacuumWorldAction> actionPrototype) {
+	if(ActionEnum.SPEECH_ACTION.equals(code)) {
+	    return instantiateCommunicationAction(actionPrototype);
+	}
+	else {
+	    return instantiate(actionPrototype);
+	}
+    }
+
+    private VacuumWorldAction instantiate(Class<? extends VacuumWorldAction> actionPrototype) {
+	try {
+	    return actionPrototype.newInstance();
+	}
+	catch (Exception e) {
 	    return new VacuumWorldSensingAction();
-	case 1:
-	    return new MoveAction();
-	case 2:
-	    return new TurnAction(TurnDirection.LEFT);
-	case 3:
-	    return new TurnAction(TurnDirection.RIGHT);
-	case 4:
-	    return new VacuumWorldCommunicationAction("Hello, my id is: " + getId());
-	default:
-	    throw new UnsupportedOperationException();
+	}
+    }
+
+    private VacuumWorldAction instantiateCommunicationAction(Class<? extends VacuumWorldAction> actionPrototype) {
+	try {
+	    return actionPrototype.getConstructor(String.class).newInstance("Hello, my id is: " + getId());
+	}
+	catch (Exception e) {
+	    return new VacuumWorldSensingAction();
 	}
     }
 

@@ -16,6 +16,7 @@ public enum TurnDirection {
 
     private Turn turn;
 
+    @FunctionalInterface
     private static interface Turn {
 	public Orientation turn(Orientation orientation);
     }

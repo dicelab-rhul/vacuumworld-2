@@ -17,6 +17,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class CleanAction extends PhysicalAction implements VacuumWorldAction {
+    private static final ActionEnum code = ActionEnum.CLEAN_ACTION;
+    
     @SensiblePerception
     public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
@@ -25,5 +27,9 @@ public class CleanAction extends PhysicalAction implements VacuumWorldAction {
     @Override
     public VacuumWorldAgentAppearance getActor() {
 	return (VacuumWorldAgentAppearance) super.getActor();
+    }
+    
+    public static ActionEnum getCode() {
+	return CleanAction.code;
     }
 }

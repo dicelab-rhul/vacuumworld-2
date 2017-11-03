@@ -18,7 +18,7 @@ package uk.ac.rhul.cs.dice.vacuumworld.readonly;
  * @param <A>
  *            the read-only class
  */
+@FunctionalInterface
 public interface ReadOnlyInterface<A> {
-
     public Class<A> getReadOnlyClass();
 }

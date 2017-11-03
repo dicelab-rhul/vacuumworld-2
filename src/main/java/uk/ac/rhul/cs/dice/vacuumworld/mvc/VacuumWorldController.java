@@ -25,13 +25,17 @@ import uk.ac.rhul.cs.dice.vacuumworld.utilities.ClassFinder.ClassFinderException
 import uk.ac.rhul.cs.dice.vacuumworld.utilities.VacuumWorldInitialisationException;
 
 public class VacuumWorldController extends AbstractViewController {
-
     public static final Integer MAXGRIDSIZE = 100;
     public static final Integer MINGRIDSIZE = 2;
     public static final Boolean SINGLEAVATAR = true;
 
     protected static final Collection<Class<?>> POSSIBLEAGENTMINDS;
     protected static final Collection<Class<?>> POSSIBLEMINDS;
+    
+    private VacuumWorldView view;
+    private Collection<VacuumWorldAvatarLink> avatarlinks;
+    private Thread universeThread;
+    
     static {
 	Collection<Class<?>> possibleminds = null;
 	Collection<Class<?>> possibleagentminds = null;
@@ -50,14 +54,6 @@ public class VacuumWorldController extends AbstractViewController {
 	LogUtils.log(paminfo);
     }
 
-    public static Collection<Class<?>> getPossibleAgentMinds() {
-	return POSSIBLEAGENTMINDS;
-    }
-
-    private VacuumWorldView view;
-    private Collection<VacuumWorldAvatarLink> avatarlinks;
-    private Thread universeThread;
-
     public VacuumWorldController(VacuumWorldView view, VacuumWorldUniverse universe) {
 	super(universe);
 	this.view = view;
@@ -67,6 +63,10 @@ public class VacuumWorldController extends AbstractViewController {
 	this.view.setModel(universe.getAmbient());
 	this.avatarlinks = new HashSet<>();
 	universe.addObserver(view);
+    }
+    
+    public static Collection<Class<?>> getPossibleAgentMinds() {
+	return POSSIBLEAGENTMINDS;
     }
 
     public void pause() {

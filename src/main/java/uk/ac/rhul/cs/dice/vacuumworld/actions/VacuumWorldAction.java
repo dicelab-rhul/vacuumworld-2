@@ -18,5 +18,5 @@ public interface VacuumWorldAction extends Action {
      * {@link Action#getActor()}. All {@link VacuumWorldAction}s are attempted by an
      * {@link Actor} with a {@link VacuumWorldAgentAppearance}.
      */
-    public VacuumWorldAgentAppearance getActor();
+    public abstract VacuumWorldAgentAppearance getActor();
 }

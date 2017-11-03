@@ -19,7 +19,9 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class TurnAction extends PhysicalAction implements VacuumWorldAction {
-
+    private static final ActionEnum leftCode = ActionEnum.TURN_LEFT_ACTION;
+    private static final ActionEnum rightCode = ActionEnum.TURN_RIGHT_ACTION;
+    
     @SensiblePerception
     public static final Class<?> POSSIBLEPERCEPTION = VacuumWorldGridPerception.class;
 
@@ -56,5 +58,28 @@ public class TurnAction extends PhysicalAction implements VacuumWorldAction {
     @Override
     public String toString() {
 	return this.getClass().getSimpleName() + ":" + this.getDirection();
+    }
+
+    public static ActionEnum getCode(Object... params) {
+	if(params.length == 0) {
+	    throw new IllegalArgumentException("Expecting a TurnDirection parameter!");
+	}
+	
+	if(!(params[0] instanceof TurnDirection)) {
+	    throw new IllegalArgumentException("Expecting a TurnDirection parameter!");
+	}
+	
+	return getCodeHelper((TurnDirection) params[0]);
+    }
+
+    private static ActionEnum getCodeHelper(TurnDirection turnDirection) {
+	switch(turnDirection) {
+	case LEFT:
+	    return TurnAction.leftCode;
+	case RIGHT:
+	    return TurnAction.rightCode;
+	default:
+	    throw new IllegalArgumentException();
+	}
     }
 }

@@ -28,9 +28,8 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
  *
  */
 public class VacuumWorldSensingAction extends SensingAction implements VacuumWorldAction {
-
     private static final long serialVersionUID = 3191925631824605396L;
-
+    private static final ActionEnum code = ActionEnum.SENSING_ACTION;
     public static final String KEY = VacuumWorldAmbient.GRIDKEY + "." + VacuumWorldAmbient.PERCEPTIONQUERYKEY;
 
     @SensiblePerception
@@ -46,5 +45,9 @@ public class VacuumWorldSensingAction extends SensingAction implements VacuumWor
     @Override
     public VacuumWorldAgentAppearance getActor() {
 	return (VacuumWorldAgentAppearance) super.getActor();
+    }
+    
+    public static ActionEnum getCode() {
+	return VacuumWorldSensingAction.code;
     }
 }
