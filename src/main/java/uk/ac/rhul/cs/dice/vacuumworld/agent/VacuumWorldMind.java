@@ -30,6 +30,7 @@ import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridContent;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldGridPerception;
 import uk.ac.rhul.cs.dice.vacuumworld.perceptions.VacuumWorldMessageContent;
 import uk.ac.rhul.cs.dice.vacuumworld.readonly.ReadOnlyWrap;
+import uk.ac.rhul.cs.dice.vacuumworld.utilities.LogUtils;
 
 public abstract class VacuumWorldMind extends AbstractAgentMind {
     private Random rng;
@@ -121,6 +122,8 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	    return actionPrototype.newInstance();
 	}
 	catch (Exception e) {
+	    LogUtils.fakeLog(e);
+	    
 	    return new VacuumWorldSensingAction();
 	}
     }
@@ -130,6 +133,8 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
 	    return actionPrototype.getConstructor(String.class).newInstance("Hello, my id is: " + getId());
 	}
 	catch (Exception e) {
+	    LogUtils.fakeLog(e);
+	    
 	    return new VacuumWorldSensingAction();
 	}
     }
