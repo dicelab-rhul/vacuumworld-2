@@ -270,7 +270,7 @@ public class VacuumWorldGridContent {
 
     /***
      * 
-     * This method is deprecated, as its name might be misleading. Use
+     * @deprecated This method is deprecated, as its name might be misleading. Use
      * {@link #getAccessiblePositions()} instead.
      *
      */
@@ -293,7 +293,7 @@ public class VacuumWorldGridContent {
 
     /**
      * 
-     * This method is deprecated, as its name might be misleading. Use
+     * @deprecated This method is deprecated, as its name might be misleading. Use
      * {@link #getInaccessiblePositions()} instead.
      * 
      */
