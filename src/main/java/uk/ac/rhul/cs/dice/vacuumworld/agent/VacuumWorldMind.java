@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
+import uk.ac.rhul.cs.dice.starworlds.actions.speech.DefaultPayload;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
@@ -200,12 +201,27 @@ public abstract class VacuumWorldMind extends AbstractAgentMind {
     }
 
     private CommunicationPerception<VacuumWorldMessageContent> validate(CommunicationPerception<?> p) {
-	if(p.getPerception() instanceof VacuumWorldMessageContent) {
-	    return new CommunicationPerception<>((VacuumWorldMessageContent) p.getPerception());
+	Object o = p.getPerception();
+	
+	if(o instanceof VacuumWorldMessageContent) {
+	    return new CommunicationPerception<>((VacuumWorldMessageContent) o);
+	}
+	else if(o instanceof DefaultPayload<?>) { //this is a terrible patch... but we don't have choice.
+	    VacuumWorldMessageContent tmp = convert((DefaultPayload<?>) o);
+	    
+	    return new CommunicationPerception<>(tmp);
 	}
 	else {
 	    throw new IllegalArgumentException();
 	}
+    }
+
+    //this is a terrible patch... but we don't have choice.
+    private VacuumWorldMessageContent convert(DefaultPayload<?> payload) {
+	Object p = payload.getPayload();
+	String msg = p != null && p instanceof String ? (String) p : "UNDEFINED";
+	
+	return new VacuumWorldMessageContent(msg);
     }
 
     @Override
